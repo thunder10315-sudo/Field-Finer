@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v25-2</title>
+<title>노선 필지 조회기 v25-3</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1093,7 +1093,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v25-2</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v25-3</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -3608,6 +3608,8 @@ async function runQuery(){
         const sk = results.filter(r => r.bldSkipped).length, ca = results.filter(r => r.bldCached).length;
         const msg = `건축물대장 조회 완료 — 건물 있는 필지 ${has}곳` + (sk ? ` · 생략 ${sk}` : '') + (ca ? ` · 저장분 사용 ${ca}` : '') + (bf ? ` · 확인 못함 ${bf}(누락 재조회)` : '') + ` · ${Math.round((Date.now() - t0) / 1000)}초`;
         log(msg); toast(msg, 9000, bf ? { label: '누락 재조회', fn: retryMissing } : null); beep(); flashTitle('건축물대장 완료');
+        const sus = results.filter(r => r.bld && !r.bld.length && ownBlds(r).length);
+        if(sus.length){ status(`대장 없는 건물 ${sus.length}곳 인허가 확인 중…`); try{ await pool(sus, 3, fetchPms); }catch(e){} log(`인허가 확인: ${sus.length}곳 중 기록 있음 ${sus.filter(r => pmsFlag(r)).length}곳`); renderTable(); }
       }catch(e){ log('건축물대장 중단: ' + e.message); status('건축물대장: ' + e.message); toast('건축물대장 조회 중단: ' + e.message, 9000); }
     }
 
@@ -3808,9 +3810,9 @@ const BLD_BASE = 'https://apis.data.go.kr/1613000/BldRgstHubService';
 function pnuParams(pnu){
   return { sigunguCd: pnu.slice(0, 5), bjdongCd: pnu.slice(5, 10), platGbCd: pnu.charAt(10) === '2' ? '1' : '0', bun: pnu.slice(11, 15), ji: pnu.slice(15, 19) };
 }
-async function bldApi(op, params, timeout = 15000){
+async function bldApi(op, params, timeout = 15000, base){
   const q = new URLSearchParams(Object.assign({ _type: 'json', numOfRows: '100', pageNo: '1' }, params));
-  const url = `${BLD_BASE}/${op}?serviceKey=${encodeURIComponent(cfg.bldKey)}&${q}`;
+  const url = `${base || BLD_BASE}/${op}?serviceKey=${encodeURIComponent(cfg.bldKey)}&${q}`;
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeout);
   let res;
   try{ res = await fetch(url, { signal: ctl.signal }); }
@@ -3821,12 +3823,55 @@ async function bldApi(op, params, timeout = 15000){
     const m = txt.match(/<returnAuthMsg>([^<]+)<\/returnAuthMsg>/) || txt.match(/<errMsg>([^<]+)<\/errMsg>/) || txt.match(/<resultMsg>([^<]+)<\/resultMsg>/);
     throw Object.assign(new Error(m ? m[1] : `HTTP ${res.status}`), { kind: 'api' });
   }
-  let j; try{ j = JSON.parse(txt); }catch(e){ throw Object.assign(new Error('응답 해석 실패: ' + txt.slice(0, 80)), { kind: 'api' }); }
+  let j; try{ j = JSON.parse(txt); }catch(e){ throw Object.assign(new Error((/API not found|Unexpected/i.test(txt) ? '기능 이름 없음: ' : '응답 해석 실패: ') + txt.slice(0, 80)), { kind: 'api', notFound: /API not found/i.test(txt) }); }
   const r = j.response || j;
   const code = r.header && r.header.resultCode;
   if(code && code !== '00' && code !== '0') throw Object.assign(new Error(`${code} ${r.header.resultMsg || ''}`), { kind: 'api' });
   const items = r.body && r.body.items && r.body.items.item;
   return { items: Array.isArray(items) ? items : items ? [items] : [], total: Number(r.body && r.body.totalCount) || 0 };
+}
+/* 건축·주택 인허가 (건축HUB) — 같은 공공데이터 키, 활용신청만 따로 */
+const PMS_BASE = { arch: 'https://apis.data.go.kr/1613000/ArchPmsHubService', hs: 'https://apis.data.go.kr/1613000/HsPmsHubService' };
+// 기능 이름(영문)은 포털에 안 나와 있어 예전 서비스 이름 규칙으로 후보를 두고, 되는 이름을 기억함
+const PMS_OPS = {
+  basis: { base: 'arch', t: '건축인허가 기본개요', c: ['getApBasisOulnInfo'] },
+  tmp: { base: 'arch', t: '가설건축물', c: ['getApTmpBldInfo', 'getApTmpBldngInfo'] },
+  demol: { base: 'arch', t: '철거·멸실', c: ['getApDemolExtngMgmRgstInfo', 'getApDmlExtgMgmRgstInfo', 'getApDemolExtngInfo'] },
+  hs: { base: 'hs', t: '주택인허가 기본개요', c: ['getHpBasisOulnInfo', 'getHsBasisOulnInfo', 'getHpBasisInfo'] }
+};
+const PMS_DAY = [[/^archPmsDay$|^pmsDay$|PmsDay$|^pmsnoDay$/i, '허가'], [/sbizAprvDay|bizAprvDay|prjAprvDay|AprvDay$/i, '사업승인'], [/^realStcnsDay$|^stcnsDay$/i, '착공'], [/stcnsSchedDay|SchedDay$/i, '착공예정'], [/useAprDay|useInspDay|useChkDay/i, '사용승인'], [/demol|extng|dml/i, '철거·멸실'], [/prsvExp|exstExp|ExpDay$|endDay$/i, '존치만료'], [/^crtnDay$|^lastUpdtDt$/i, null]];
+function pmsDays(x){ const out = []; Object.entries(x).forEach(([k, v]) => { v = String(v == null ? '' : v).trim(); if(!/^\d{8}$/.test(v) || !/(day|dt|de)$/i.test(k)) return; const hit = PMS_DAY.find(([re]) => re.test(k)); if(hit && hit[1] === null) return; out.push({ k, lbl: hit ? hit[1] : k, v }); }); return out; }
+function pmsItem(x, kind){
+  const d = pmsDays(x), get = l => (d.find(z => z.lbl === l) || {}).v;
+  const st = kind === 'demol' ? '철거·멸실' : kind === 'tmp' ? '가설건축물' : get('사용승인') ? '사용승인 완료' : get('착공') ? '공사 중 (착공, 사용승인 전)' : (get('허가') || get('사업승인')) ? '허가 — 착공 전' : '진행 상태 미확인';
+  return { st, days: d, gb: String(x.archGbCdNm || x.archGbCd || '').trim(), purps: String(x.mainPurpsCdNm || x.purpsCdNm || x.mainPurps || '').trim(), area: Number(x.totArea || x.totalArea) || 0, hh: Number(x.hhldCnt || x.totHhldCnt) || 0, name: String(x.bldNm || x.archNm || x.bizNm || '').trim() };
+}
+async function pmsCall(key, pp){
+  const o = PMS_OPS[key], memo = LS.get('pmsOp.' + key, '');
+  const cands = memo ? [memo].concat(o.c.filter(c => c !== memo)) : o.c;
+  let last = null;
+  for(const op of cands){
+    try{ const res = await bldApi(op, pp, 20000, PMS_BASE[o.base]); LS.set('pmsOp.' + key, op); return Object.assign(res, { op }); }
+    catch(e){ last = e; if(!e.notFound) break; }
+  }
+  const m = String(last && last.message || '');
+  throw Object.assign(new Error(/NOT_REGISTERED|등록되지 않은|SERVICE_KEY/i.test(m) ? '활용신청 승인·반영 전 (보통 1~2시간 뒤 됨)' : m), { kind: 'api' });
+}
+async function fetchPms(r){
+  const pp = pnuParams(r.pnu); r.pms = { list: [], err: {} };
+  for(const k of ['basis', 'tmp', 'demol', 'hs']){
+    try{ const res = await pmsCall(k, pp); res.items.forEach(x => r.pms.list.push(Object.assign(pmsItem(x, k), { kind: k }))); }
+    catch(e){ r.pms.err[k] = e.message; }
+  }
+  return r.pms;
+}
+function pmsFlag(r){
+  const L2 = (r.pms && r.pms.list) || []; if(!L2.length) return null;
+  if(L2.some(x => x.st.startsWith('공사 중'))) return ['공사 중(인허가)', 'warn'];
+  if(L2.some(x => x.kind === 'tmp')) return ['가설건축물', 'warn'];
+  if(L2.some(x => x.st.startsWith('허가'))) return ['허가 — 착공 전', 'warn'];
+  if(L2.some(x => x.kind === 'demol')) return ['철거·멸실 기록', 'warn'];
+  return null;
 }
 const NO_BLD_JIMOK = /^(도|구|천|제|유|철|수|도로|구거|하천|제방|유지|철도용지|수도용지)$/;
 function bldCacheGet(pnu){ if(!cfg.bldCache) return null; try{ const v = JSON.parse(localStorage.getItem('kgeopBld.' + pnu) || 'null'); if(v && Date.now() - v.t < 30 * 864e5) return v.b; }catch(e){} return null; }
@@ -3885,7 +3930,7 @@ function bldFlags(r){
   const yrs = bs.map(b => /^\d{4}/.test(b.useApr) ? new Date().getFullYear() - Number(b.useApr.slice(0, 4)) : null).filter(v => v != null);
   if(yrs.length && Math.max(...yrs) >= 30) f.push([`${Math.max(...yrs)}년 경과`, 'warn']);
   if(bs.some(b => /조적|블록|흙|목조/.test(b.strct))) f.push(['조적·목조', 'warn']);
-  if(!bs.length && ownBlds(r).length && r.bld) f.push(['대장 없음(무허가 의심)', 'red']);
+  if(!bs.length && ownBlds(r).length && r.bld){ const pf = pmsFlag(r); f.push(pf || ['대장 없음(무허가 의심)', 'red']); }
   if(!bs.length && !ownBlds(r).length && (r.buildings || []).some(b => b._other)) f.push([`걸친 건물은 ${[...new Set(r.buildings.filter(b => b._other).map(b => b._other))].join(', ')} 소속`, 'warn']);
   return f;
 }
@@ -4167,7 +4212,7 @@ async function showSingleParcel(ll){
   try{ r.buildings = (await bldMapFor(r, 15)).map(b => { const rel = bldRel(b, f), bp = bdPnu(b.properties); if(bp === r.pnu) return Object.assign({}, b.properties || {}, rel.ov >= 1 || rel.inside ? {} : { _addr: true }); if(rel.ov >= 1 || rel.inside) return Object.assign({}, b.properties || {}, bp ? { _other: pnuJibun(bp) } : {}); return null; }).filter(Boolean); }catch(e){ log('지도상 건물 확인 실패: ' + e.message); }
   if(seq !== singleSeq) return;
   r.loading = !!cfg.bldKey; showDetail(r);
-  if(cfg.bldKey){ try{ await fetchBld(r); }catch(e){} if(seq !== singleSeq) return; r.loading = false; showDetail(r); }
+  if(cfg.bldKey){ try{ await fetchBld(r); }catch(e){} if(seq !== singleSeq) return; if(r.bld && !r.bld.length && ownBlds(r).length){ try{ await fetchPms(r); }catch(e){} if(seq !== singleSeq) return; } r.loading = false; showDetail(r); }
   status(`선택한 필지: ${riJibun(r.addr, r.jibun)} ${r.jimok} · ${r.owner || '-'}`);
 }
 let edgeHintT = 0;
@@ -5988,11 +6033,22 @@ setBase($('#baseSel').value); $('#cadColor').value = cadColorNow(); applyCad(); 
 let diagLayer = L.layerGroup().addTo(map), diagSeq = 0, diagText = '';
 const v_ = x => String(x == null ? '' : x).trim();
 function hubBld(x){ return { jb: Number(x.bun) + (Number(x.ji) ? '-' + Number(x.ji) : ''), name: [v_(x.bldNm), v_(x.dongNm)].filter(Boolean).join(' '), main: v_(x.mainAtchGbCdNm), purps: v_(x.mainPurpsCdNm) + (v_(x.etcPurps) && v_(x.etcPurps) !== v_(x.mainPurpsCdNm) ? ` (${v_(x.etcPurps)})` : ''), area: Number(x.totArea) || 0, flr: Number(x.grndFlrCnt) || 0, ufl: Number(x.ugrndFlrCnt) || 0, apr: fmtDate(v_(x.useAprDay)), road: v_(x.newPlatPlc).replace(/^\S+\s+\S+\s+\S+\s+/, '') }; }
+async function pmsProbe(r){
+  // 응답 값 전체가 아니라 '칸 이름 = 예시 값'만 짧게 (날짜·용도·면적 칸 고르기용)
+  const pp = pnuParams(r.pnu), out = [`[인허가 칸 확인] ${shortAddr(r.addr)} ${jibunNo(r.jibun)}`];
+  for(const k of Object.keys(PMS_OPS)){
+    try{ const res = await pmsCall(k, pp); const x = res.items[0];
+      out.push(`${PMS_OPS[k].t} (${res.op}): ${res.total || res.items.length}건` + (x ? '\n  ' + Object.entries(x).filter(([, v]) => v != null && String(v).trim() !== '' && String(v).trim() !== '0').map(([kk, v]) => `${kk}=${String(v).trim().slice(0, 24)}`).join(', ') : ''));
+    }catch(e){ out.push(`${PMS_OPS[k].t}: 오류 ${e.message}`); }
+  }
+  return out.join('\n');
+}
 async function bldDiag(r){
   const seq = ++diagSeq, pp = pnuParams(r.pnu), el = fpanel('diagPanel', '🔬 건물 자료 비교', 620, [80, 110]);
   el.querySelector('[data-fx]').onclick = () => { el.style.display = 'none'; diagLayer.clearLayers(); diagSeq++; };
-  el.querySelector('.fbtn').innerHTML = '<button data-g="copy" title="결과를 글자로 복사">📋 결과 복사</button>';
+  el.querySelector('.fbtn').innerHTML = '<button data-g="copy" title="결과를 글자로 복사">📋 결과 복사</button>' + (cfg.bldKey ? '<button data-g="raw" title="인허가 응답의 칸 이름만 골라 복사 (처음 한 번, 칸 맞추기용)">🔧 인허가 칸 확인</button>' : '');
   el.querySelector('[data-g=copy]').onclick = async () => toast(await copyText(diagText) ? '비교 결과를 복사했습니다.' : '복사하지 못했습니다.', 3000);
+  { const b = el.querySelector('[data-g=raw]'); if(b) b.onclick = async () => { b.disabled = true; b.textContent = '확인 중…'; const t = await pmsProbe(r); b.disabled = false; b.textContent = '🔧 인허가 칸 확인'; toast(await copyText(t) ? '인허가 칸 정보를 복사했습니다. Claude에게 붙여 넣어 주세요.' : '복사하지 못했습니다.', 5000); }; }
   const S = { spbd: null, spbdErr: '', hub: {} }, me = pnuJibun(r.pnu), name = `${shortAddr(r.addr)} ${jibunNo(r.jibun)}`;
   const draw = () => {
     if(seq !== diagSeq) return;
@@ -6002,7 +6058,7 @@ async function bldDiag(r){
     const show = [...new Set(onP.concat(addrHere, near))], others = all.length - show.length;
     const H1 = S.hub.title, HB = S.hub.bun;
     const mine = ((H1 && H1.items) || []).map(hubBld), otherJ = ((HB && HB.items) || []).map(hubBld).filter(x => x.jb !== me);
-    const hubDone = !cfg.bldKey || ['title', 'recap', 'atch', 'bun'].every(k => S.hub[k] && (S.hub[k].items || S.hub[k].err));
+    const hubDone = !cfg.bldKey || (['title', 'recap', 'atch', 'bun'].every(k => S.hub[k] && (S.hub[k].items || S.hub[k].err)) && S.pms);
     const done = S.spbd != null && hubDone;
     // 판단
     const J = [];
@@ -6013,8 +6069,10 @@ async function bldDiag(r){
       if(away.length) J.push(`이 지번 주소의 건물 ${away.map(x => '#' + x.no).join(', ')}이(가) 지도에서는 필지 밖(${away.map(x => x.rel.dist != null ? x.rel.dist.toFixed(1) + 'm' : '').join(', ')})에 그려져 있습니다 → 지적선과 건물 도형이 어긋난 곳입니다.`);
       const mineMain = mine.filter(x => !/부속/.test(x.main));
       if(cfg.bldKey){
-        if(addrHere.length && !mine.length) J.push(`이 지번 주소의 건물이 있는데 건축물대장이 없습니다${otherJ.length ? ` (같은 본번 ${[...new Set(otherJ.map(x => x.jb))].join(', ')}에는 대장 있음)` : ''} → 미등재이거나 다른 지번으로 등록됐을 수 있습니다.`);
-        if(!addrHere.length && !onP.length && !mine.length) J.push('두 자료 모두 이 필지에 건물이 없습니다. 위성사진에 보이면 사진 촬영 뒤 변동이거나 자료에 없는 건물(미등재·가설건축물 등)일 수 있습니다.' + (near.length ? ` 바로 옆 건물(${near.map(x => '#' + x.no).join(', ')})이 지적선 어긋남으로 이 필지 위에 보일 수도 있습니다.` : ''));
+        const pf = S.pms && S.pms.list.length ? S.pms.list : null;
+        if(!mine.length && pf){ const g = pf.find(x => x.st.startsWith('공사 중')) || pf.find(x => x.kind === 'tmp') || pf.find(x => x.st.startsWith('허가')) || pf.find(x => x.kind === 'demol') || pf[0]; J.push(g.kind === 'demol' ? `철거·멸실 기록이 있습니다${g.days[0] ? ' (' + fmtDate(g.days[0].v) + ')' : ''} → 위성사진에 보이면 사진이 철거 전에 찍힌 것입니다.` : g.kind === 'tmp' ? '가설건축물 신고가 있습니다 → 건축물대장에 올라가지 않는 건물입니다.' : `인허가 기록: <b>${esc(g.st)}</b> → 사용승인 전이라 건축물대장이 아직 없습니다.`); }
+        if(addrHere.length && !mine.length && !pf) J.push(`이 지번 주소의 건물이 있는데 건축물대장이 없습니다${otherJ.length ? ` (같은 본번 ${[...new Set(otherJ.map(x => x.jb))].join(', ')}에는 대장 있음)` : ''} → 미등재이거나 다른 지번으로 등록됐을 수 있습니다.`);
+        if(!addrHere.length && !onP.length && !mine.length && !pf) J.push('두 자료 모두 이 필지에 건물이 없습니다. 위성사진에 보이면 사진 촬영 뒤 변동이거나 자료에 없는 건물(미등재·가설건축물 등)일 수 있습니다.' + (near.length ? ` 바로 옆 건물(${near.map(x => '#' + x.no).join(', ')})이 지적선 어긋남으로 이 필지 위에 보일 수도 있습니다.` : ''));
         if(mine.length && !addrHere.length && !onP.length) J.push('건축물대장은 있는데 지도 건물 자료에는 없습니다 → 도로명주소가 없는 건물이거나 지도 자료 갱신 전입니다.');
         if(!J.length) J.push(`이상 없음 — 지도 건물 ${addrHere.length}동, 대장 주건축물 ${mineMain.length}동${mine.length > mineMain.length ? ` (부속 ${mine.length - mineMain.length}동)` : ''}.`);
       } else J.push('⚙ 설정에 건축물대장 키가 없어 대장은 비교하지 못했습니다.');
@@ -6042,6 +6100,16 @@ async function bldDiag(r){
       if(otherJ.length){ const g = {}; otherJ.forEach(x => (g[x.jb] = g[x.jb] || []).push(x)); H.push(`<div style="margin-top:8px"><b>같은 본번의 다른 지번 대장</b><div class="small" style="line-height:1.6;padding-left:6px">${Object.entries(g).map(([jb, xs]) => `<b>${esc(jb)}</b> — ${xs.map(x => `${esc(x.purps)} ${fmtM2(x.area)}㎡ ${x.flr}층`).join(', ')}`).join('<br>')}</div></div>`); Object.entries(g).forEach(([jb, xs]) => T.push(`  같은 본번 ${jb}: ` + xs.map(x => `${x.purps} ${fmtM2(x.area)}㎡ ${x.flr}층`).join(', '))); }
       H.push(`<div class="small" style="color:#868e96;margin-top:6px">총괄표제부 ${cnt('recap')} · 부속지번 ${cnt('atch')} · 같은 본번 전체 ${cnt('bun')}</div>`);
       T.push(`총괄표제부 ${cnt('recap')} · 부속지번 ${cnt('atch')}`);
+      // 인허가
+      H.push('<div style="font-weight:700;margin:10px 0 3px">건축·주택 인허가 (이 지번)</div>');
+      const P = S.pms;
+      if(!P) H.push('<div class="small">조회 중…</div>');
+      else {
+        if(!P.list.length) H.push('<div class="small">기록 없음</div>');
+        else H.push(`<table><thead><tr><th>구분</th><th>상태</th><th>내용</th><th>날짜</th></tr></thead><tbody>${P.list.map(x => `<tr><td style="white-space:nowrap">${esc(PMS_OPS[x.kind].t)}</td><td><b style="color:${/공사|허가|가설/.test(x.st) ? '#e8590c' : x.kind === 'demol' ? '#c92a2a' : '#2b8a3e'}">${esc(x.st)}</b></td><td>${esc([x.gb, x.name, x.purps, x.area ? fmtM2(x.area) + '㎡' : '', x.hh ? x.hh + '세대' : ''].filter(Boolean).join(' · '))}</td><td class="small" style="white-space:nowrap">${x.days.map(d => `${esc(d.lbl)} ${esc(fmtDate(d.v))}`).join('<br>')}</td></tr>`).join('')}</tbody></table>`);
+        const ek = Object.keys(P.err); if(ek.length) H.push(`<div class="small" style="color:#adb5bd;margin-top:2px">${ek.map(k => `${esc(PMS_OPS[k].t)}: ${esc(P.err[k])}`).join('<br>')}</div>`);
+        T.push('인허가: ' + (P.list.length ? P.list.map(x => `${PMS_OPS[x.kind].t} ${x.st} ${[x.gb, x.purps, x.area ? fmtM2(x.area) + '㎡' : ''].filter(Boolean).join(' ')} ${x.days.map(d => d.lbl + ' ' + fmtDate(d.v)).join(', ')}`).join(' / ') : '기록 없음') + (ek.length ? ' | 오류: ' + ek.map(k => PMS_OPS[k].t + ' ' + P.err[k]).join(', ') : ''));
+      }
     }
     H.push('<div class="small" style="color:#adb5bd;margin-top:8px">지도: 주황 테두리 = 이 필지 · 빨강 = 이 필지 위 건물 · 보라 = 이 지번 주소인데 밖에 있는 건물 · 회색 = 옆 건물</div>');
     el.querySelector('.fb').innerHTML = H.join('');
@@ -6061,6 +6129,7 @@ async function bldDiag(r){
   })()];
   if(cfg.bldKey){
     const noJi = Object.assign({}, pp); delete noJi.ji;
+    jobs.push((async () => { const tmp = { pnu: r.pnu }; try{ S.pms = await fetchPms(tmp); }catch(e){ S.pms = { list: [], err: { basis: e.message } }; } r.pms = S.pms; draw(); })());
     [['title', 'getBrTitleInfo', pp], ['recap', 'getBrRecapTitleInfo', pp], ['atch', 'getBrAtchJibunInfo', pp], ['bun', 'getBrTitleInfo', noJi]].forEach(([k, op, prm]) => { const h = S.hub[k] = { op }; jobs.push((async () => { try{ const res = await bldApi(op, prm, 20000); h.items = res.items; h.total = res.total; }catch(e){ h.err = e.message; } draw(); })()); });
   }
   map.fitBounds(L.geoJSON(r.feature).getBounds(), { maxZoom: 20, padding: [120, 120] });
