@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v22-3</title>
+<title>노선 필지 조회기 v23</title>
 <style>/* required styles */
 
 .leaflet-pane,
@@ -757,6 +757,11 @@ body.popped aside #routePane{display:block!important}
 .rc-grid{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;margin:8px 0;font-size:12.5px}
 .rc-grid div:nth-child(odd){color:var(--muted)}
 .rc-acts{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.rc-acts2{margin-top:8px;border-top:1px solid #f1f3f5;padding-top:6px}
+.rc-g{display:flex;gap:8px;align-items:center;padding:3px 0} .rc-gt{flex:none;width:58px;font-size:11.5px;font-weight:700;color:#868e96}
+.rc-gb{display:flex;gap:5px;flex-wrap:wrap} .rc-gb button{font-size:12px;padding:3px 9px}
+.rc-del{border:none;background:none;cursor:pointer;font-size:13px;padding:1px 5px;color:#adb5bd;border-radius:5px;flex:none} .rc-del:hover{background:#fff5f5;color:#c92a2a} .rc-del.arm{color:#fff;background:#e03131;font-size:11px;font-weight:700}
+#rpName{flex:1;min-width:140px}
 .rc-acts button{font-size:12px;padding:3px 9px}
 .rc-vtx{margin-top:8px;font-size:12px}
 .rc-vtx summary{cursor:pointer;color:#1f6feb}
@@ -788,7 +793,24 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .rv{display:flex;gap:3px}
 .rv button{padding:2px 6px;font-size:12px}
 .small{font-size:11px;color:var(--muted)}
-#detail{border-top:1px solid var(--line);padding:8px 12px;max-height:45%;overflow:auto;display:none}
+#detail{border-top:1px solid var(--line);padding:8px 12px;height:46%;max-height:60%;overflow:hidden;display:none;flex-direction:column;gap:6px;flex:none}
+#detail .dh{flex:none;padding-right:26px}
+#detail .dtitle{font-size:14px;display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+#detail .dchip{font-size:11.5px;padding:1px 7px;border-radius:9px;background:#f1f3f5;color:#495057;font-weight:600}
+#detail .dchip.own.private{background:#fff4e6;color:#d9480f} #detail .dchip.own.corp{background:#fff9db;color:#a07800} #detail .dchip.own.public{background:#e7f5ff;color:#1864ab}
+#detail .dsub{font-size:12px;color:#495057;margin-top:2px}
+#detail .dlinks{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px} #detail .dlinks button{font-size:12px;padding:2px 9px}
+#detail .dwin{flex:1;min-height:0;display:flex;flex-direction:column;border:1px solid #dee2e6;border-radius:8px;overflow:hidden;background:#fff}
+#detail .dtabs{display:flex;background:#f8f9fa;border-bottom:1px solid #dee2e6;flex:none}
+#detail .dtabs button{border:none;border-bottom:2px solid transparent;border-radius:0;background:none;padding:6px 12px;font-size:12.5px;font-weight:700;color:#868e96;position:relative}
+#detail .dtabs button.on{color:#1f6feb;border-bottom-color:#1f6feb;background:#fff}
+#detail .dtabs button span{font-weight:400;font-size:11px;color:#868e96}
+#detail .dtabs .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#7048e8;vertical-align:middle}
+#detail .dpane{flex:1;overflow:auto;padding:6px 8px}
+#detail table.dt{width:100%;border-collapse:collapse;font-size:12.5px} #detail table.dt th{position:sticky;top:-6px;background:#fff;text-align:left;color:#868e96;font-weight:600;border-bottom:1px solid #dee2e6;padding:4px 6px;white-space:nowrap} #detail table.dt td{padding:4px 6px;border-bottom:1px solid #f1f3f5}
+#detail table.dt tr.road-row td{background:#f3f0ff;font-weight:600}
+#detail table.dkv{width:100%;border-collapse:collapse;font-size:12.5px} #detail table.dkv th{width:92px;text-align:left;color:#868e96;font-weight:600;padding:4px 6px;border-bottom:1px solid #f1f3f5;vertical-align:top} #detail table.dkv td{padding:4px 6px;border-bottom:1px solid #f1f3f5}
+#detail .dempty{color:#868e96;font-size:12px;padding:8px 2px}
 #detail h3{margin:0 0 6px;font-size:14px}
 #detail dl{display:grid;grid-template-columns:96px 1fr;gap:2px 8px;margin:0}
 #detail dt{color:var(--muted)}
@@ -886,6 +908,7 @@ details.dsec>summary::before{content:'▸ ';color:var(--muted)}details.dsec[open
 #rvF .cbar{display:flex;align-items:center;gap:4px;padding:6px 0 0;cursor:move;white-space:nowrap;font-size:12.5px}
 #rvF .cbar .grip{color:#adb5bd;margin-right:2px} #rvF .cbar b{margin-right:4px}
 #rvF .cbar button{padding:2px 8px;font-size:13px;cursor:pointer} #rvF .cbar .cinfo{color:var(--muted);margin-right:6px}
+#rvF .cbar.mini{gap:6px} #rvF.ext:has(.cbar.mini){padding:0 6px 4px!important}
 #rvF .cmore{padding:5px 0 0;font-size:12px;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 #rvF .ext-note{margin:6px 0 2px;padding:6px 8px;background:#f3f0ff;border-radius:6px;font-size:12px;line-height:1.5} #rvF .ext-note button{font-size:11px;padding:1px 7px;margin-left:4px}
 #rvView{width:100%;height:300px}
@@ -1022,7 +1045,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v22-3</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v23</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button>
@@ -1071,10 +1094,6 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <button id="btnUndo" disabled>되돌리기</button>
     </div>
     <div class="sep"></div>
-    <span class="grp" title="배관이 지나는 필지를 조회합니다. 지적도가 실제와 조금 어긋날 수 있어, 선 양옆 이 거리 안의 필지도 '경계 근접'으로 함께 보여 줍니다. 0이면 선이 지나는 필지만.">
-      <span class="lbl">조회: 배관 선 양옆</span><input id="nearM" type="number" min="0" max="20" step="0.5" value="1" style="width:58px"><span>m</span>
-    </span>
-    <div class="sep"></div>
     <span class="grp full-only"><button id="btnReview" title="배관이 지나는 곳이 실제 도로인지(건물·지적 밀림) 위성사진과 비교해 확인합니다. 조회 범위와는 상관없습니다.">🛣 도로 면 확인</button></span>
     <div class="sep"></div>
     <div class="grp">
@@ -1095,15 +1114,12 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
   <datalist id="dlPres"><option value="저압"><option value="중압"></datalist>
   <div id="review">
     <div class="rh" title="끌어서 옮기기"><b>🛣 도로 면 확인</b> <span id="reviewCount"></span><button class="rx" id="reviewMin" title="접기/펴기 (머리글 더블클릭: 처음 위치로)">▁</button><button class="rx" id="reviewClose" style="margin-left:0" title="닫기 (위쪽 🛣 도로 면 확인으로 다시 열기)">✕</button></div>
-    <div class="rv-intro">배관이 지나는 곳이 <b>실제 도로</b>인지 판단하는 도구입니다(건물 걸림·지적 밀림·↪ 회피 가능). <b>조회 범위와는 상관없습니다.</b></div>
-    <div class="rv-tools">
-      <span id="widthGrp" class="grp" title="도로 면을 처음 그릴 때 쓰는 도로 전체 폭(선 양옆에 절반씩). 도로경계 자료가 있거나 직접 고친 곳은 그 값을 씁니다."><span class="lbl" id="widthLbl">기본 도로 폭</span><input id="width" type="number" min="0" max="100" step="0.5" value="6"><span>m</span></span>
-      <button id="btnEdge" title="도로 양쪽 가장자리 점을 끌어 위성사진과 맞춥니다 (파랑=왼쪽, 주황=오른쪽)">✋ 가장자리 끌기</button>
-      <button id="btnMeasure" title="위성지도에서 도로 양쪽 끝을 클릭해 그 지점의 도로 면만 고칩니다 (구간 전체는 ✏ 구간 편집에서)">📏 지점 폭 재기</button>
-      <button id="btnStepW" title="시점부터 종점까지 꼭짓점마다 차례로 도로폭을 재거나 입력합니다">꼭짓점별 폭</button>
-      <button id="btnEditor" title="구간을 골라 폭·면적을 보고 고치는 창 (선을 눌러도 열림)">✏ 구간 편집</button>
+    <div class="rv-tools" title="실제 도로인지(건물 걸림·지적 밀림) 위성사진과 비교해 확인합니다">
+      <span id="widthGrp" class="grp" title="도로 면을 처음 그릴 때 쓰는 도로 전체 폭(선 양옆에 절반씩)"><span class="lbl" id="widthLbl">기본 폭</span><input id="width" type="number" min="0" max="100" step="0.5" value="6"><span>m</span></span>
+      <button id="btnEditor" title="구간마다 폭을 넣거나 📏로 재기">✏ 구간 폭</button>
+      <button id="btnEdge" title="도로 양쪽 가장자리 점을 끌어 위성사진과 맞춥니다 (파랑=왼쪽, 주황=오른쪽)">✋ 가장자리</button>
+      <button id="btnMeasure" style="display:none">📏</button><button id="btnStepW" style="display:none">꼭짓점별 폭</button>
     </div>
-    <label class="rv-ref"><input type="checkbox" id="chkRef"> 도로 면에 걸친 양옆 필지도 목록에 '도로 면 참고'로 표시</label>
     <div id="reviewBody"></div>
   </div>
   <button id="dockBtn" title="새 창으로 뺀 필지 목록을 다시 화면 안으로">↙ 목록을 화면 안으로</button>
@@ -1127,7 +1143,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
   <div id="statusBar"><span id="status">선을 그린 뒤 [필지 조회]를 누르세요.</span></div>
   <div id="asideTabs"><button data-tab="route" title="그린 노선 목록 · 노선 정보 · 수정">🧭 노선 <span id="tabRouteN"></span></button><button data-tab="parcel" class="on" title="조회한 필지 목록과 필지 상세">📋 필지 <span id="tabParcelN"></span></button></div>
   <div id="routePane">
-    <div class="rp-head"><button id="rpNew" class="primary">✏ 새 노선 그리기</button><button id="rpImport" title="GeoJSON·KML·DXF·CSV/엑셀 좌표">📂 파일에서 불러오기</button></div>
+    <div class="rp-head"><input id="rpName" type="text" placeholder="새 노선 이름 (미리 정하기, 선택)" title="이름을 적고 새 노선을 그리면 그 이름으로 저장됩니다"><button id="rpNew" class="primary">✏ 새 노선 그리기</button><button id="rpImport" title="GeoJSON·KML·DXF·CSV/엑셀 좌표">📂 불러오기</button></div>
     <div id="routeList"></div>
   </div>
   <div id="compare"></div>
@@ -1139,6 +1155,9 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <label><input type="checkbox" id="fBuilding"> 건물 있는 필지만</label>
       <label><input type="checkbox" id="fRoad"> 도시계획도로 내만</label>
       <label><input type="checkbox" id="fNoRoad"> 도시계획도로 외만</label>
+      <hr style="border:none;border-top:1px solid #eee;margin:4px 0">
+      <label title="지적도가 실제와 조금 어긋날 때를 대비해, 선이 지나지는 않지만 1m 안에 있는 필지도 '경계 근접'으로 보여 줍니다"><input type="checkbox" id="chkNear"> 선 1m 안 필지도 보기 (경계 근접)</label>
+      <label title="도로 면 확인에서 잡은 도로 면에 걸친 양옆 필지도 '도로 면 참고'로 보여 줍니다"><input type="checkbox" id="chkRef"> 도로 면에 걸친 필지도 보기</label>
     </div></span>
     <input id="fText" type="text" placeholder="지번·지목 찾기" style="width:120px">
     <span class="side-tools"><button id="btnPop" title="필지 목록을 별도 창으로 띄우고 지도를 넓게 씁니다">↗ 새 창</button><button id="btnCollapse" title="목록을 접어 지도를 넓게 봅니다">⇥ 접기</button></span>
@@ -1232,22 +1251,23 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
   <div class="help-head"><h2>사용 방법</h2><button id="helpX" class="help-x" title="닫기">✕</button></div>
   <div class="help-body">
     <div class="help-concept"><b>두 가지만 구분하면 됩니다</b>
-      <div><span>조회</span> 배관 선이 지나는 필지 (+ 선 양옆 몇 m) → 표·집계·엑셀</div>
+      <div><span>조회</span> 배관 선이 지나는 필지 → 표·집계·엑셀</div>
       <div><span>도로 면 확인</span> 그 자리가 실제 도로인지 판단 (선택) → 건물·지적 밀림·회피 가능 표시</div>
     </div>
     <ol class="help-steps">
       <li><b>위치 찾기</b> — 위쪽 검색창에 지번·주소·장소를 입력합니다. 지번을 다 치지 않아도 비슷한 지번 목록이 뜨니 골라 주세요.</li>
       <li><b>필지 정보 바로 보기</b> — 지도에서 필지를 누르면 조회하지 않아도 지목·소유구분·변동일자·토지이용계획(도시계획도로 저촉)·건축물대장이 오른쪽에 나옵니다. 고른 필지는 <span class="help-sel">노란 테두리</span>로 표시됩니다.</li>
       <li><b>노선 그리기</b> — <b>✏ 선</b>을 누르고 위성사진을 보며 <b>배관이 지나갈 위치</b>(보통 도로 가운데)를 따라 클릭합니다. 더블클릭(또는 Enter)으로 끝내고, Backspace는 점 하나 되돌리기, Esc는 취소입니다. 그리는 동안 커서 옆에 <b>총 길이</b>가 보입니다.<br>
-        그린 노선은 오른쪽 <b>🧭 노선</b> 탭에 쌓입니다. 목록이나 지도의 회색 점선 노선을 누르면 다시 열려 고칠 수 있고, 연장·꼭짓점·시점/종점·사유지 같은 <b>노선 정보</b>와 이전 조회 결과도 그대로 보입니다.<br>
+        그린 노선은 오른쪽 <b>🧭 노선</b> 탭에 쌓입니다. 그리기 전에 노선 탭 위쪽 칸에 <b>이름을 미리 적어 두면</b> 그 이름으로 저장되고, 노선 이름 옆 🗑 를 두 번 누르면 지워집니다. 목록이나 지도의 회색 점선 노선을 누르면 다시 열려 고칠 수 있고, 연장·꼭짓점·시점/종점·사유지 같은 <b>노선 정보</b>와 이전 조회 결과도 그대로 보입니다.<br>
         <b>✏ 노선 편집 창</b>: 그린 <b>선</b>이나 꼭짓점 이름표를 누르거나, 도로 면 위에서 <b>우클릭 → 이 구간 편집 / 노선 전체 편집</b>을 고르면 열립니다. 도로 폭은 <b>구간마다</b> 넣습니다. 숫자를 바로 고치거나 <b>📏</b>를 누르고 위성사진에서 도로 한쪽 끝 → 반대쪽 끝을 클릭하면 잰 폭이 그 구간(또는 노선 전체)에 들어갑니다. 구간별 길이·도로 면 면적·사유지도 여기서 봅니다. <b>🔧 배관 정보</b> 탭에서는 구간마다 재질(PE·PLP)·관경(mm)·압력(저압·중압)을 적고, 지도 이름표와 엑셀 '구간별 배관' 시트로 볼 수 있습니다.<br>
         <b>🎥 로드뷰 따라가기</b>: 노선 카드·편집 창의 버튼이나 노선 위 우클릭 → '여기서부터 로드뷰 따라가기'. 노선을 10~50m 간격으로 나눠 ◀ ▶(또는 키보드 ← →)·자동 넘김으로 차례로 봅니다. ⚙ 설정에 <b>카카오 JavaScript 키</b>를 넣고 이 프로그램을 <b>등록한 웹 주소</b>로 열면 로드뷰가 이 화면 안에서 깜빡임 없이 넘어가고 노선 진행 방향을 바라봅니다. 로드뷰는 기본으로 <b>별도 창</b>에 크게 열리고, 지도 쪽에는 한 줄짜리 작은 조작 막대만 남습니다(끌어서 옮길 수 있음). 넘기기·자동은 별도 창에서도 됩니다(← →, ⏵). 화면 안에서 보고 싶으면 <b>↙</b>를 누르세요(다음부터도 화면 안에서 열림, <b>↗</b>로 다시 별도 창). 화면 안 로드뷰는 머리글의 <b>▁ 최소화</b> · <b>⛶ 최대화</b>(머리글 더블클릭도 가능)로 크기를 바꿉니다. 키가 없거나 파일로 열면 카카오맵 새 창(링크)으로 열립니다(팝업 허용 필요). 창은 머리를 끌어 옮기고 ⤢ 로 넓히고 ▁ 로 접습니다.</li>
-      <li><b>필지 조회</b> — <b>필지 조회</b>를 누르면 <b>배관 선이 지나는 필지</b>를 불러옵니다. 위쪽 <b>[조회: 배관 선 양옆 1 m]</b>는 지적도가 실제와 조금 어긋날 때를 대비해, 선에서 그 거리 안의 필지도 <span class="tier t-near">경계 근접</span>으로 함께 보여 주는 값입니다. 0으로 하면 선이 지나는 필지만 나옵니다.</li>
+      <li><b>필지 조회</b> — <b>필지 조회</b>를 누르면 <b>배관 선이 지나는 필지</b>를 불러옵니다. 선이 닿기만 하고 지나지 않는 필지는 빠집니다. 지적도가 실제와 조금 어긋나는 곳이 걱정되면 필지 목록의 <b>[필터 ▾] → 선 1m 안 필지도 보기</b>를 켜면 <span class="tier t-near">경계 근접</span> 필지도 함께 나옵니다.<br>
+        필지를 누르면 아래에 상세가 열리고 <b>토지 · 소유자 · 건물 · 토지이용계획</b> 탭에서 필요한 표만 골라 봅니다(마지막에 본 탭을 기억). 상세 위 경계선을 끌어 위·아래 크기를 바꿀 수 있습니다.</li>
       <li><b>(선택) 🛣 도로 면 확인</b> — 배관이 지나는 곳이 <b>실제 도로</b>인지 위성사진과 비교하는 도구입니다. <b>어떤 필지를 조회할지와는 상관없습니다.</b><br>
-        선을 그리면 기본 도로 폭으로 도로 양쪽 가장자리(도로 면)가 그려지고, 위성사진과 다를 수 있는 곳이 목록에 뜹니다. 목록의 항목을 누르면(또는 ◀ 이전 / 다음 ▶) 그 위치로 이동합니다. 여러 곳을 한 번에 처리하려면 <b>✓ 일괄 확인 ▾</b>(남은 곳 모두 · 종류별 · 지금 보는 곳 주변 100m)을 쓰고, 잘못 누르면 바로 [되돌리기]할 수 있습니다 → 다르면 <b>✋ 가장자리 끌기</b>나 <b>📏 폭 재기</b> → [확인]을 누르면 다음 항목으로 넘어갑니다.<br>
+        선을 그리면 기본 도로 폭으로 도로 양쪽 가장자리(도로 면)가 그려지고, 위성사진과 다를 수 있는 곳이 목록에 뜹니다. 목록의 항목을 누르면(또는 ◀ 이전 / 다음 ▶) 그 위치로 이동합니다. 여러 곳을 한 번에 처리하려면 <b>✓ 일괄 확인 ▾</b>(남은 곳 모두 · 종류별 · 지금 보는 곳 주변 100m)을 쓰고, 잘못 누르면 바로 [되돌리기]할 수 있습니다 → 다르면 <b>✏ 구간 폭</b>(구간마다 폭 입력·📏 재기)이나 <b>✋ 가장자리</b>(점 끌기)로 고치고 → [확인]을 누르면 다음 항목으로 넘어갑니다.<br>
         <b>📏 폭 재기</b>는 도로 한쪽 끝 → 반대쪽 끝을 클릭하며 여러 곳을 계속 잴 수 있고, Esc나 [끝내기]로 마칩니다(재는 동안 필지는 눌리지 않고 흐리게 보입니다). 이 창과 폭 재기 안내창은 머리를 끌어 원하는 곳으로 옮길 수 있고, ▁ 로 접을 수 있습니다.<br>
         이걸 해 두면 필지마다 <b>도로 면에 건물</b>, <b>지적 밀림 의심</b>, <b>↪ 회피 가능</b>(도로 안에서 옮기면 국·공유지로 피할 수 있는 사유지)이 표시됩니다.</li>
-      <li><b>살펴보기·바로가기</b> — 표의 행을 누르면 지도에서 강조되고 아래에 상세가 열립니다. 같은 필지를 다시 누르거나 <b>✕ 선택 해제</b>·Esc로 강조를 지우고, 범례의 <b>필지 색 표시</b>를 끄면 선만 보입니다. 상세의 각 항목은 제목을 눌러 접고 펼 수 있습니다. <b>N·K·이음</b> 버튼이나 지도 <b>우클릭</b>으로 네이버·카카오 로드뷰, 토지이음, KGEOP(지번 복사 후 열기)을 엽니다.</li>
+      <li><b>살펴보기·바로가기</b> — 표의 행을 누르면 지도에서 강조되고 아래에 상세가 열립니다. 같은 필지를 다시 누르거나 <b>✕ 선택 해제</b>·Esc로 강조를 지우고, 범례의 <b>필지 색 표시</b>를 끄면 선만 보입니다. 상세는 토지·소유자·건물·토지이용계획 탭으로 나뉩니다. <b>N·K·이음</b> 버튼이나 지도 <b>우클릭</b>으로 네이버·카카오 로드뷰, 토지이음, KGEOP(지번 복사 후 열기)을 엽니다.</li>
       <li><b>보고서</b> — <b>📊 엑셀 보고서</b>로 요약(시점·종점, 총 연장, 사유지 목록), 필지 세부내용, 지도 이미지를 저장합니다.</li>
     </ol>
     <div class="help-tips"><b>알아 두면 좋은 것</b>
@@ -1940,10 +1960,12 @@ function renderReview(){
   const srcTxt = Object.entries(srcCount).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${Math.round(v / stations.length * 100)}%`).join(' · ');
   const rb = document.getElementById('btnReview'); if(rb){ rb.textContent = todo ? `🛣 도로 면 확인 (${todo})` : '🛣 도로 면 확인 ✓'; rb.classList.toggle('pulse', !!todo); }
   cntEl.innerHTML = issues.length ? (todo ? `<span style="color:#c92a2a">확인 필요 ${todo}곳</span> / 전체 ${issues.length}곳` : '<span style="color:#2b8a3e">모두 확인함 ✓</span>') : '<span style="color:#2b8a3e">확인 필요한 곳 없음 ✓</span>';
-  body.innerHTML = `<div class="small" style="margin-bottom:4px">초안 출처: ${esc(srcTxt)}</div>` +
+  box.querySelector('.rh').title = `끌어서 옮기기 · 초안 출처: ${srcTxt}`;
+  body.innerHTML = '' +
     (issues.length ? `<div class="rv-nav"><button data-nav="-1">◀ 이전</button><button data-nav="1">다음 ▶</button>
       <span class="bulk"><button id="bulkBtn" class="${todo ? 'primary' : ''}" title="여러 곳을 한 번에 확인 처리">✓ 일괄 확인 ▾</button><div id="bulkMenu">${bulkMenuHtml()}</div></span>
-      <span class="small" style="flex-basis:100%">항목을 누르면 지도가 그 위치로 이동합니다</span></div>` : '') +
+      </div>` : '') +
+    (issues.length ? '' : '<div class="small" style="color:#2b8a3e;padding:4px 0">위성사진과 다를 만한 곳이 없습니다.</div>') +
     issues.map((it, k) => `<div class="ri${it.reviewed ? ' done' : ''}${k === curIssue ? ' cur' : ''}" data-row="${k}" title="눌러서 이 위치로 이동"><span class="ty ${it.type}">${ISSUE_LABEL[it.type]}</span><span class="ds">${esc(issueText(it))}</span>
       <button data-go="${k}">보기</button>${it.reviewed ? '<button data-un="' + k + '">✓ 확인함</button>' : '<button data-ok="' + k + '" class="primary">확인</button>'}</div>`).join('');
   { const was = box.style.display; box.style.display = reviewOpen ? 'block' : 'none'; if(reviewOpen && was !== 'block' && box._restorePos) box._restorePos(); }
@@ -3018,14 +3040,19 @@ function renderRvF(){
     return;
   }
   const p = rvF.list[rvF.i], n = rvF.list.length, sg = segList()[p.k];
-  if(rvF.embed && rvExtOn){
+  if(rvF.embed && rvExtOn && rvF.mini){
+    ctl.innerHTML = `<div class="cbar mini" title="끌어서 옮기기 · 눌러서 펼치기"><span class="grip">⠿</span><b>🎥 ${rvF.i + 1}/${n}</b><button data-r2="unmini" title="펼치기">▢</button></div>`;
+    dragPanel(box, ctl.querySelector('.cbar'), 'rvf');
+    ctl.querySelector('[data-r2=unmini]').onclick = () => { rvF.mini = false; renderRvF(); };
+  } else if(rvF.embed && rvExtOn){
     // 별도 창으로 볼 때: 지도를 가리지 않게 한 줄 막대만 (자세한 조작은 별도 창에도 있음)
     ctl.innerHTML = `<div class="cbar" title="끌어서 옮기기"><span class="grip">⠿</span><b>🎥 ${rvF.i + 1}/${n}</b><span class="cinfo">${fmtLen(p.s)} · 구간 ${p.k + 1}</span>
       <button data-r="prev" title="이전 (←)">◀</button><button data-r="play" class="${rvF.play ? '' : 'primary'}" title="자동 넘김">${rvF.play ? '⏸' : '⏵'}</button><button data-r="next" class="primary" title="다음 (→)">▶</button>
-      <button data-r2="more" title="간격·자동 시간 설정">⋯</button><button data-x="dock" title="로드뷰를 이 창 안에서 보기">↙</button><button data-r2="close" title="닫기">✕</button></div>
+      <button data-r2="more" title="간격·자동 시간 설정">⋯</button><button data-r2="mini" title="최소화 (작은 표시만)">▁</button><button data-x="dock" title="로드뷰를 이 창 안에서 보기">↙</button><button data-r2="close" title="닫기">✕</button></div>
       ${rvF.more ? `<div class="cmore">간격 <select data-o="step">${[10, 20, 30, 50].map(v => `<option value="${v}"${v === rvF.step ? ' selected' : ''}>${v}m</option>`).join('')}</select> 자동 <select data-o="sec">${[3, 5, 8, 12].map(v => `<option value="${v}"${v === rvF.sec ? ' selected' : ''}>${v}초</option>`).join('')}</select> <span class="small" style="color:var(--muted)">별도 창에서도 ← → · ⏵ 로 조작</span></div>` : ''}`;
     dragPanel(box, ctl.querySelector('.cbar'), 'rvf');
     ctl.querySelector('[data-r2=more]').onclick = () => { rvF.more = !rvF.more; renderRvF(); };
+    ctl.querySelector('[data-r2=mini]').onclick = () => { rvF.mini = true; renderRvF(); };
     ctl.querySelector('[data-r2=close]').onclick = () => stopRvFollow();
   } else {
   box.querySelector('#rvTitle').textContent = '🎥 로드뷰 따라가기';
@@ -3240,7 +3267,7 @@ function renderCompare(){
 /* ---------------- 조회 ---------------- */
 let results = []; // 조회 범위 안의 필지 (화면·집계·엑셀) {pnu, jibun, addr, jimok, owner, ownerClass, share, area, ...}
 let allResults = []; // 조회한 전체 필지 (도로 면 참고 필지 포함) — tier: pass(선 통과) | near(선 ±1m) | ref(도로 면만)
-let nearM = Math.max(0, Number(LS.get('nearM', '1'))); if(!isFinite(nearM)) nearM = 1;
+let nearM = LS.get('nearOn', '0') === '1' ? 1 : 0; // 기본: 선이 지나는 필지만
 let showRef = LS.get('showRef', '0') === '1', lastFetchR = 0;
 const TIER_LBL = { pass: '배관 통과', near: '경계 근접', ref: '도로 면 참고' };
 function tierOf(r){ return r.cross > 0.01 ? 'pass' : (nearM > 0 && r.dist <= nearM + 1e-6) ? 'near' : (r.onSurface ? 'ref' : 'none'); }
@@ -3253,7 +3280,7 @@ function applyScope(){
   results = allResults.filter(inScope).sort((a, b) => a.along - b.along);
   results.forEach((r, i) => r.no = i + 1);
 }
-function scopeLabel(){ return (nearM > 0 ? `배관 선 + 양옆 ${nearM}m` : '배관 선이 지나는 필지만') + (showRef ? ' + 도로 면 참고' : ''); }
+function scopeLabel(){ return '배관 선이 지나는 필지' + (nearM > 0 ? ' + 선 1m 안(경계 근접)' : '') + (showRef ? ' + 도로 면 참고' : ''); }
 async function refreshScope(){
   if(!allResults.length) return;
   if(nearM + 0.5 > lastFetchR){ status(`조회 범위(양옆 ${nearM}m)가 넓어져 다시 조회합니다…`); runQuery(); return; }
@@ -3356,7 +3383,7 @@ async function runQuery(){
   setTab('parcel');
   const lineMode = isLine();
   const line = lineMode ? toLine() : null;
-  const width = lineMode ? Math.max(maxHalfW(), nearM + 1) : 0; // 경계 가져올 범위: 도로 면과 '양옆 Xm' 중 넓은 쪽
+  const width = lineMode ? Math.max(maxHalfW(), 2) : 0; // 경계 가져올 범위: 도로 면과 '양옆 Xm' 중 넓은 쪽
   if(lineMode) lastFetchR = width;
   // 판별 기준 영역: 선은 도로 면(구간별 도로폭), 폭 0이면 선 자체 / 도형은 도형 내부
   let area = lineMode ? corridorGeom() : shapeGeom;
@@ -4018,7 +4045,7 @@ function closeDetail(){
   selected = null; $$('#tbl tbody tr.sel').forEach(tr => tr.classList.remove('sel'));
   highlightParcel(null); singlePnu = null; singleSeq++;
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && !drawing && !measuring && $('#detail') && $('#detail').style.display === 'block' && !document.querySelector('dialog[open]')) closeDetail(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !drawing && !measuring && $('#detail') && ['block','flex'].includes($('#detail').style.display) && !document.querySelector('dialog[open]')) closeDetail(); });
 function select(r, fly){
   singlePnu = null;
   if(selected){ const p = results.find(x => x.pnu === selected); if(p && p.layer) p.layer.setStyle(styleFor(p, false)); }
@@ -4035,34 +4062,50 @@ function select(r, fly){
 function showDetail(r){
   if(curTab !== 'parcel' && !document.body.classList.contains('popped')) setTab('parcel');
   const d = $('#detail');
-  const T = (head, rows) => rows.length ? `<table><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : '<div class="small">자료 없음</div>';
-  const owners = (r.ownerRows || []).map(o => [o.se + (o.nation ? ` (${o.nation})` : ''), '***', fmtDate(o.date), o.cause, o.share, o.dong].slice(0, r.ownerRows.some(x => x.dong) ? 6 : 5));
-  const ownHead = ['소유구분', '소유자', '변동일자', '변동사유', '공유인수'].concat((r.ownerRows || []).some(x => x.dong) ? ['동·층·호'] : []);
-  const plans = (r.landUsePlan || []).map(x => [x.name, x.cnflc]);
-  d.innerHTML = `<h3>${r.single ? '선택한 필지 · ' : r.no + '. '}${esc(r.addr || r.jibun)}</h3>
-    ${r.loading ? '<div class="small" style="color:#1f6feb">정보 불러오는 중…</div>' : ''}
-    <div class="small">PNU ${esc(r.pnu)}</div>
-    ${r.single ? '' : `<div class="dmetric">${isLine() ? `${tierBadge(r)} 노선 통과 <b>${r.cross > 0.01 ? r.cross.toFixed(1) + 'm' : '-'}</b>${hasCorridor() ? ` · 도로 면 편입 ${r.inArea ? r.inArea.toFixed(1) : 0}㎡` : ''}` : `도형 안 면적 <b>${r.inArea ? Math.round(r.inArea).toLocaleString() + '㎡' : '-'}</b>`}${r.parcelArea && r.inArea ? ` (${Math.min(100, Math.round(r.inArea / r.parcelArea * 100))}%)` : ''}${r.roadSpatial ? ' · 지도상 도시계획도로와 겹침' : ''}${r.buildings.length ? ' · 건물 ' + esc(bldText(r)) : ''}${r.avoid ? `<div class="avoid">↪ ${esc(avoidText(r))}</div>` : ''}</div>`}
-    <div class="dtools"><button data-sec="open">모두 펼치기</button><button data-sec="close">모두 접기</button></div>
-    ${pipeNotes(r).filter(x => !/^↪/.test(x)).length ? `<div class="dnote">확인할 점: ${esc(pipeNotes(r).filter(x => !/^↪/.test(x)).join(' · '))}</div>` : ''}
-    ${SEC('land', '토지정보')}${T(['지목', '면적(㎡)', '용도지역', '이용상황', '공시지가(원/㎡)'], [[r.jimok, r.area ? Number(r.area).toLocaleString(undefined,{maximumFractionDigits:2}) : '', r.useZone, r.landUse, r.jiga ? Number(r.jiga).toLocaleString() : '']])}
-</details>
-    ${SEC('own', '소유자정보' + (r.org ? ` <span class="small">· ${esc(r.org)}</span>` : ''))}${r.ownerFail ? '<div class="small">조회 실패 — [누락 재조회]</div>' : T(ownHead, owners)}</details>
-    ${cfg.bldKey ? `${SEC('bld', '건축물대장 ' + bldFlags(r).map(([t, c]) => `<span class="flag ${c}">${esc(t)}</span>`).join(''))}` + (r.bldFail ? `<div class="small">조회 실패: ${esc(r.bldErr || '')}</div>` : T(['건물명·동', '주/부속', '주용도', '구조', '층수', '연면적(㎡)', '사용승인일', '세대·가구·호', '구분'], (r.bld || []).map(b => [b.name || '-', b.main, b.purps, b.strct, `지상 ${b.grnd} / 지하 ${b.ugrnd}`, b.totArea ? b.totArea.toLocaleString() : '', fmtDate(b.useApr), [b.hhld, b.fmly, b.ho].join('·'), b.kind]))) + '</details>' : ''}
-    ${SEC('plan', '토지이용계획 ' + (r.roadPlan ? '<span class="road-in">· 도시계획도로 저촉</span>' : ''))}${r.planFail ? '<div class="small">조회 실패 — [누락 재조회]</div>' : T(['지역·지구·시설', '저촉여부'], plans)}</details>
-    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
-      <button data-d="naver" class="primary">네이버 로드뷰</button><button data-d="kakao">카카오 로드뷰</button><button data-d="eum" style="color:#0b7285;border-color:#99e9f2">토지이음에서 보기</button><button data-d="kgeop">KGEOP에서 보기</button>
+  const T = (head, rows, cls = '') => rows.length ? `<table class="dt ${cls}"><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr${row._cls ? ` class="${row._cls}"` : ''}>${row.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : '<div class="dempty">자료 없음</div>';
+  const KV = pairs => `<table class="dkv"><tbody>${pairs.filter(([, v]) => v !== undefined).map(([k, v, raw]) => `<tr><th>${k}</th><td>${raw ? v : esc(v || '-')}</td></tr>`).join('')}</tbody></table>`;
+  const owners = r.ownerRows || [];
+  const bl = r.bld || [];
+  const plans = (r.landUsePlan || []).slice().sort((a, b) => (ROAD_RE.test(b.name) - ROAD_RE.test(a.name)));
+  const roadPlans = plans.filter(x => ROAD_RE.test(x.name));
+  const tab = ['land', 'own', 'bld', 'plan'].includes(LS.get('dtab', 'land')) ? LS.get('dtab', 'land') : 'land';
+  const cnt = { own: owners.length, bld: bl.length, plan: plans.length };
+  const notes = pipeNotes(r).filter(x => !/^↪/.test(x));
+  const metric = r.single ? '' : (isLine() ? `${tierBadge(r)} 노선 통과 <b>${r.cross > 0.01 ? r.cross.toFixed(1) + 'm' : '-'}</b>${hasCorridor() && r.inArea ? ` · 도로 면 ${r.inArea.toFixed(1)}㎡` : ''}` : `도형 안 <b>${r.inArea ? Math.round(r.inArea).toLocaleString() + '㎡' : '-'}</b>`);
+  const panes = {
+    land: KV([
+      ['지목', r.jimok], ['면적', r.area ? Number(r.area).toLocaleString(undefined, { maximumFractionDigits: 2 }) + '㎡' : ''], ['소유구분', ownerText(r)],
+      ['용도지역', r.useZone], ['이용상황', r.landUse], ['공시지가', r.jiga ? Number(r.jiga).toLocaleString() + '원/㎡' : ''],
+      ['도시계획도로', `<b class="${isRoadIn(r) ? 'road-in' : ''}">${esc(roadStatus(r))}</b>${roadPlans.length ? ' · ' + esc(roadPlans.map(x => x.name + (x.cnflc ? '(' + x.cnflc + ')' : '')).join(', ')) : ''}${r.roadSpatial ? ' <span class="small">(지도상 겹침)</span>' : ''}`, true],
+      ['소재지', r.addr || r.jibun]
+    ]),
+    own: r.ownerFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['소유구분', '관리기관', '변동일자', '변동사유', '공유'].concat(owners.some(x => x.dong) ? ['동·층·호'] : []), owners.map(o => [o.se, o.nation || '-', fmtDate(o.date), o.cause, o.share].concat(owners.some(x => x.dong) ? [o.dong] : []))),
+    bld: !cfg.bldKey ? '<div class="dempty">⚙ 설정에 건축물대장 키를 넣으면 보입니다. 지도상 건물: ' + esc(bldText(r) || '없음') + '</div>'
+      : r.bldFail ? `<div class="dempty">조회 실패: ${esc(r.bldErr || '')}</div>`
+      : (bldFlags(r).length ? `<div style="margin-bottom:4px">${bldFlags(r).map(([t, c]) => `<span class="flag ${c}">${esc(t)}</span>`).join(' ')}</div>` : '') + T(['건물명·동', '주용도', '구조', '층수', '연면적㎡', '사용승인'], bl.map(b => [b.name || (b.main || '-'), b.purps, b.strct, `${b.grnd}/${b.ugrnd ? 'B' + b.ugrnd : '-'}`, b.totArea ? b.totArea.toLocaleString() : '', fmtDate(b.useApr)])),
+    plan: r.planFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['지역·지구·시설', '저촉여부'], plans.map(x => { const row = [x.name, x.cnflc]; if(ROAD_RE.test(x.name)) row._cls = 'road-row'; return row; }))
+  };
+  d.innerHTML = `<button class="dclose" title="상세 닫기 (Esc)">✕</button>
+    <div class="dh">
+      <div class="dtitle"><b>${r.single ? '선택한 필지' : r.no + '.'} ${esc(riJibun(r.addr, r.jibun))}</b> <span class="dchip">${esc(r.jimok || '-')}</span> <span class="dchip own ${r.ownerClass}">${esc(ownerText(r) || '…')}</span>${r.loading ? ' <span class="small" style="color:#1f6feb">불러오는 중…</span>' : ''}</div>
+      <div class="dsub">${metric}${metric ? ' · ' : ''}<span class="small">PNU ${esc(r.pnu)}</span></div>
+      ${notes.length ? `<div class="dnote">확인할 점: ${esc(notes.join(' · '))}</div>` : ''}${r.avoid ? `<div class="avoid">↪ ${esc(avoidText(r))}</div>` : ''}
+      <div class="dlinks"><button data-d="kakao">🎥 로드뷰</button><button data-d="eum" style="color:#0b7285;border-color:#99e9f2">토지이음</button><button data-d="kgeop">KGEOP</button><button data-d="naver" title="네이버 지도 (로드뷰는 지도에서 직접 켜기)">네이버 지도</button></div>
+    </div>
+    <div class="dwin">
+      <div class="dtabs">${[['land', '토지'], ['own', '소유자'], ['bld', '건물'], ['plan', '토지이용계획']].map(([k, t]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${t}${cnt[k] ? ` <span>${cnt[k]}</span>` : ''}${k === 'plan' && r.roadPlan ? ' <i class="dot"></i>' : ''}</button>`).join('')}</div>
+      <div class="dpane">${panes[tab]}</div>
     </div>`;
-  d.insertAdjacentHTML('afterbegin', '<button class="dclose" title="상세 닫기 (Esc)">✕</button>');
   { const sp = $('#detailSplit'); if(sp) sp.style.display = 'block'; const h = Number(LS.get('detailH', '0')); if(h > 80){ d.style.height = h + 'px'; d.style.maxHeight = 'none'; } }
   d.querySelector('.dclose').onclick = closeDetail;
-  d.querySelectorAll('details.dsec').forEach(x => x.addEventListener('toggle', () => LS.set('dsec.' + x.dataset.k, x.open ? '1' : '0')));
-  d.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => d.querySelectorAll('details.dsec').forEach(x => x.open = b.dataset.sec === 'open'));
-  d.style.display = 'block';
+  d.querySelectorAll('.dtabs [data-t]').forEach(b => b.onclick = () => { LS.set('dtab', b.dataset.t); showDetail(r); });
+  d.style.display = 'flex';
   d.querySelector('[data-d=naver]').onclick = () => openRoadview(r.rv[1], r.rv[0], 'naver');
   d.querySelector('[data-d=kakao]').onclick = () => openRoadview(r.rv[1], r.rv[0], 'kakao');
   d.querySelector('[data-d=eum]').onclick = () => openEum(r);
   d.querySelector('[data-d=kgeop]').onclick = async () => { const t = addrText({ addr: r.addr, jibun: r.jibun }); openSite('kgeop', r.pnu, t, await copyText(t)); };
+  // 선택한 행이 상세에 가려지지 않게
+  setTimeout(() => { const tr = document.querySelector(`#tbl tbody tr[data-pnu="${CSS.escape(r.pnu)}"]`) || (popWin && !popWin.closed ? popWin.document.querySelector(`#tbl tbody tr[data-pnu="${CSS.escape(r.pnu)}"]`) : null); if(tr) tr.scrollIntoView({ block: 'nearest' }); }, 30);
 }
 function SEC(k, title){ return `<details class="dsec" data-k="${k}"${LS.get('dsec.' + k, '1') === '1' ? ' open' : ''}><summary>${title}</summary>`; }
 function fmtDate(s){ s = String(s||''); return /^\d{8}$/.test(s) ? `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6)}` : s; }
@@ -4709,7 +4752,9 @@ function syncActive(withCache){
 function newRouteFromCurrent(){
   if(!hasTarget()) return;
   const n = routes.filter(x => (x.gj && x.gj.properties && x.gj.properties.kind === 'line') === isLine()).length + 1;
-  const it = { id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: areaName || (isLine() ? `노선 ${n}` : `영역 ${n}`), gj: null, sum: null, stale: false };
+  const pre = (document.getElementById('rpName') || {}).value; const preName = pre ? pre.trim() : '';
+  const it = { id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: preName || areaName || (isLine() ? `노선 ${n}` : `영역 ${n}`), gj: null, sum: null, stale: false };
+  if(preName) document.getElementById('rpName').value = '';
   routes.push(it); activeId = it.id; areaName = it.name;
   syncActive(false); drawGhosts();
 }
@@ -4792,10 +4837,15 @@ function renderRoutes(){
   box.innerHTML = order.map(it => it.id === activeId ? activeCard(it) : (() => {
     const sm = it.sum || {};
     const size = sm.len != null ? fmtLen(sm.len) : sm.area != null ? Math.round(sm.area).toLocaleString() + '㎡' : '';
-    return `<div class="rcard" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top"><span class="rc-name">${esc(it.name)}</span><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
+    return `<div class="rcard" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top"><span class="rc-name">${esc(it.name)}</span><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
       ${sm.start || sm.end ? `<div class="rc-sub">${esc(sm.start || '-')} → ${esc(sm.end || '-')}</div>` : ''}</div>`;
   })()).join('');
-  box.querySelectorAll('.rcard[data-id]:not(.on)').forEach(c => c.onclick = () => activateRoute(c.dataset.id));
+  box.querySelectorAll('.rcard[data-id]:not(.on)').forEach(c => c.onclick = e => { if(e.target.closest('.rc-del')) return; activateRoute(c.dataset.id); });
+  box.querySelectorAll('.rc-del').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const id = b.dataset.del;
+    if(delArm === id){ delArm = null; deleteRoute(id); return; }
+    delArm = id; b.textContent = '삭제?'; b.classList.add('arm'); setTimeout(() => { if(delArm === id){ delArm = null; renderRoutes(); } }, 3000);
+  });
   const on = box.querySelector('.rcard.on'); if(!on) return;
   const it = activeRoute();
   on.querySelector('input.rname').onchange = e => { const v = e.target.value.trim() || it.name; it.name = v; areaName = v; syncActive(false); drawGhosts(); };
@@ -4809,7 +4859,6 @@ function renderRoutes(){
     else if(a === 'rv') startRvFollow(0);
     else if(a === 'save') saveRoute();
     else if(a === 'excel') exportExcel();
-    else if(a === 'del'){ if(delArm === it.id){ delArm = null; deleteRoute(it.id); } else { delArm = it.id; b.textContent = '한 번 더 누르면 삭제'; b.style.color = '#c92a2a'; setTimeout(() => { if(delArm === it.id){ delArm = null; renderRoutes(); } }, 3000); } }
   });
   on.querySelectorAll('tr[data-v]').forEach(tr => tr.onclick = () => {
     const i = Number(tr.dataset.v); if(!pts[i]) return;
@@ -4839,11 +4888,16 @@ function activeCard(it){
     let acc = 0;
     vt = `<details class="rc-vtx"><summary>꼭짓점 목록 (${pts.length}개) — 눌러서 위치로 이동</summary><table><tr><th>점</th><th>누적 거리</th><th>도로 폭</th></tr>` + pts.map((p, i) => { if(i) acc += map.distance(pts[i - 1], p); return `<tr data-v="${i}"><td>${i === 0 ? '시점' : i === pts.length - 1 ? '종점' : i}</td><td>${fmtLen(acc)}</td><td>${vW[i] ? vW[i] + 'm' : '-'} <span class="small" style="color:var(--muted)">${esc(vSrc[i] || '')}</span></td></tr>`; }).join('') + `</table></details>`;
   }
-  return `<div class="rcard on" data-id="${it.id}"><div class="rc-top"><span class="rc-badge">수정 중</span><span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span></div>
+  const G = (t, btns) => btns.filter(Boolean).length ? `<div class="rc-g"><span class="rc-gt">${t}</span><div class="rc-gb">${btns.filter(Boolean).join('')}</div></div>` : '';
+  return `<div class="rcard on" data-id="${it.id}"><div class="rc-top"><span class="rc-badge">수정 중</span><span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button></div>
     <div class="rc-grid">${rows.map(([k, v]) => `<div>${k}</div><div>${v}</div>`).join('')}</div>
-    <div class="small" style="color:var(--muted)">지도에서 점을 끌어 옮기고, 가운데 + 로 점 추가, 점 우클릭으로 삭제합니다.</div>
     ${vt}
-    <div class="rc-acts"><button data-a="query" class="primary">${lastQueryMeta ? '다시 조회' : '필지 조회'}</button>${lastQueryMeta ? '<button data-a="list">📋 필지 목록 보기</button>' : ''}${line ? '<button data-a="edit">✏ 구간·폭·배관 편집</button><button data-a="rv">🎥 로드뷰 따라가기</button>' : ''}<button data-a="fit">📍 지도에서 보기</button>${line ? '<button data-a="review">🛣 도로 면 확인</button>' : ''}<button data-a="save">💾 파일 저장</button>${lastQueryMeta ? '<button data-a="excel">📊 엑셀</button>' : ''}<button data-a="del">🗑 삭제</button></div></div>`;
+    <div class="rc-acts2">
+      ${G('필지', [`<button data-a="query" class="primary">🔍 ${lastQueryMeta ? '다시 조회' : '필지 조회'}</button>`, lastQueryMeta ? '<button data-a="list">📋 목록 보기</button>' : '', lastQueryMeta ? '<button data-a="excel">📊 엑셀</button>' : ''])}
+      ${G('노선', [line ? '<button data-a="edit">✏ 구간·폭·배관</button>' : '', line ? '<button data-a="review">🛣 도로 면 확인</button>' : '', '<button data-a="fit">📍 지도에서 보기</button>'])}
+      ${G('현장·파일', [line ? '<button data-a="rv">🎥 로드뷰 따라가기</button>' : '', '<button data-a="save">💾 파일 저장</button>'])}
+    </div>
+    <div class="small" style="color:var(--muted);margin-top:6px">지도에서 점을 끌어 옮기고, 가운데 + 로 점 추가, 점 우클릭으로 삭제합니다.</div></div>`;
 }
 function suggestName(){
   if(areaName) return areaName;
@@ -5667,8 +5721,8 @@ $('#selClear').onclick = () => closeDetail();
 $('#chkFill').checked = LS.get('parcelFill', '1') === '1';
 const applyFill = () => { if($('#chkFill').checked){ if(!map.hasLayer(parcelLayer)) parcelLayer.addTo(map); frontRoute(); } else if(map.hasLayer(parcelLayer)) map.removeLayer(parcelLayer); };
 $('#chkFill').onchange = () => { LS.set('parcelFill', $('#chkFill').checked ? '1' : '0'); applyFill(); }; applyFill();
-$('#nearM').value = nearM;
-{ let t = null; $('#nearM').addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { const v = Number($('#nearM').value); nearM = isFinite(v) && v >= 0 ? Math.min(20, v) : 1; LS.set('nearM', String(nearM)); refreshScope(); }, 400); }); }
+$('#chkNear').checked = nearM > 0;
+$('#chkNear').onchange = e => { nearM = e.target.checked ? 1 : 0; LS.set('nearOn', nearM ? '1' : '0'); refreshScope(); updFilterBtn && updFilterBtn(); };
 $('#chkRef').checked = showRef; $('#chkRef').onchange = e => { showRef = e.target.checked; LS.set('showRef', showRef ? '1' : '0'); refreshScope(); };
 $('#btnHelp2').onclick = openHelp;
 $('#helpOk').onclick = $('#helpX').onclick = () => $('#dlgHelp').close();
