@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v22-1</title>
+<title>노선 필지 조회기 v22-2</title>
 <style>/* required styles */
 
 .leaflet-pane,
@@ -875,12 +875,16 @@ details.dsec>summary::before{content:'▸ ';color:var(--muted)}details.dsec[open
 #routeEd .pt th:nth-child(1){width:70px} #routeEd .pt th:nth-child(2){width:50px}
 .pipe-lab{background:#fff;color:#2b8a3e;border:1.5px solid #2b8a3e;font-size:11px;font-weight:700;padding:1px 6px;border-radius:9px;white-space:nowrap;transform:translate(-50%,-160%);display:inline-block;box-shadow:0 1px 4px rgba(0,0,0,.2);pointer-events:none}
 #rvF{display:none;position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:1003;background:#fff;border:2px solid #7048e8;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.25);padding:0 12px 10px;font-size:12px;width:360px;max-width:calc(100% - 24px)}
-#rvF.embed{width:520px} #rvF.embed.big{width:880px}
+#rvF.embed{width:520px}
+#rvF.min{width:auto!important;min-width:260px;padding-bottom:0!important} #rvF.min > :not(.rh){display:none!important} #rvF.min .rh{margin-bottom:0;border-bottom:none;border-radius:8px} #rvF.min #rvSub{display:none} #rvF .rh b{white-space:nowrap}
+#rvF.max{left:8px!important;top:8px!important;right:8px!important;bottom:8px!important;width:auto!important;max-width:none!important;transform:none!important;display:flex!important;flex-direction:column}
+#rvF.max #rvViewWrap{flex:1;min-height:0} #rvF.max #rvView{height:100%!important}
+#rvF.max.ext{bottom:auto!important}
 #rvViewWrap{display:none;position:relative;margin:0 -12px;background:#212529}
 #rvF.embed #rvViewWrap{display:block}
 #rvF.ext #rvViewWrap{display:none!important} #rvF.ext{width:380px!important}
 #rvF .ext-note{margin:6px 0 2px;padding:6px 8px;background:#f3f0ff;border-radius:6px;font-size:12px;line-height:1.5} #rvF .ext-note button{font-size:11px;padding:1px 7px;margin-left:4px}
-#rvView{width:100%;height:300px} #rvF.big #rvView{height:min(520px, calc(100vh - 380px))}
+#rvView{width:100%;height:300px}
 #rvF .rv-none{display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#fff;font-size:13px;background:rgba(33,37,41,.85);text-align:center;padding:10px}
 #rvF .rh{display:flex;align-items:center;gap:6px;margin:0 -12px 6px;padding:7px 12px;background:#f3f0ff;border-bottom:1px solid #d0bfff;cursor:move;border-radius:8px 8px 0 0}
 #rvF .rh .rx{border:none;background:transparent;font-size:15px;cursor:pointer} #rvF .rh .rx:first-of-type{margin-left:auto}
@@ -1008,7 +1012,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v22-1</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v22-2</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button>
@@ -1227,7 +1231,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <li><b>노선 그리기</b> — <b>✏ 선</b>을 누르고 위성사진을 보며 <b>배관이 지나갈 위치</b>(보통 도로 가운데)를 따라 클릭합니다. 더블클릭(또는 Enter)으로 끝내고, Backspace는 점 하나 되돌리기, Esc는 취소입니다. 그리는 동안 커서 옆에 <b>총 길이</b>가 보입니다.<br>
         그린 노선은 오른쪽 <b>🧭 노선</b> 탭에 쌓입니다. 목록이나 지도의 회색 점선 노선을 누르면 다시 열려 고칠 수 있고, 연장·꼭짓점·시점/종점·사유지 같은 <b>노선 정보</b>와 이전 조회 결과도 그대로 보입니다.<br>
         <b>✏ 노선 편집 창</b>: 그린 <b>선</b>이나 꼭짓점 이름표를 누르거나, 도로 면 위에서 <b>우클릭 → 이 구간 편집 / 노선 전체 편집</b>을 고르면 열립니다. 도로 폭은 <b>구간마다</b> 넣습니다. 숫자를 바로 고치거나 <b>📏</b>를 누르고 위성사진에서 도로 한쪽 끝 → 반대쪽 끝을 클릭하면 잰 폭이 그 구간(또는 노선 전체)에 들어갑니다. 구간별 길이·도로 면 면적·사유지도 여기서 봅니다. <b>🔧 배관 정보</b> 탭에서는 구간마다 재질(PE·PLP)·관경(mm)·압력(저압·중압)을 적고, 지도 이름표와 엑셀 '구간별 배관' 시트로 볼 수 있습니다.<br>
-        <b>🎥 로드뷰 따라가기</b>: 노선 카드·편집 창의 버튼이나 노선 위 우클릭 → '여기서부터 로드뷰 따라가기'. 노선을 10~50m 간격으로 나눠 ◀ ▶(또는 키보드 ← →)·자동 넘김으로 차례로 봅니다. ⚙ 설정에 <b>카카오 JavaScript 키</b>를 넣고 이 프로그램을 <b>등록한 웹 주소</b>로 열면 로드뷰가 이 화면 안에서 깜빡임 없이 넘어가고 노선 진행 방향을 바라봅니다. 따라가기 창의 <b>↗</b>를 누르면 로드뷰만 <b>별도 창</b>으로 크게 띄울 수 있고(모니터 두 대일 때 편함), 그 창에서도 ← → 로 넘깁니다. ↙ 또는 창을 닫으면 다시 화면 안으로 돌아옵니다. 키가 없거나 파일로 열면 카카오맵 새 창(링크)으로 열립니다(팝업 허용 필요). 창은 머리를 끌어 옮기고 ⤢ 로 넓히고 ▁ 로 접습니다.</li>
+        <b>🎥 로드뷰 따라가기</b>: 노선 카드·편집 창의 버튼이나 노선 위 우클릭 → '여기서부터 로드뷰 따라가기'. 노선을 10~50m 간격으로 나눠 ◀ ▶(또는 키보드 ← →)·자동 넘김으로 차례로 봅니다. ⚙ 설정에 <b>카카오 JavaScript 키</b>를 넣고 이 프로그램을 <b>등록한 웹 주소</b>로 열면 로드뷰가 이 화면 안에서 깜빡임 없이 넘어가고 노선 진행 방향을 바라봅니다. 로드뷰는 기본으로 <b>별도 창</b>에 크게 열리고 그 창에서도 ← → 로 넘깁니다. 화면 안에서 보고 싶으면 <b>↙</b>를 누르세요(다음부터도 화면 안에서 열림, <b>↗</b>로 다시 별도 창). 화면 안 로드뷰는 머리글의 <b>▁ 최소화</b> · <b>⛶ 최대화</b>(머리글 더블클릭도 가능)로 크기를 바꿉니다. 키가 없거나 파일로 열면 카카오맵 새 창(링크)으로 열립니다(팝업 허용 필요). 창은 머리를 끌어 옮기고 ⤢ 로 넓히고 ▁ 로 접습니다.</li>
       <li><b>필지 조회</b> — <b>필지 조회</b>를 누르면 <b>배관 선이 지나는 필지</b>를 불러옵니다. 위쪽 <b>[조회: 배관 선 양옆 1 m]</b>는 지적도가 실제와 조금 어긋날 때를 대비해, 선에서 그 거리 안의 필지도 <span class="tier t-near">경계 근접</span>으로 함께 보여 주는 값입니다. 0으로 하면 선이 지나는 필지만 나옵니다.</li>
       <li><b>(선택) 🛣 도로 면 확인</b> — 배관이 지나는 곳이 <b>실제 도로</b>인지 위성사진과 비교하는 도구입니다. <b>어떤 필지를 조회할지와는 상관없습니다.</b><br>
         선을 그리면 기본 도로 폭으로 도로 양쪽 가장자리(도로 면)가 그려지고, 위성사진과 다를 수 있는 곳이 목록에 뜹니다. 목록의 항목을 누르면(또는 ◀ 이전 / 다음 ▶) 그 위치로 이동합니다. 여러 곳을 한 번에 처리하려면 <b>✓ 일괄 확인 ▾</b>(남은 곳 모두 · 종류별 · 지금 보는 곳 주변 100m)을 쓰고, 잘못 누르면 바로 [되돌리기]할 수 있습니다 → 다르면 <b>✋ 가장자리 끌기</b>나 <b>📏 폭 재기</b> → [확인]을 누르면 다음 항목으로 넘어갑니다.<br>
@@ -2867,7 +2871,7 @@ if(rvBC) rvBC.onmessage = e => {
   else if(m.type === 'cmd'){
     if(m.cmd === 'next' && rvF && !rvF.single) rvGo(rvF.i + 1, true);
     else if(m.cmd === 'prev' && rvF && !rvF.single) rvGo(rvF.i - 1, true);
-    else if(m.cmd === 'dock') rvDock();
+    else if(m.cmd === 'dock') rvDock(true);
   } else if(m.type === 'closed'){ setTimeout(() => { if(rvExtWin && rvExtWin.closed) rvDock(); }, 300); }
 };
 function rvExtOpen(){
@@ -2881,9 +2885,9 @@ function rvExtOpen(){
   clearInterval(rvExtTimer); rvExtTimer = setInterval(() => { if(rvExtWin && rvExtWin.closed) rvDock(); }, 1500);
   return true;
 }
-function rvDock(){
+function rvDock(manual){
   clearInterval(rvExtTimer); rvExtTimer = null;
-  const was = rvExtOn; rvExtOn = false; LS.set('rvExt', '0');
+  const was = rvExtOn; rvExtOn = false; if(manual) LS.set('rvExt', '0');
   try{ if(rvExtWin && !rvExtWin.closed) rvExtWin.close(); }catch(e){} rvExtWin = null;
   if(was && rvF){ rvOpenBox(); rvGo(rvF.i, true); }
 }
@@ -2898,13 +2902,17 @@ function rvOpenBox(){
   box.classList.toggle('embed', !!(rvF && rvF.embed)); box.classList.toggle('single', !!(rvF && rvF.single));
   box.classList.toggle('ext', !!(rvF && rvF.embed && rvExtOn));
   if(!box.querySelector('#rvCtl')){
-    box.innerHTML = `<div class="rh" title="끌어서 옮기기"><b id="rvTitle">🎥 로드뷰 따라가기</b><span class="small" id="rvSub" style="color:var(--muted)"></span><button class="rx" data-r="ext" title="로드뷰를 별도 창으로 띄우기 (모니터 두 대일 때 편함)">↗</button><button class="rx" data-r="big" title="크게/작게">⤢</button><button class="rx" data-r="close" title="닫기">✕</button></div>
+    box.innerHTML = `<div class="rh" title="끌어서 옮기기"><b id="rvTitle">🎥 로드뷰 따라가기</b><span class="small" id="rvSub" style="color:var(--muted)"></span><button class="rx" data-r="ext" title="로드뷰를 별도 창으로 띄우기">↗</button><button class="rx" data-r="min" title="최소화 (머리글만 남기기)">▁</button><button class="rx" data-r="max" title="최대화 (지도 영역 가득)">⛶</button><button class="rx" data-r="close" title="닫기">✕</button></div>
       <div id="rvViewWrap"><div id="rvView"></div><div class="rv-none">이 지점 50m 안에는 카카오 로드뷰 사진이 없습니다</div></div>
       <div id="rvCtl"></div>`;
     dragPanel(box, box.querySelector('.rh'), 'rvf');
     box.querySelector('[data-r=close]').onclick = () => stopRvFollow();
-    box.querySelector('[data-r=ext]').onclick = () => { if(rvExtOn) rvDock(); else if(rvExtOpen() && rvF){ rvOpenBox(); rvGo(rvF.i, true); } };
-    box.querySelector('[data-r=big]').onclick = () => { box.classList.toggle('big'); if(box._clamp) box._clamp(); setTimeout(() => { if(kRv) try{ kRv.relayout(); }catch(e){} }, 50); };
+    box.querySelector('[data-r=ext]').onclick = () => { if(rvExtOn) rvDock(true); else if(rvExtOpen() && rvF){ rvOpenBox(); rvGo(rvF.i, true); } };
+    const relay = () => setTimeout(() => { if(kRv) try{ kRv.relayout(); }catch(e){} }, 60);
+    const updWin = () => { const mn = box.querySelector('[data-r=min]'), mx = box.querySelector('[data-r=max]'); mn.textContent = box.classList.contains('min') ? '▢' : '▁'; mn.title = box.classList.contains('min') ? '다시 펼치기' : '최소화 (머리글만 남기기)'; mx.textContent = box.classList.contains('max') ? '❐' : '⛶'; mx.title = box.classList.contains('max') ? '원래 크기로' : '최대화 (지도 영역 가득)'; };
+    box.querySelector('[data-r=min]').onclick = () => { box.classList.toggle('min'); if(box.classList.contains('min')) box.classList.remove('max'); updWin(); relay(); };
+    box.querySelector('[data-r=max]').onclick = () => { box.classList.toggle('max'); box.classList.remove('min'); updWin(); relay(); };
+    box.querySelector('.rh').addEventListener('dblclick', e => { if(e.target.closest('button')) return; box.classList.toggle('max'); box.classList.remove('min'); updWin(); relay(); });
   }
   box.style.display = 'block';
   if(first && box._restorePos) box._restorePos();
@@ -2917,7 +2925,7 @@ async function showRoadviewAt(lat, lng){
       await loadKakao();
       if(rvF && !rvF.single) stopRvFollow();
       rvF = { single: true, embed: true, list: [{ lat, lng, s: 0, k: 0 }], i: 0, prov: 'kakao', step: 20, sec: 5 };
-      if(LS.get('rvExt', '0') === '1' && !rvExtOn) rvExtOpen();
+      if(LS.get('rvExt', '1') === '1' && !rvExtOn) rvExtOpen();
       rvOpenBox(); rvGo(0, true); return true;
     }catch(e){ log('카카오 로드뷰: ' + e.message); }
   }
@@ -2934,7 +2942,7 @@ async function startRvFollow(fromS = 0){
   let i = rvF.list.findIndex(p => p.s >= fromS - 0.5); rvF.i = i < 0 ? 0 : i;
   rvOpenBox();
   if(kakaoUsable()){
-    try{ await loadKakao(); rvF.embed = true; if(LS.get('rvExt', '0') === '1' && !rvExtOn) rvExtOpen(); rvOpenBox(); }
+    try{ await loadKakao(); rvF.embed = true; if(LS.get('rvExt', '1') === '1' && !rvExtOn) rvExtOpen(); rvOpenBox(); }
     catch(e){ toast('카카오 로드뷰를 화면 안에 넣지 못해 새 창(링크)으로 엽니다: ' + e.message, 9000); }
   }
   rvGo(rvF.i, true);
@@ -2981,8 +2989,8 @@ function rvPlay(){
 function renderRvF(){
   const box = document.getElementById('rvF'); if(!box || !rvF) return;
   const ctl = box.querySelector('#rvCtl'); if(!ctl) return;
-  setTimeout(() => ctl.querySelectorAll('[data-x=dock]').forEach(b => b.onclick = () => rvDock()), 0);
-  { const eb = box.querySelector('[data-r=ext]'); if(eb){ eb.style.display = rvF.embed ? '' : 'none'; eb.textContent = rvExtOn ? '↙' : '↗'; eb.title = rvExtOn ? '로드뷰를 다시 이 창 안에서 보기' : '로드뷰를 별도 창으로 띄우기 (모니터 두 대일 때 편함)'; } }
+  setTimeout(() => ctl.querySelectorAll('[data-x=dock]').forEach(b => b.onclick = () => rvDock(true)), 0);
+  { const eb = box.querySelector('[data-r=ext]'); if(eb){ eb.style.display = rvF.embed ? '' : 'none'; eb.textContent = rvExtOn ? '↙' : '↗'; eb.title = rvExtOn ? '로드뷰를 이 창 안에서 보기 (다음부터도 창 안에서 열림)' : '로드뷰를 별도 창으로 띄우기 (다음부터도 별도 창으로 열림)'; } }
   if(rvF.single){
     box.querySelector('#rvTitle').textContent = '🎥 로드뷰'; box.querySelector('#rvSub').textContent = rvExtOn ? '카카오 · 별도 창' : '카카오 · 화면 안';
     ctl.innerHTML = (rvExtOn ? `<div class="ext-note">↗ 로드뷰는 <b>별도 창</b>에 나옵니다. <button data-x="dock">↙ 이 창 안으로</button></div>` : '') + `<div class="small" style="color:var(--muted);margin-top:6px">사진을 끌어 방향을 돌리고, 길 위 화살표로 이동합니다. <a href="${rvUrl(rvF.list[0], 'kakao')}" target="roadview">카카오맵에서 크게 보기</a></div>`;
