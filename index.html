@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v24</title>
+<title>노선 필지 조회기 v24-1</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -930,6 +930,8 @@ details.dsec>summary::before{content:'▸ ';color:var(--muted)}details.dsec[open
 #rvF .rvbtn{display:flex;gap:4px;margin:6px 0} #rvF .rvbtn button{flex:1;padding:4px 0;font-size:13px}
 #rvF select{font-size:12px}
 #rvF .bar{height:5px;background:#e9ecef;border-radius:3px;overflow:hidden;margin:4px 0} #rvF .bar i{display:block;height:100%;background:#7048e8}
+.rv-cam{position:absolute;width:22px;height:22px;border-radius:50%;background:#e8590c;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}.rv-cam i{position:absolute;left:50%;top:-9px;margin-left:-5px;border:5px solid transparent;border-bottom:8px solid #e8590c;border-top:0}
+.rv-fovtag{position:absolute;left:14px;top:10px;white-space:nowrap;background:rgba(33,37,41,.82);color:#fff;font-size:11px;padding:2px 7px;border-radius:10px;pointer-events:none}
 .rv-dot{width:18px;height:18px;border-radius:50%;background:#7048e8;border:3px solid #fff;box-shadow:0 0 0 3px rgba(112,72,232,.45);transform:translate(-50%,-50%)}background:#f3fbf4;border-radius:6px;padding:6px 8px;margin:2px 0 6px;line-height:1.5;color:#2b5d34}
 #routeEd .wcell{display:inline-flex;align-items:center;gap:3px;white-space:nowrap} #routeEd .wcell input{width:58px!important;border:1px solid #ced4da;border-radius:4px;padding:2px 4px;background:#fff;height:24px;box-sizing:border-box} #routeEd .wcell button{padding:1px 5px}
 #routeEd .wvar{color:#d9480f}
@@ -1016,7 +1018,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     pan = p.pan; var pos = new kakao.maps.LatLng(p.lat, p.lng);
     cli.getNearestPanoId(pos, 50, function(id){
       $id('roNone').style.display = id ? 'none' : 'flex';
-      if(!id) return;
+      if(!id){ send({ type: 'vp', none: true }); return; }
       rv.setPanoId(id, pos);
       setTimeout(function(){ if(pan != null) try{ rv.setViewpoint({ pan: pan, tilt: 0, zoom: 0 }); }catch(e){} }, 400);
     });
@@ -1029,7 +1031,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     $id('roStep').onchange = function(){ send({ type: 'cmd', cmd: 'step', v: this.value }); };
     $id('roSec').onchange = function(){ send({ type: 'cmd', cmd: 'sec', v: this.value }); };
     addEventListener('keydown', function(e){ if(e.target && e.target.tagName === 'SELECT') return; if(e.key === 'ArrowRight') send({ type: 'cmd', cmd: 'next' }); else if(e.key === 'ArrowLeft') send({ type: 'cmd', cmd: 'prev' }); });
-    addEventListener('resize', function(){ if(rv) try{ rv.relayout(); }catch(e){} });
+    addEventListener('resize', function(){ if(rv){ try{ rv.relayout(); }catch(e){} sendVp(); } });
     addEventListener('pagehide', function(){ send({ type: 'closed' }); });
     if(!bc){ msg('이 브라우저는 창끼리 연결(BroadcastChannel)을 지원하지 않습니다. 크롬·엣지 최신 버전을 써 주세요.'); return; }
     if(!key){ msg('카카오 키가 없습니다. 원래 창의 ⚙ 설정에서 카카오 JavaScript 키를 넣어 주세요.'); return; }
@@ -1041,12 +1043,21 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         rv = new kakao.maps.Roadview($id('roView')); cli = new kakao.maps.RoadviewClient();
         var ap = function(){ if(pan != null) try{ rv.setViewpoint({ pan: pan, tilt: 0, zoom: 0 }); }catch(e){} };
         kakao.maps.event.addListener(rv, 'init', ap); kakao.maps.event.addListener(rv, 'panoid_changed', ap);
+        ['init', 'viewpoint_changed', 'position_changed', 'panoid_changed'].forEach(function(ev){ kakao.maps.event.addListener(rv, ev, sendVp); });
         if(pend) show(pend);
         send({ type: 'ready' });
       });
     };
     sc.onerror = function(){ msg('카카오 지도 API를 불러오지 못했습니다(키·도메인·카카오맵 사용 설정 확인)'); };
     document.head.appendChild(sc);
+  }
+  var vpT = null;
+  function sendVp(){
+    clearTimeout(vpT);
+    vpT = setTimeout(function(){
+      try{ var v = rv.getViewpoint(), q = rv.getPosition(), r = $id('roView'); if(!v || !q) return;
+        send({ type: 'vp', lat: q.getLat(), lng: q.getLng(), pan: v.pan, zoom: v.zoom || 0, asp: r.clientWidth / Math.max(1, r.clientHeight) }); }catch(e){}
+    }, 60);
   }
   var playT = null;
   function setPlay(on, sec){
@@ -1063,7 +1074,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v24</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v24-1</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button>
@@ -2897,6 +2908,8 @@ function kRvEnsure(container){
   const applyPan = () => { if(kPendingPan != null){ try{ kRv.setViewpoint({ pan: kPendingPan, tilt: 0, zoom: 0 }); }catch(e){} } };
   kakao.maps.event.addListener(kRv, 'init', applyPan);
   kakao.maps.event.addListener(kRv, 'panoid_changed', applyPan);
+  const vp = () => { clearTimeout(kRv._vpT); kRv._vpT = setTimeout(() => { try{ const v = kRv.getViewpoint(), q = kRv.getPosition(); if(v && q) drawRvFov({ lat: q.getLat(), lng: q.getLng(), pan: v.pan, zoom: v.zoom || 0, asp: container.clientWidth / Math.max(1, container.clientHeight) }); }catch(e){} }, 60); };
+  ['init', 'viewpoint_changed', 'position_changed', 'panoid_changed'].forEach(ev => kakao.maps.event.addListener(kRv, ev, vp));
   return kRv;
 }
 function kShowAt(container, lat, lng, pan, onNone){
@@ -2904,7 +2917,7 @@ function kShowAt(container, lat, lng, pan, onNone){
   kPendingPan = pan;
   kRvClient.getNearestPanoId(pos, 50, id => {
     const msg = container.parentElement.querySelector('.rv-none');
-    if(!id){ if(msg) msg.style.display = 'flex'; if(onNone) onNone(); return; }
+    if(!id){ if(msg) msg.style.display = 'flex'; drawRvFov({ none: true }); if(onNone) onNone(); return; }
     if(msg) msg.style.display = 'none';
     rv.setPanoId(id, pos);
     setTimeout(() => { if(pan != null) try{ rv.setViewpoint({ pan, tilt: 0, zoom: 0 }); }catch(e){} }, 400);
@@ -2917,12 +2930,33 @@ $('#sKakaoTest').onclick = async () => {
   catch(e){ el.innerHTML = `<b style="color:#c92a2a">실패</b> — ${esc(e.message)}`; setTimeout(kakaoInfo, 6000); }
   finally{ cfg.kakaoKey = old; kakaoReady = null; }
 };
-let rvF = null, rvWin = null, rvLayer = L.layerGroup().addTo(map);
+let rvF = null, rvWin = null, rvLayer = L.layerGroup().addTo(map), rvFovLayer = L.layerGroup().addTo(map);
+const RV_DIR = ['북', '북동', '동', '남동', '남', '남서', '서', '북서'];
+function drawRvFov(m){
+  // 로드뷰에서 지금 보고 있는 방향·시야각을 지도에 부채꼴로 표시 (사진이 찍힌 실제 위치 기준)
+  rvFovLayer.clearLayers();
+  if(!rvF || !m || m.none || m.lat == null || m.pan == null) return;
+  const z = Math.max(-3, Math.min(3, Number(m.zoom) || 0)), asp = Math.max(.6, Math.min(3, Number(m.asp) || 1.5));
+  const fov = Math.max(12, Math.min(150, 2 * Math.atan(asp * Math.tan(Math.PI / 6) / Math.pow(2, z / 2)) * 180 / Math.PI));
+  const R = Math.max(15, Math.min(80, 30 * Math.pow(2, z / 2))), pan = ((Number(m.pan) % 360) + 360) % 360;
+  const c = [m.lng, m.lat], ring = [c];
+  for(let k = 0; k <= 24; k++){ const b = pan - fov / 2 + fov * k / 24; ring.push(turf.destination(c, R / 1000, b > 180 ? b - 360 : b).geometry.coordinates); }
+  ring.push(c);
+  const ll = ring.map(q => [q[1], q[0]]);
+  L.polygon(ll, { color: '#f08c00', weight: 2, fillColor: '#ffd43b', fillOpacity: .32, interactive: false }).addTo(rvFovLayer);
+  const tip = turf.destination(c, R / 1000, pan > 180 ? pan - 360 : pan).geometry.coordinates;
+  L.polyline([[m.lat, m.lng], [tip[1], tip[0]]], { color: '#e8590c', weight: 2, dashArray: '4 4', interactive: false }).addTo(rvFovLayer);
+  // 노선 위 지점과 실제 사진 위치가 떨어져 있으면 점선으로 이어 줌
+  const p = rvF.list && rvF.list[rvF.i];
+  if(p){ const d = turf.distance([p.lng, p.lat], c, { units: 'meters' }); if(d > 3){ L.polyline([[p.lat, p.lng], [m.lat, m.lng]], { color: '#495057', weight: 1.5, dashArray: '3 5', interactive: false }).addTo(rvFovLayer); } }
+  L.marker([m.lat, m.lng], { icon: L.divIcon({ className: '', html: `<div class="rv-cam" style="transform:translate(-50%,-50%) rotate(${pan}deg)"><i></i></div><div class="rv-fovtag">${RV_DIR[Math.round(pan / 45) % 8]} ${Math.round(pan)}° · 시야 약 ${Math.round(fov)}°${p && turf.distance([p.lng, p.lat], c, { units: 'meters' }) > 3 ? ` · 사진 위치 ${Math.round(turf.distance([p.lng, p.lat], c, { units: 'meters' }))}m 떨어짐` : ''}</div>`, iconSize: [0, 0] }), interactive: false, keyboard: false, zIndexOffset: 2100 }).addTo(rvFovLayer);
+}
 let rvExtOn = false, rvExtWin = null, rvExtTimer = null, rvLastShow = null;
 const rvBC = ('BroadcastChannel' in window) ? new BroadcastChannel('kgeopRv') : null;
 if(rvBC) rvBC.onmessage = e => {
   const m = e.data || {};
   if(m.type === 'hello' || m.type === 'ready'){ if(rvExtOn && rvLastShow) rvBC.postMessage(rvLastShow); }
+  else if(m.type === 'vp'){ if(rvF && rvExtOn) drawRvFov(m); }
   else if(m.type === 'cmd'){
     if(m.cmd === 'next' && rvF && !rvF.single){ if(rvF.i >= rvF.list.length - 1){ if(rvF.play){ rvPause(); status('종점까지 따라갔습니다.'); } } else rvGo(rvF.i + 1, true); }
     else if(m.cmd === 'prev' && rvF && !rvF.single) rvGo(rvF.i - 1, true);
@@ -3015,7 +3049,7 @@ async function startRvFollow(fromS = 0){
   rvGo(rvF.i, true);
 }
 function stopRvFollow(){
-  if(!rvF) return; clearInterval(rvF.timer); rvF = null; rvLayer.clearLayers();
+  if(!rvF) return; clearInterval(rvF.timer); rvF = null; rvLayer.clearLayers(); rvFovLayer.clearLayers();
   const box = document.getElementById('rvF'); if(box) box.style.display = 'none';
 }
 function rvUrl(p, prov){ return prov === 'kakao' ? `https://map.kakao.com/link/roadview/${p.lat.toFixed(7)},${p.lng.toFixed(7)}` : `https://map.naver.com/p?c=${p.lng.toFixed(7)},${p.lat.toFixed(7)},19,0,0,0,dh`; }
