@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v25-1</title>
+<title>노선 필지 조회기 v25-2</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -683,6 +683,8 @@ aside{position:relative}
 #splitter:hover,#splitter.drag{background:linear-gradient(90deg,transparent 4px,#1f6feb 4px,#1f6feb 6px,transparent 6px)}
 body.sidecollapsed #splitter{left:-14px;width:14px;background:#e7f0ff;border-left:1px solid #a5c4f7}
 .chip.click{cursor:pointer} .chip.click:hover{background:#e3edff} .chip.on{background:#1f6feb;color:#fff}
+body.shooting .leaflet-control-zoom, body.shooting #selClear, body.shooting #edgeBadge, body.shooting #toast, body.shooting .fpanel, body.shooting #routeEd, body.shooting #review, body.shooting #detail.float, body.shooting #rvF, body.shooting #sideTgl, body.shooting #ctxMenu, body.shooting #stepPanel, body.shooting .leaflet-popup, body.shot-nolegend #legend{visibility:hidden!important}
+#shotMenu .shot-opt{border-top:1px solid #eee;margin-top:4px;padding:0 8px 4px} #shotMenu .shot-opt label{display:block;font-size:12px;padding:2px 0;white-space:nowrap;cursor:pointer}
 #detail .dpop{position:absolute;right:34px;top:6px;border:none;background:transparent;font-size:15px;line-height:1;padding:3px 6px;color:#868e96} #detail .dpop:hover{color:#1f6feb;background:#f1f3f5}
 #detail.float{position:fixed;right:calc(var(--side,720px) + 16px);top:130px;z-index:1600;background:#fff;border:1px solid #a5c4f7;border-radius:10px;box-shadow:0 10px 32px rgba(0,0,0,.25);resize:both;min-width:360px;min-height:220px;max-width:calc(100vw - 20px)}
 #detail.float .dh{cursor:move}
@@ -1091,7 +1093,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v25-1</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v25-2</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1127,6 +1129,19 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         <button data-shot="save">🗺 지금 지도 화면 → 이미지 저장</button>
         <button data-shot="copy">📋 지금 지도 화면 → 복사 (붙여넣기용)</button>
         <button data-shot="full">🖥 프로그램 전체 화면 → 이미지 저장</button>
+        <div class="shot-opt"><div class="small" style="color:#868e96;margin:6px 0 2px">지도 캡처에 넣을 것</div>
+          <label><input type="checkbox" data-so="route"> 노선 선·꼭짓점 번호</label>
+          <label><input type="checkbox" data-so="corr"> 도로 면(점선 영역)</label>
+          <label><input type="checkbox" data-so="pipe"> 배관 정보 글자</label>
+          <label><input type="checkbox" data-so="rv"> 로드뷰 위치·시야</label>
+          <label><input type="checkbox" data-so="parcel"> 필지 색</label>
+          <label><input type="checkbox" data-so="labels"> 지번 글자</label>
+          <label><input type="checkbox" data-so="legend"> 범례</label>
+          <label><input type="checkbox" data-so="scale"> 축척·제목</label>
+          <hr style="border:none;border-top:1px solid #eee;margin:4px 0">
+          <label title="캡처할 때만 지도를 노선 전체가 보이게 맞췄다가 원래대로 돌아옵니다"><input type="checkbox" data-so="fit"> 노선 전체가 들어가게 맞춰서</label>
+          <button data-shot="stop" id="shotStop" style="display:none;color:#c92a2a">■ 화면 공유 끝내기</button>
+        </div>
       </div></span>
       <button id="btnSaveRoute">영역 저장</button>
       <button id="btnLoadRoute" title="GeoJSON·KML·DXF(CAD)·CSV/엑셀 좌표">불러오기</button>
@@ -3572,11 +3587,13 @@ async function runQuery(){
       blds.forEach(b => {
         let pt; try{ pt = turf.pointOnFeature(b); }catch(e){ return; }
         const main = allResults.find(r => { try{ return turf.booleanPointInPolygon(pt, r.feature); }catch(e){ return false; } });
-        if(main) main.buildings.push(b.properties || {});
+        const bp = bdPnu(b.properties), owner = bp ? allResults.find(r => r.pnu === bp) : null;
+        if(main) main.buildings.push(bp && bp !== main.pnu ? Object.assign({}, b.properties || {}, { _other: pnuJibun(bp) }) : (b.properties || {}));
+        if(owner && owner !== main) owner.buildings.push(Object.assign({}, b.properties || {}, { _addr: true }));
         // 건물이 필지 경계에 걸쳐 있으면 이웃 필지에도 '걸친 건물'로 연결 (예전엔 중심점이 있는 필지에만 들어가 이웃 필지는 '건물 없음'이 됐음)
         if(!b.geometry || !/Polygon/.test(b.geometry.type)) return;
         let bb; try{ bb = turf.bbox(b); }catch(e){ return; }
-        allResults.forEach((r, i) => { const q = pb[i]; if(r === main || !q || q[0] > bb[2] || q[2] < bb[0] || q[1] > bb[3] || q[3] < bb[1]) return; const ov = overlapArea(b, r.feature); if(ov >= 1) r.buildings.push(Object.assign({}, b.properties || {}, { _part: Math.round(ov * 10) / 10 })); });
+        allResults.forEach((r, i) => { const q = pb[i]; if(r === main || !q || q[0] > bb[2] || q[2] < bb[0] || q[1] > bb[3] || q[3] < bb[1]) return; if(r === owner) return; const ov = overlapArea(b, r.feature); if(ov >= 1) r.buildings.push(Object.assign({}, b.properties || {}, { _part: Math.round(ov * 10) / 10 }, bp && bp !== r.pnu ? { _other: pnuJibun(bp) } : {})); });
       });
       log(`건물 ${blds.length}동 조회`);
     }catch(e){ log('건물 조회 실패: ' + e.message); }
@@ -3814,6 +3831,9 @@ async function bldApi(op, params, timeout = 15000){
 const NO_BLD_JIMOK = /^(도|구|천|제|유|철|수|도로|구거|하천|제방|유지|철도용지|수도용지)$/;
 function bldCacheGet(pnu){ if(!cfg.bldCache) return null; try{ const v = JSON.parse(localStorage.getItem('kgeopBld.' + pnu) || 'null'); if(v && Date.now() - v.t < 30 * 864e5) return v.b; }catch(e){} return null; }
 function bldCachePut(pnu, b){ if(!cfg.bldCache) return; try{ localStorage.setItem('kgeopBld.' + pnu, JSON.stringify({ t: Date.now(), b })); }catch(e){} }
+function bdPnu(pr){ const v = String((pr || {}).bd_mgt_sn || ''); return /^\d{25}$/.test(v) ? v.slice(0, 19) : ''; }
+function pnuJibun(pnu){ const b = Number(pnu.slice(11, 15)), j = Number(pnu.slice(15, 19)); return (pnu.charAt(10) === '2' ? '산' : '') + b + (j ? '-' + j : ''); }
+function ownBlds(r){ return (r.buildings || []).filter(b => !b._other); }
 async function bldMapFor(r, padM){
   const b = turf.bbox(r.feature), dy = (padM || 0) / 111000, dx = dy / Math.cos(b[1] * Math.PI / 180);
   const fs = await getFeatures('LT_C_SPBD', [b[0] - dx - 0.00002, b[1] - dy - 0.00002, b[2] + dx + 0.00002, b[3] + dy + 0.00002], 3);
@@ -3865,7 +3885,8 @@ function bldFlags(r){
   const yrs = bs.map(b => /^\d{4}/.test(b.useApr) ? new Date().getFullYear() - Number(b.useApr.slice(0, 4)) : null).filter(v => v != null);
   if(yrs.length && Math.max(...yrs) >= 30) f.push([`${Math.max(...yrs)}년 경과`, 'warn']);
   if(bs.some(b => /조적|블록|흙|목조/.test(b.strct))) f.push(['조적·목조', 'warn']);
-  if(!bs.length && r.buildings.length && r.bld) f.push(['대장 없음(무허가 의심)', 'red']);
+  if(!bs.length && ownBlds(r).length && r.bld) f.push(['대장 없음(무허가 의심)', 'red']);
+  if(!bs.length && !ownBlds(r).length && (r.buildings || []).some(b => b._other)) f.push([`걸친 건물은 ${[...new Set(r.buildings.filter(b => b._other).map(b => b._other))].join(', ')} 소속`, 'warn']);
   return f;
 }
 function bldSummary(r){
@@ -4027,7 +4048,8 @@ function bldText(r){
   const s2 = bldSummary(r); if(s2) return s2;
   if(r.bldTimeout) return '확인 못함(시간초과)';
   if(r.bldSkipped) return '';
-  if(r.bld && !r.bld.length && r.buildings.length) return `대장 없음 (지도상 건물 ${r.buildings.length}동)`;
+  if(r.bld && !r.bld.length && ownBlds(r).length) return `대장 없음 (지도상 건물 ${ownBlds(r).length}동)`;
+  if(r.bld && !r.bld.length && r.buildings.length) return '';
   if(!r.buildings.length) return '';
   const b = r.buildings[0];
   const nm = b.buld_nm || b.bld_nm || '';
@@ -4142,7 +4164,7 @@ async function showSingleParcel(ll){
   status(`선택한 필지: ${riJibun(r.addr, r.jibun)} — 정보 불러오는 중…`);
   await fetchOne(r);
   try{ r.roadArea = parcelRoadArea(f); r.roadSpatial = r.roadArea > 0.5; }catch(e){}
-  try{ r.buildings = (await bldMapFor(r, 0)).filter(b => bldRel(b, f).ov >= 1 || bldRel(b, f).inside).map(b => b.properties || {}); }catch(e){ log('지도상 건물 확인 실패: ' + e.message); }
+  try{ r.buildings = (await bldMapFor(r, 15)).map(b => { const rel = bldRel(b, f), bp = bdPnu(b.properties); if(bp === r.pnu) return Object.assign({}, b.properties || {}, rel.ov >= 1 || rel.inside ? {} : { _addr: true }); if(rel.ov >= 1 || rel.inside) return Object.assign({}, b.properties || {}, bp ? { _other: pnuJibun(bp) } : {}); return null; }).filter(Boolean); }catch(e){ log('지도상 건물 확인 실패: ' + e.message); }
   if(seq !== singleSeq) return;
   r.loading = !!cfg.bldKey; showDetail(r);
   if(cfg.bldKey){ try{ await fetchBld(r); }catch(e){} if(seq !== singleSeq) return; r.loading = false; showDetail(r); }
@@ -4214,10 +4236,10 @@ function showDetail(r){
       ['소재지', r.addr || r.jibun]
     ]),
     own: r.ownerFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['소유구분', '기관구분', '변동일자', '변동사유', '공유'].concat(owners.some(x => x.dong) ? ['동·층·호'] : []), owners.map(o => [o.se, o.nation || '-', fmtDate(o.date), o.cause, o.share].concat(owners.some(x => x.dong) ? [o.dong] : []))),
-    bld: `<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px"><span class="small" style="color:#495057;flex:1">지도상 건물(도로명주소 건물): <b>${r.buildings && r.buildings.length ? r.buildings.length + '동' + (r.buildings.some(b => b._part) ? ' (경계에 걸친 건물 포함)' : '') : '없음'}</b></span><button data-d="diag" title="브이월드 건물 자료와 건축물대장(표제부·총괄·기본개요·부속지번·같은 본번)을 나란히 비교">🔬 건물 자료 비교</button></div>` + (!cfg.bldKey ? '<div class="dempty">⚙ 설정에 건축물대장 키를 넣으면 보입니다.</div>'
+    bld: `<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px"><span class="small" style="color:#495057;flex:1">지도상 건물(도로명주소 건물): <b>${ownBlds(r).length ? ownBlds(r).length + '동' : '없음'}</b>${(r.buildings || []).some(b => b._other) ? ` <span style="color:#e67700">· 걸쳐 있는 이웃 지번 건물 ${r.buildings.filter(b => b._other).length}동(${esc([...new Set(r.buildings.filter(b => b._other).map(b => b._other))].join(', '))})</span>` : ''}</span><button data-d="diag" title="브이월드 건물 자료와 건축물대장(표제부·총괄·기본개요·부속지번·같은 본번)을 나란히 비교">🔬 건물 자료 비교</button></div>` + (!cfg.bldKey ? '<div class="dempty">⚙ 설정에 건축물대장 키를 넣으면 보입니다.</div>'
       : r.bldSkipped ? '<div class="dempty">지목이 도로·하천 등이고 지도상 건물도 없어 대장 조회를 생략했습니다. <button data-d="bldnow">지금 조회</button></div>'
       : r.bldFail ? `<div class="dempty">조회 실패: ${esc(r.bldErr || '')}</div>`
-      : r.bld && !r.bld.length ? `<div class="dempty">이 지번으로 등록된 건축물대장(표제부)이 없습니다.${r.buildings && r.buildings.length ? ' <b style="color:#e8590c">지도에는 건물이 있으니 🔬 비교로 원인을 확인해 보세요.</b>' : ''}</div>`
+      : r.bld && !r.bld.length ? `<div class="dempty">이 지번으로 등록된 건축물대장(표제부)이 없습니다.${ownBlds(r).length ? ' <b style="color:#e8590c">지도에는 이 지번 건물이 있으니 🔬 비교로 원인을 확인해 보세요.</b>' : ''}</div>`
       : (bldFlags(r).length ? `<div style="margin-bottom:4px">${bldFlags(r).map(([t, c]) => `<span class="flag ${c}">${esc(t)}</span>`).join(' ')}</div>` : '') + T(['건물명·동', '주용도', '구조', '층수', '연면적㎡', '사용승인'], bl.map(b => [b.name || (b.main || '-'), b.purps, b.strct, `${b.grnd}/${b.ugrnd ? 'B' + b.ugrnd : '-'}`, b.totArea ? fmtM2(b.totArea) : '', fmtDate(b.useApr)]))),
     plan: r.planFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['지역·지구·시설', '저촉여부'], plans.map(x => { const row = [x.name, x.cnflc]; if(ROAD_RE.test(x.name)) row._cls = 'road-row'; return row; }))
   };
@@ -4446,7 +4468,8 @@ function tracePath(ctx, geom, P){
   else if(g.type === 'LineString') ring(g.coordinates, false);
   else if(g.type === 'MultiLineString') g.coordinates.forEach(l => ring(l, false));
 }
-function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel){
+function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel, o){
+  o = o || { route: true, corr: true, parcel: true, labels: true, scale: true };
   const bb = { inView: f => { try{ const b = turf.bbox(f); const [x0, y0] = P([b[0], b[3]]), [x1, y1] = P([b[2], b[1]]); return x1 >= 0 && y1 >= 0 && x0 <= W && y0 <= H; }catch(e){ return false; } } };
   // 지적선
   ctx.save(); ctx.strokeStyle = cadColorNow(kindLabel === '일반지도' ? 'Base' : 'Satellite'); ctx.lineWidth = Math.max(1, Number(cfg.cadWeight)); ctx.globalAlpha = .9;
@@ -4458,7 +4481,7 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel){
   roadVis.forEach(f => { ctx.beginPath(); tracePath(ctx, f, P); ctx.fill(); });
   ctx.restore();
   // 조회 필지
-  results.forEach(r => {
+  if(o.parcel) results.forEach(r => {
     const c = COLORS[r.ownerClass];
     ctx.save(); ctx.beginPath(); tracePath(ctx, r.feature, P);
     ctx.globalAlpha = .28; ctx.fillStyle = c; ctx.fill();
@@ -4471,13 +4494,14 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel){
   // 글자: 도시계획도로 이름 → 지번 (선·번호보다 아래)
   const occ = [];
   if(z >= 16) drawRoadLabels(ctx, P, W, H, occ, 13);
-  if(cfg.showLabels && z >= 18) drawLabels(ctx, P, W, H, 12, occ);
+  if(o.labels && cfg.showLabels && z >= 18) drawLabels(ctx, P, W, H, 12, occ);
   // 도로 면(구간별 도로폭)
-  if(isLine() && corridorCache){
+  if(o.corr && isLine() && corridorCache){
     ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = cfg.routeColor; ctx.beginPath(); tracePath(ctx, corridorCache, P); ctx.fill();
     ctx.globalAlpha = .9; ctx.setLineDash([6, 4]); ctx.strokeStyle = cfg.routeColor; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
   }
   // 선/도형
+  if(o.route){
   const rw = Math.max(2, Number(cfg.routeWeight) + 1);
   ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = rw + 3; ctx.beginPath(); tracePath(ctx, targetGeom(), P); ctx.stroke();
@@ -4501,6 +4525,8 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel){
       else tag(x, y - 20, String(i), false);
     });
   }
+  }
+  if(!o.scale) return;
   // 축척·제목
   const mpp = 156543.03392 * Math.cos(centerLat * Math.PI / 180) / Math.pow(2, z);
   const nice = [5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 5000].find(m => m / mpp >= 80) || 5000;
@@ -4548,7 +4574,7 @@ function waitTiles(timeout = 7000){
   });
 }
 /* 지금 보고 있는 지도 화면 그대로 이미지로 (타일 직접 합성 → 안 되면 화면 공유 캡처) */
-async function composeView(){
+async function composeView(o){
   const sz = map.getSize(), z = Math.round(map.getZoom()), W = sz.x, H = sz.y;
   const tl = map.containerPointToLatLng([0, 0]);
   const ox = lng2x(tl.lng, z), oy = lat2y(tl.lat, z);
@@ -4567,7 +4593,14 @@ async function composeView(){
   }
   if(ok === 0 || fail > ok) throw new Error(`타일 ${fail}/${ok + fail}개 실패`);
   const P = c => [lng2x(c[0], z) - ox, lat2y(c[1], z) - oy];
-  drawOverlays(ctx, P, W, H, z, map.getCenter().lat, bv === 'Base' ? '일반지도' : '위성지도');
+  drawOverlays(ctx, P, W, H, z, map.getCenter().lat, bv === 'Base' ? '일반지도' : '위성지도', o);
+  if(o && o.legend){
+    const items = [['개인', COLORS.private], ['법인·종중·단체 등', COLORS.corp], ['국·공유지', COLORS.public], ['미확인', COLORS.unknown]].filter(() => o.parcel && results.length).concat([['도시계획도로', cfg.roadColor, 1]]).concat(o.route && isLine() ? [['노선', cfg.routeColor, 2]] : []);
+    ctx.save(); ctx.font = '12px "Malgun Gothic", sans-serif'; const lw = Math.max(...items.map(([t]) => ctx.measureText(t).width)) + 40, lh = 18 * items.length + 12;
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.fillRect(10, 10, lw, lh); ctx.strokeStyle = '#ced4da'; ctx.strokeRect(10.5, 10.5, lw, lh);
+    items.forEach(([t, c, k], i) => { const y = 22 + i * 18; if(k === 2){ ctx.fillStyle = c; ctx.fillRect(18, y - 2, 16, 4); } else if(k === 1){ ctx.strokeStyle = c; ctx.lineWidth = 2; ctx.strokeRect(19, y - 5, 14, 10); } else { ctx.globalAlpha = .55; ctx.fillStyle = c; ctx.fillRect(19, y - 5, 14, 10); ctx.globalAlpha = 1; } ctx.fillStyle = '#212529'; ctx.textBaseline = 'middle'; ctx.fillText(t, 40, y); });
+    ctx.restore();
+  }
   return cv;
 }
 async function grabScreen(region){
@@ -4584,21 +4617,75 @@ async function grabScreen(region){
     return cv;
   }finally{ stream.getTracks().forEach(t => t.stop()); }
 }
+const SHOT_DEF = { route: 1, corr: 0, pipe: 0, rv: 0, parcel: 1, labels: 1, legend: 1, scale: 1, fit: 0 };
+function shotOpt(){ const o = {}; Object.keys(SHOT_DEF).forEach(k => o[k] = LS.get('shot.' + k, String(SHOT_DEF[k])) === '1'); return o; }
+let shotStream = null;
+async function shotGetStream(){
+  if(shotStream && shotStream.getVideoTracks().some(t => t.readyState === 'live')) return shotStream;
+  toast('화면 공유 창에서 [이 탭]을 고르고 [공유]를 눌러 주세요. 한 번 허용하면 이 창을 닫을 때까지 다시 묻지 않습니다.', 9000);
+  shotStream = await navigator.mediaDevices.getDisplayMedia({ video: { displaySurface: 'browser' }, audio: false, preferCurrentTab: true, selfBrowserSurface: 'include' });
+  shotStream.getVideoTracks().forEach(t => t.addEventListener('ended', () => { shotStream = null; updShotStop(); }));
+  updShotStop(); return shotStream;
+}
+function updShotStop(){ const b = document.getElementById('shotStop'); if(b) b.style.display = shotStream ? '' : 'none'; }
+async function shotFrame(stream, region){
+  const video = document.createElement('video'); video.srcObject = stream; video.muted = true; video.playsInline = true;
+  await video.play(); await sleep(350);
+  const sx = video.videoWidth / window.innerWidth, sy = video.videoHeight / window.innerHeight;
+  const rc = region ? region.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+  const cv = document.createElement('canvas'); cv.width = Math.round(rc.width * sx); cv.height = Math.round(rc.height * sy);
+  cv.getContext('2d').drawImage(video, rc.left * sx, rc.top * sy, rc.width * sx, rc.height * sy, 0, 0, cv.width, cv.height);
+  video.pause(); video.srcObject = null;
+  return cv;
+}
+function shotPrep(o){
+  // 캡처 동안만 지도 위 조작용 표시를 숨김
+  const hidden = [], hide = ly => { if(ly && map.hasLayer(ly)){ map.removeLayer(ly); hidden.push(ly); } };
+  if(!o.parcel) hide(parcelLayer);
+  if(!o.labels) hide(labelLayer);
+  if(!o.corr) hide(corridorLayer);
+  if(!o.route){ hide(routeLine); hide(shapeLayer); hide(vertexLayer); hide(typeof routeHit !== 'undefined' ? routeHit : null); }
+  if(!o.pipe) hide(pipeLabLayer);
+  if(!o.rv){ hide(rvLayer); hide(rvFovLayer); }
+  [editLayer, edgeHandleLayer, measureLayer, ghostLayer, cmpLayer, diagLayer, flashLayer, typeof selHi !== 'undefined' ? selHi : null].forEach(hide);
+  document.body.classList.add('shooting'); document.body.classList.toggle('shot-nolegend', !o.legend);
+  return () => { hidden.forEach(ly => { try{ ly.addTo(map); }catch(e){} }); document.body.classList.remove('shooting', 'shot-nolegend'); try{ frontRoute(); }catch(e){} };
+}
 async function doShot(kind){
+  if(kind === 'stop'){ if(shotStream) shotStream.getTracks().forEach(t => t.stop()); shotStream = null; updShotStop(); return; }
+  const o = shotOpt();
   const nm = `${(activeRoute() || {}).name || '지도'}_화면_${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
+  const needStream = kind === 'full' || tileCors === false;
+  // 화면 공유는 클릭 직후에 요청해야 하므로 먼저
+  const streamP = needStream ? shotGetStream() : null;
+  const make = (async () => {
+    let cv, restore = null, prevView = null;
+    try{
+      if(kind !== 'full' && o.fit && hasTarget()){
+        prevView = [map.getCenter(), map.getZoom()];
+        const done = new Promise(res => { map.once('moveend', res); setTimeout(res, 1500); });
+        map.fitBounds(L.geoJSON(targetGeom()).getBounds(), { padding: [50, 50], maxZoom: 19 }); await done;
+      }
+      if(kind !== 'full' && tileCors === null) tileCors = await testTileCors();
+      if(kind !== 'full' && tileCors){ try{ cv = await composeView(o); }catch(e){ log('지도 합성 실패: ' + e.message); } }
+      if(!cv){
+        const st = await (streamP || shotGetStream());
+        restore = shotPrep(o); await sleep(prevView ? 900 : 180);
+        cv = await shotFrame(st, kind === 'full' ? null : $('#mapWrap'));
+      }
+    } finally { if(restore) restore(); if(prevView) map.setView(prevView[0], prevView[1], { animate: false }); }
+    return cv;
+  })();
+  const blobP = make.then(cv => new Promise(res => cv.toBlob(res, 'image/png')));
   try{
-    let cv;
-    if(kind === 'full') cv = await grabScreen(null);
-    else {
-      if(tileCors === null) tileCors = await testTileCors();
-      if(tileCors){ try{ cv = await composeView(); }catch(e){ log('지도 합성 실패: ' + e.message); } }
-      if(!cv) cv = await grabScreen($('#mapWrap'));
-    }
-    const blob = await new Promise(res => cv.toBlob(res, 'image/png'));
     if(kind === 'copy'){
-      try{ await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); toast('지금 지도 화면을 복사했습니다. 한글·엑셀·카톡 등에 Ctrl+V로 붙여 넣으세요.', 6000); return; }
-      catch(e){ toast('복사가 막혀 이미지 파일로 저장합니다: ' + e.message, 6000); }
+      // 클릭한 그 순간에 복사를 시작해 두면(이미지는 나중에 채움) 브라우저가 '클립보드 허용'을 묻지 않음
+      let wrote = null;
+      try{ wrote = navigator.clipboard.write([new ClipboardItem({ 'image/png': blobP })]); }catch(e){ wrote = Promise.reject(e); }
+      try{ await wrote; toast('지금 지도 화면을 복사했습니다. 한글·엑셀·카톡 등에 Ctrl+V로 붙여 넣으세요.', 6000); return; }
+      catch(e){ const mk = await make.then(() => null, er => er); if(mk) throw mk; log('복사 실패: ' + (e && e.message)); toast('이 브라우저에서 복사가 막혀 이미지 파일로 저장합니다.', 6000); }
     }
+    const blob = await blobP;
     const r = await offerSave(blob, '화면 캡처 저장', nm, '.png', 'image/png');
     if(r) status(`화면을 저장했습니다: ${r.file}`);
   }catch(e){ if(e && e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast('캡처 실패: ' + e.message, 7000); else status('캡처를 취소했습니다.'); }
@@ -5899,81 +5986,82 @@ $('#baseSel').value = LS.get('base', 'Hybrid');
 setBase($('#baseSel').value); $('#cadColor').value = cadColorNow(); applyCad(); applyLabels(); restyleRoute(); scheduleRoads(); updateBndBadge();
 /* ---------------- 건물 자료 비교 (위성사진엔 건물이 보이는데 자료엔 없을 때 원인 찾기) ---------------- */
 let diagLayer = L.layerGroup().addTo(map), diagSeq = 0, diagText = '';
-const HUB_F = [['platPlc', '대지위치'], ['newPlatPlc', '도로명주소'], ['bun', '번'], ['ji', '지'], ['bldNm', '건물명'], ['dongNm', '동'], ['mainAtchGbCdNm', '주/부속'], ['mainPurpsCdNm', '주용도'], ['etcPurps', '기타용도'], ['totArea', '연면적'], ['archArea', '건축면적'], ['grndFlrCnt', '지상'], ['useAprDay', '사용승인'], ['regstrKindCdNm', '대장종류'], ['regstrGbCdNm', '대장구분'], ['atchPlatPlc', '부속 대지위치'], ['atchBun', '부속 번'], ['atchJi', '부속 지'], ['atchGbCdNm', '부속구분'], ['crtnDay', '생성일']];
-const SPBD_SKIP = /^(geom|ag_geom|the_geom)$/i;
-function hubRow(x){ const t = HUB_F.filter(([k]) => x[k] != null && String(x[k]).trim() !== '').map(([k, n]) => `${n}:${String(x[k]).trim()}`); return t.length ? t.join(' · ') : JSON.stringify(x).slice(0, 300); }
+const v_ = x => String(x == null ? '' : x).trim();
+function hubBld(x){ return { jb: Number(x.bun) + (Number(x.ji) ? '-' + Number(x.ji) : ''), name: [v_(x.bldNm), v_(x.dongNm)].filter(Boolean).join(' '), main: v_(x.mainAtchGbCdNm), purps: v_(x.mainPurpsCdNm) + (v_(x.etcPurps) && v_(x.etcPurps) !== v_(x.mainPurpsCdNm) ? ` (${v_(x.etcPurps)})` : ''), area: Number(x.totArea) || 0, flr: Number(x.grndFlrCnt) || 0, ufl: Number(x.ugrndFlrCnt) || 0, apr: fmtDate(v_(x.useAprDay)), road: v_(x.newPlatPlc).replace(/^\S+\s+\S+\s+\S+\s+/, '') }; }
 async function bldDiag(r){
-  const seq = ++diagSeq, pp = pnuParams(r.pnu), el = fpanel('diagPanel', '🔬 건물 자료 비교', 680, [80, 110]);
+  const seq = ++diagSeq, pp = pnuParams(r.pnu), el = fpanel('diagPanel', '🔬 건물 자료 비교', 620, [80, 110]);
   el.querySelector('[data-fx]').onclick = () => { el.style.display = 'none'; diagLayer.clearLayers(); diagSeq++; };
-  el.querySelector('.fbtn').innerHTML = '<button data-g="copy" title="결과를 글자로 복사 (Claude에게 붙여 넣어 같이 볼 수 있음)">📋 결과 복사</button>';
+  el.querySelector('.fbtn').innerHTML = '<button data-g="copy" title="결과를 글자로 복사">📋 결과 복사</button>';
   el.querySelector('[data-g=copy]').onclick = async () => toast(await copyText(diagText) ? '비교 결과를 복사했습니다.' : '복사하지 못했습니다.', 3000);
-  const S = { spbd: null, spbdErr: '', hub: [] };
-  const name = `${shortAddr(r.addr)} ${jibunNo(r.jibun)}`;
+  const S = { spbd: null, spbdErr: '', hub: {} }, me = pnuJibun(r.pnu), name = `${shortAddr(r.addr)} ${jibunNo(r.jibun)}`;
   const draw = () => {
     if(seq !== diagSeq) return;
-    const L1 = [], H = [];
-    H.push(`<div class="small" style="margin-bottom:6px"><b>${esc(name)}</b> · 지목 ${esc(r.jimok || '-')} · PNU ${esc(r.pnu)}<br>건축물대장 조회값: 시군구 ${pp.sigunguCd} · 법정동 ${pp.bjdongCd} · 대지구분 ${pp.platGbCd === '1' ? '산(1)' : '대지(0)'} · 번 ${pp.bun} · 지 ${pp.ji}</div>`);
-    L1.push(`[필지] ${r.addr || name} / 지목 ${r.jimok || '-'} / PNU ${r.pnu} / 대장조회값 sigunguCd=${pp.sigunguCd} bjdongCd=${pp.bjdongCd} platGbCd=${pp.platGbCd} bun=${pp.bun} ji=${pp.ji}`);
+    const H = [], T = [];
+    const all = S.spbd || [];
+    const onP = all.filter(x => x.rel.inside || x.rel.ov >= 1), addrHere = all.filter(x => x.bp === r.pnu), near = all.filter(x => !onP.includes(x) && !addrHere.includes(x) && x.rel.dist != null && x.rel.dist <= 3);
+    const show = [...new Set(onP.concat(addrHere, near))], others = all.length - show.length;
+    const H1 = S.hub.title, HB = S.hub.bun;
+    const mine = ((H1 && H1.items) || []).map(hubBld), otherJ = ((HB && HB.items) || []).map(hubBld).filter(x => x.jb !== me);
+    const hubDone = !cfg.bldKey || ['title', 'recap', 'atch', 'bun'].every(k => S.hub[k] && (S.hub[k].items || S.hub[k].err));
+    const done = S.spbd != null && hubDone;
     // 판단
-    const spIn = (S.spbd || []).filter(x => x.rel.inside || x.rel.ov >= 1), spNear = (S.spbd || []).filter(x => !(x.rel.inside || x.rel.ov >= 1) && x.rel.dist != null && x.rel.dist <= 3);
-    const hubOf = k => (S.hub.find(h => h.k === k) || {});
-    const t1 = hubOf('title'), tb = hubOf('bun'), ta = hubOf('atch'), tr = hubOf('recap'), tbo = hubOf('basis');
-    const nThis = (t1.items || []).length + (tr.items || []).length + (tbo.items || []).length;
-    const jiN = v => String(Number(v || 0));
-    const otherJi = (tb.items || []).filter(x => jiN(x.ji) !== jiN(pp.ji));
-    const done = S.spbd != null && S.hub.length >= (cfg.bldKey ? 5 : 0) && S.hub.every(h => h.items || h.err);
     const J = [];
     if(done){
-      if(spIn.length && !nThis && cfg.bldKey){
-        J.push(`도로명주소 건물 자료에는 이 필지에 건물 ${spIn.length}동이 있는데, 이 지번의 건축물대장은 없습니다.`);
-        if(otherJi.length) J.push(`같은 본번(${Number(pp.bun)}번지)의 다른 지번에 대장이 ${otherJi.length}건 있습니다: ${[...new Set(otherJi.map(x => Number(x.bun) + (Number(x.ji) ? '-' + Number(x.ji) : '')))].join(', ')} → 대장이 다른 지번으로 등록됐을 수 있습니다.`);
-        if((ta.items || []).length) J.push('부속지번으로 이어진 대장이 있습니다(아래 부속지번 참고).');
-        if(!otherJi.length && !(ta.items || []).length) J.push('같은 본번·부속지번에도 없으면 미등재(무허가) 건물이거나, 대장이 이웃 필지 지번으로 등록됐을 가능성이 큽니다 → 세움터·건축물대장 열람으로 확인.');
-      } else if(!spIn.length && !nThis){
-        J.push('두 자료 모두 이 필지에 건물이 없습니다. 위성사진에 보인다면 사진 촬영 뒤 변동(철거·신축)이거나 자료에 없는 건물(미등재·가설건축물 등)일 수 있습니다.');
-        if(spNear.length) J.push(`바로 옆(3m 이내)에 건물 ${spNear.length}동이 있습니다 → 지적선과 사진이 어긋나 이웃 필지 건물이 이 필지 위에 보이는 것일 수 있습니다.`);
-        if(otherJi.length) J.push(`같은 본번의 다른 지번에 대장이 있습니다: ${[...new Set(otherJi.map(x => Number(x.bun) + (Number(x.ji) ? '-' + Number(x.ji) : '')))].join(', ')}`);
-      } else if(!spIn.length && nThis) J.push('건축물대장은 있는데 도로명주소 건물 자료(지도)에는 없습니다 → 도로명주소가 안 붙은 건물이거나 지도 자료 갱신 전일 수 있습니다.');
-      else if(spIn.length && nThis) J.push('두 자료 모두 건물이 있습니다.' + (spIn.some(x => !x.rel.inside) ? ' 일부 건물은 중심이 이웃 필지에 있어 예전 버전에선 이 필지가 "건물 없음"으로 보였을 수 있습니다(v25-1에서 고침).' : ''));
-      if(!cfg.bldKey) J.push('⚙ 설정에 건축물대장 키가 없어 대장 비교는 못 했습니다.');
+      const foreign = onP.filter(x => x.bp && x.bp !== r.pnu);
+      if(foreign.length) J.push(`이 필지 위 건물 ${foreign.map(x => '#' + x.no).join(', ')}은(는) 주소상 <b>${[...new Set(foreign.map(x => x.jb))].join(', ')}</b> 소속입니다 → 대장도 그 지번으로 확인하세요.`);
+      const away = addrHere.filter(x => !(x.rel.inside || x.rel.ov >= 1));
+      if(away.length) J.push(`이 지번 주소의 건물 ${away.map(x => '#' + x.no).join(', ')}이(가) 지도에서는 필지 밖(${away.map(x => x.rel.dist != null ? x.rel.dist.toFixed(1) + 'm' : '').join(', ')})에 그려져 있습니다 → 지적선과 건물 도형이 어긋난 곳입니다.`);
+      const mineMain = mine.filter(x => !/부속/.test(x.main));
+      if(cfg.bldKey){
+        if(addrHere.length && !mine.length) J.push(`이 지번 주소의 건물이 있는데 건축물대장이 없습니다${otherJ.length ? ` (같은 본번 ${[...new Set(otherJ.map(x => x.jb))].join(', ')}에는 대장 있음)` : ''} → 미등재이거나 다른 지번으로 등록됐을 수 있습니다.`);
+        if(!addrHere.length && !onP.length && !mine.length) J.push('두 자료 모두 이 필지에 건물이 없습니다. 위성사진에 보이면 사진 촬영 뒤 변동이거나 자료에 없는 건물(미등재·가설건축물 등)일 수 있습니다.' + (near.length ? ` 바로 옆 건물(${near.map(x => '#' + x.no).join(', ')})이 지적선 어긋남으로 이 필지 위에 보일 수도 있습니다.` : ''));
+        if(mine.length && !addrHere.length && !onP.length) J.push('건축물대장은 있는데 지도 건물 자료에는 없습니다 → 도로명주소가 없는 건물이거나 지도 자료 갱신 전입니다.');
+        if(!J.length) J.push(`이상 없음 — 지도 건물 ${addrHere.length}동, 대장 주건축물 ${mineMain.length}동${mine.length > mineMain.length ? ` (부속 ${mine.length - mineMain.length}동)` : ''}.`);
+      } else J.push('⚙ 설정에 건축물대장 키가 없어 대장은 비교하지 못했습니다.');
     }
-    H.push(`<div style="background:${done ? '#fff9db' : '#f1f3f5'};border:1px solid ${done ? '#ffe066' : '#dee2e6'};border-radius:8px;padding:7px 9px;margin-bottom:8px"><b>판단</b> ${done ? (J.length ? J.map(esc).join('<br>') : '-') : '<span class="small">조회 중…</span>'}</div>`);
-    L1.push('[판단] ' + (done ? J.join(' / ') : '조회 중'));
-    // 브이월드 건물
-    H.push('<div style="font-weight:700;margin:6px 0 3px">① 브이월드 도로명주소 건물 (LT_C_SPBD, 필지 주변 15m)</div>');
-    if(S.spbdErr) H.push(`<div class="jb-bad">오류: ${esc(S.spbdErr)}</div>`), L1.push('[브이월드 건물] 오류 ' + S.spbdErr);
+    H.push(`<div style="margin-bottom:6px"><b style="font-size:13.5px">${esc(name)}</b> <span class="small" style="color:#868e96">지목 ${esc(r.jimok || '-')}</span></div>`);
+    H.push(`<div style="background:${done ? '#fff9db' : '#f1f3f5'};border:1px solid ${done ? '#ffe066' : '#dee2e6'};border-radius:8px;padding:7px 9px;margin-bottom:10px;line-height:1.55">${done ? J.join('<br>') : '<span class="small">조회 중…</span>'}</div>`);
+    T.push(`[${r.addr || name}] 지목 ${r.jimok || '-'} / PNU ${r.pnu}`, '판단: ' + (done ? J.join(' / ').replace(/<[^>]+>/g, '') : '조회 중'));
+    // 지도 건물
+    H.push('<div style="font-weight:700;margin:4px 0 3px">지도 건물 (도로명주소 건물)</div>');
+    if(S.spbdErr) H.push(`<div class="jb-bad">조회 실패: ${esc(S.spbdErr)}</div>`);
     else if(S.spbd == null) H.push('<div class="small">조회 중…</div>');
-    else if(!S.spbd.length) H.push('<div class="small">주변 15m에 건물 없음</div>'), L1.push('[브이월드 건물] 주변 15m 없음');
+    else if(!show.length) H.push('<div class="small">이 필지 위·옆(3m)에 건물 없음</div>'), T.push('지도 건물: 없음');
     else {
-      H.push(`<table><thead><tr><th>#</th><th>이 필지와</th><th>건물 면적</th><th>속성 (자료 그대로)</th></tr></thead><tbody>${S.spbd.map((x, i) => `<tr><td>${i + 1}</td><td style="white-space:nowrap">${x.rel.inside ? '<b style="color:#c92a2a">중심이 이 필지</b>' : x.rel.ov >= 1 ? '<b style="color:#e8590c">걸침</b>' : '이웃'}${x.rel.ov >= 0.05 ? `<div class="small">겹침 ${fmtM2(x.rel.ov)}㎡</div>` : x.rel.dist != null ? `<div class="small">${x.rel.dist.toFixed(1)}m 떨어짐</div>` : ''}</td><td class="num">${fmtM2(x.area)}㎡</td><td class="small" style="word-break:break-all">${esc(Object.entries(x.props || {}).filter(([k, v]) => v != null && String(v).trim() !== '' && !SPBD_SKIP.test(k)).map(([k, v]) => k + '=' + v).join(', '))}</td></tr>`).join('')}</tbody></table>`);
-      S.spbd.forEach((x, i) => L1.push(`[브이월드 건물 ${i + 1}] ${x.rel.inside ? '중심이 이 필지' : x.rel.ov >= 1 ? '걸침' : '이웃'} 겹침${fmtM2(x.rel.ov)}㎡${x.rel.dist != null ? ' 거리' + x.rel.dist.toFixed(1) + 'm' : ''} 면적${fmtM2(x.area)}㎡ | ` + Object.entries(x.props || {}).filter(([k, v]) => v != null && String(v).trim() !== '' && !SPBD_SKIP.test(k)).map(([k, v]) => k + '=' + v).join(', ')));
+      H.push(`<table><thead><tr><th>#</th><th>위치</th><th>주소상 지번</th><th>도로명주소</th><th class="num">층</th><th class="num">면적㎡</th></tr></thead><tbody>${show.map(x => `<tr><td>${x.no}</td><td style="white-space:nowrap">${x.rel.inside ? '이 필지 위' : x.rel.ov >= 1 ? `걸침 ${fmtM2(x.rel.ov)}㎡` : `옆 ${x.rel.dist != null ? x.rel.dist.toFixed(1) + 'm' : ''}`}</td><td>${x.jb ? (x.bp === r.pnu ? `<b>${esc(x.jb)}</b>` : `<b style="color:#e8590c">${esc(x.jb)}</b>`) : '-'}</td><td>${esc(x.road)}</td><td class="num">${esc(x.flr || '')}</td><td class="num">${fmtM2(x.area)}</td></tr>`).join('')}</tbody></table>${others > 0 ? `<div class="small" style="color:#adb5bd;margin-top:2px">주변의 다른 건물 ${others}동은 생략</div>` : ''}`);
+      show.forEach(x => T.push(`  #${x.no} ${x.rel.inside ? '이 필지 위' : x.rel.ov >= 1 ? '걸침 ' + fmtM2(x.rel.ov) + '㎡' : '옆 ' + (x.rel.dist != null ? x.rel.dist.toFixed(1) + 'm' : '')} · 주소상 ${x.jb || '-'} · ${x.road} · ${x.flr || '-'}층 · ${fmtM2(x.area)}㎡`));
     }
-    // 건축HUB
-    H.push('<div style="font-weight:700;margin:10px 0 3px">② 건축물대장 (건축HUB)</div>');
-    if(!cfg.bldKey) H.push('<div class="small">키 없음</div>');
-    S.hub.forEach(h => {
-      H.push(`<div style="margin:5px 0 2px"><b>${esc(h.t)}</b> <span class="small" style="color:#868e96">${esc(h.op)}</span> — ${h.err ? `<span class="jb-bad">${esc(h.err)}</span>` : h.items ? `<b>${h.total || h.items.length}건</b>` : '조회 중…'}</div>`);
-      if(h.items && h.items.length) H.push(`<div class="small" style="padding-left:8px;line-height:1.55">${h.items.slice(0, 30).map((x, i) => `${i + 1}) ${esc(hubRow(x))}`).join('<br>')}${h.items.length > 30 ? '<br>…' : ''}</div>`);
-      L1.push(`[대장 ${h.t}] ${h.op} ` + (h.err ? '오류 ' + h.err : h.items ? `${h.total || h.items.length}건` + h.items.slice(0, 30).map((x, i) => `\n  ${i + 1}) ${hubRow(x)}`).join('') : '조회 중'));
-    });
-    H.push('<div class="small" style="color:#868e96;margin-top:8px">지도: 주황 = 이 필지, 빨강 = 이 필지에 걸친 건물, 회색 = 이웃 건물. 위성사진 촬영 시점과 자료 갱신 시점이 다를 수 있습니다.</div>');
+    // 대장
+    if(cfg.bldKey){
+      H.push('<div style="font-weight:700;margin:10px 0 3px">건축물대장 (이 지번)</div>');
+      if(!H1 || (!H1.items && !H1.err)) H.push('<div class="small">조회 중…</div>');
+      else if(H1.err) H.push(`<div class="jb-bad">조회 실패: ${esc(H1.err)}</div>`);
+      else if(!mine.length) H.push('<div class="small">없음</div>'), T.push('대장(이 지번): 없음');
+      else { H.push(`<table><thead><tr><th>건물명</th><th>주/부속</th><th>주용도</th><th class="num">연면적㎡</th><th class="num">층</th><th>사용승인</th></tr></thead><tbody>${mine.map(x => `<tr><td>${esc(x.name || '-')}</td><td>${esc(x.main.replace('건축물', ''))}</td><td>${esc(x.purps)}</td><td class="num">${fmtM2(x.area)}</td><td class="num">${x.flr}${x.ufl ? '/B' + x.ufl : ''}</td><td>${esc(x.apr)}</td></tr>`).join('')}</tbody></table>`); mine.forEach(x => T.push(`  대장 ${me}: ${x.name || '-'} · ${x.main} · ${x.purps} · ${fmtM2(x.area)}㎡ · ${x.flr}층 · ${x.apr}`)); }
+      const cnt = k => S.hub[k] ? (S.hub[k].err ? '실패' : S.hub[k].items ? (S.hub[k].total || S.hub[k].items.length) + '건' : '…') : '…';
+      if(otherJ.length){ const g = {}; otherJ.forEach(x => (g[x.jb] = g[x.jb] || []).push(x)); H.push(`<div style="margin-top:8px"><b>같은 본번의 다른 지번 대장</b><div class="small" style="line-height:1.6;padding-left:6px">${Object.entries(g).map(([jb, xs]) => `<b>${esc(jb)}</b> — ${xs.map(x => `${esc(x.purps)} ${fmtM2(x.area)}㎡ ${x.flr}층`).join(', ')}`).join('<br>')}</div></div>`); Object.entries(g).forEach(([jb, xs]) => T.push(`  같은 본번 ${jb}: ` + xs.map(x => `${x.purps} ${fmtM2(x.area)}㎡ ${x.flr}층`).join(', '))); }
+      H.push(`<div class="small" style="color:#868e96;margin-top:6px">총괄표제부 ${cnt('recap')} · 부속지번 ${cnt('atch')} · 같은 본번 전체 ${cnt('bun')}</div>`);
+      T.push(`총괄표제부 ${cnt('recap')} · 부속지번 ${cnt('atch')}`);
+    }
+    H.push('<div class="small" style="color:#adb5bd;margin-top:8px">지도: 주황 테두리 = 이 필지 · 빨강 = 이 필지 위 건물 · 보라 = 이 지번 주소인데 밖에 있는 건물 · 회색 = 옆 건물</div>');
     el.querySelector('.fb').innerHTML = H.join('');
-    diagText = L1.join('\n');
+    diagText = T.join('\n');
   };
   draw();
   diagLayer.clearLayers(); L.geoJSON(r.feature, { style: { color: '#f08c00', weight: 3, fill: false }, interactive: false }).addTo(diagLayer);
-  const jobs = [];
-  jobs.push((async () => {
-    try{ const bs = await bldMapFor(r, 15); S.spbd = bs.map(b => ({ props: b.properties || {}, rel: bldRel(b, r.feature), area: (() => { try{ return turf.area(b); }catch(e){ return 0; } })(), f: b })).sort((a, b) => (b.rel.inside - a.rel.inside) || (b.rel.ov - a.rel.ov));
-      if(seq === diagSeq) S.spbd.forEach((x, i) => { const hit = x.rel.inside || x.rel.ov >= 1; L.geoJSON(x.f, { style: { color: hit ? '#c92a2a' : '#868e96', weight: 2, fillColor: hit ? '#ff8787' : '#ced4da', fillOpacity: .45 }, interactive: false }).addTo(diagLayer); const c = labelPoint(x.f); if(c) L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="ghost-lab" style="background:${hit ? '#c92a2a' : '#868e96'};color:#fff">${i + 1}</span>`, iconSize: [0, 0] }), interactive: false }).addTo(diagLayer); });
+  const jobs = [(async () => {
+    try{
+      const bs = await bldMapFor(r, 15);
+      S.spbd = bs.map(b => { const pr = b.properties || {}, bp = bdPnu(pr); return { pr, bp, jb: bp ? pnuJibun(bp) : '', road: [v_(pr.rd_nm), v_(pr.buld_no)].filter(Boolean).join(' '), flr: v_(pr.gro_flo_co), rel: bldRel(b, r.feature), area: (() => { try{ return turf.area(b); }catch(e){ return 0; } })(), f: b }; })
+        .sort((a, b) => (b.rel.inside - a.rel.inside) || (b.rel.ov - a.rel.ov) || ((b.bp === r.pnu) - (a.bp === r.pnu)) || ((a.rel.dist || 0) - (b.rel.dist || 0)));
+      S.spbd.forEach((x, i) => x.no = i + 1);
+      if(seq === diagSeq) S.spbd.forEach(x => { const on = x.rel.inside || x.rel.ov >= 1, ad = x.bp === r.pnu, nr = x.rel.dist != null && x.rel.dist <= 3; if(!on && !ad && !nr) return; const c = on ? '#c92a2a' : ad ? '#7048e8' : '#868e96'; L.geoJSON(x.f, { style: { color: c, weight: 2, fillColor: c, fillOpacity: .3 }, interactive: false }).addTo(diagLayer); const lp = labelPoint(x.f); if(lp) L.marker([lp[1], lp[0]], { icon: L.divIcon({ className: '', html: `<span class="ghost-lab" style="background:${c};color:#fff">${x.no}</span>`, iconSize: [0, 0] }), interactive: false }).addTo(diagLayer); });
     }catch(e){ S.spbd = []; S.spbdErr = e.message; }
     draw();
-  })());
+  })()];
   if(cfg.bldKey){
     const noJi = Object.assign({}, pp); delete noJi.ji;
-    const ops = [['title', '표제부 (이 지번)', 'getBrTitleInfo', pp], ['recap', '총괄표제부 (이 지번)', 'getBrRecapTitleInfo', pp], ['basis', '기본개요 (이 지번)', 'getBrBasisOulnInfo', pp], ['atch', '부속지번 (이 지번)', 'getBrAtchJibunInfo', pp], ['bun', `표제부 (같은 본번 ${Number(pp.bun)}번지 전체)`, 'getBrTitleInfo', noJi]];
-    ops.forEach(([k, t, op, prm]) => { const h = { k, t, op }; S.hub.push(h); jobs.push((async () => { try{ const res = await bldApi(op, prm, 20000); h.items = res.items; h.total = res.total; }catch(e){ h.err = e.message; } draw(); })()); });
-    draw();
+    [['title', 'getBrTitleInfo', pp], ['recap', 'getBrRecapTitleInfo', pp], ['atch', 'getBrAtchJibunInfo', pp], ['bun', 'getBrTitleInfo', noJi]].forEach(([k, op, prm]) => { const h = S.hub[k] = { op }; jobs.push((async () => { try{ const res = await bldApi(op, prm, 20000); h.items = res.items; h.total = res.total; }catch(e){ h.err = e.message; } draw(); })()); });
   }
   map.fitBounds(L.geoJSON(r.feature).getBounds(), { maxZoom: 20, padding: [120, 120] });
   await Promise.all(jobs); draw();
@@ -6218,6 +6306,8 @@ $('#btnHelp').onclick = openHelp;
 { const lg = document.getElementById('legend'), tg = document.getElementById('lgToggle'); const set = m => { lg.classList.toggle('min', m); tg.textContent = m ? '▸' : '▾'; LS.set('legendMin', m ? '1' : '0'); }; set(LS.get('legendMin', '0') === '1'); tg.onclick = () => set(!lg.classList.contains('min')); lg.querySelector('.lg-head b').onclick = () => set(!lg.classList.contains('min')); }
 $('#btnShot').onclick = e => { e.stopPropagation(); $('#shotMenu').classList.toggle('open'); };
 document.querySelectorAll('#shotMenu [data-shot]').forEach(b => b.onclick = e => { e.stopPropagation(); $('#shotMenu').classList.remove('open'); doShot(b.dataset.shot); });
+{ const o = shotOpt(); document.querySelectorAll('#shotMenu [data-so]').forEach(c => { c.checked = o[c.dataset.so]; c.onchange = () => LS.set('shot.' + c.dataset.so, c.checked ? '1' : '0'); c.closest('label').onclick = e => e.stopPropagation(); }); }
+setTimeout(() => { if(cfg.key && tileCors === null && /^https?:$/.test(location.protocol)) testTileCors().then(v => { if(tileCors === null) tileCors = v; }); }, 3000);
 document.addEventListener('click', e => { const m = document.getElementById('shotMenu'); if(m && !e.target.closest('#btnShot, #shotMenu')) m.classList.remove('open'); });
 document.querySelectorAll('#asideTabs button').forEach(b => b.onclick = () => { if(b.dataset.tab === 'parcel' && popWin && !popWin.closed){ popWin.focus(); return; } setTab(b.dataset.tab); });
 $('#rpNew').onclick = () => startDraw('line');
