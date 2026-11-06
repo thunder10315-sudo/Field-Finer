@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v22</title>
+<title>노선 필지 조회기 v22-1</title>
 <style>/* required styles */
 
 .leaflet-pane,
@@ -878,6 +878,8 @@ details.dsec>summary::before{content:'▸ ';color:var(--muted)}details.dsec[open
 #rvF.embed{width:520px} #rvF.embed.big{width:880px}
 #rvViewWrap{display:none;position:relative;margin:0 -12px;background:#212529}
 #rvF.embed #rvViewWrap{display:block}
+#rvF.ext #rvViewWrap{display:none!important} #rvF.ext{width:380px!important}
+#rvF .ext-note{margin:6px 0 2px;padding:6px 8px;background:#f3f0ff;border-radius:6px;font-size:12px;line-height:1.5} #rvF .ext-note button{font-size:11px;padding:1px 7px;margin-left:4px}
 #rvView{width:100%;height:300px} #rvF.big #rvView{height:min(520px, calc(100vh - 380px))}
 #rvF .rv-none{display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#fff;font-size:13px;background:rgba(33,37,41,.85);text-align:center;padding:10px}
 #rvF .rh{display:flex;align-items:center;gap:6px;margin:0 -12px 6px;padding:7px 12px;background:#f3f0ff;border-bottom:1px solid #d0bfff;cursor:move;border-radius:8px 8px 0 0}
@@ -935,12 +937,78 @@ button.pulse{box-shadow:0 0 0 3px rgba(31,111,235,.35)}
 #detail th{position:static}
 #detail h4{margin:10px 0 2px;font-size:13px}
 </style>
+<style>
+html.rv-only body > *:not(#rvOnly){display:none!important}
+html.rv-only body{margin:0;overflow:hidden;background:#111}
+#rvOnly{position:fixed;inset:0;display:flex;flex-direction:column;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif}
+#rvOnly .ro-bar{display:flex;align-items:center;gap:10px;padding:7px 12px;background:#f3f0ff;border-bottom:1px solid #d0bfff;font-size:13px;flex:none}
+#rvOnly .ro-bar #roS{color:#495057;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#rvOnly .ro-bar button{font-size:13px;padding:3px 10px;border:1px solid #ced4da;border-radius:6px;background:#fff;cursor:pointer}
+#rvOnly .ro-bar button.pri{background:#7048e8;color:#fff;border-color:#7048e8}
+#roView{flex:1;position:relative}
+#roNone,#roMsg{display:none;position:absolute;left:0;right:0;top:44px;bottom:0;align-items:center;justify-content:center;color:#fff;background:rgba(17,17,17,.85);font-size:15px;text-align:center;padding:20px;z-index:5}
+</style>
+<script>
+/* 로드뷰 전용 창: index.html?rv=1 로 열리면 지도 앱 대신 카카오 로드뷰만 크게 보여 줌. 원래 창과 BroadcastChannel로 주고받음 */
+(function(){
+  if(new URLSearchParams(location.search).get('rv') !== '1') return;
+  window.__RV_ONLY = true;
+  document.documentElement.classList.add('rv-only');
+  document.title = '로드뷰 — 노선 필지 조회기';
+  var key = ''; try{ key = localStorage.getItem('kgeopRoute.kakaoKey') || ''; }catch(e){}
+  var bc = ('BroadcastChannel' in window) ? new BroadcastChannel('kgeopRv') : null;
+  var rv = null, cli = null, pend = null, pan = null;
+  function $id(i){ return document.getElementById(i); }
+  function msg(t){ var m = $id('roMsg'); if(m){ m.textContent = t; m.style.display = 'flex'; } }
+  function send(o){ if(bc) bc.postMessage(o); }
+  function show(p){
+    pend = p;
+    $id('roT').textContent = p.title || '🎥 로드뷰'; $id('roS').textContent = p.sub || '';
+    $id('roNav').style.display = p.nav ? '' : 'none';
+    if(!rv) return;
+    pan = p.pan; var pos = new kakao.maps.LatLng(p.lat, p.lng);
+    cli.getNearestPanoId(pos, 50, function(id){
+      $id('roNone').style.display = id ? 'none' : 'flex';
+      if(!id) return;
+      rv.setPanoId(id, pos);
+      setTimeout(function(){ if(pan != null) try{ rv.setViewpoint({ pan: pan, tilt: 0, zoom: 0 }); }catch(e){} }, 400);
+    });
+  }
+  function build(){
+    var d = document.createElement('div'); d.id = 'rvOnly';
+    d.innerHTML = '<div class="ro-bar"><b id="roT">🎥 로드뷰</b><span id="roS"></span><span id="roNav"><button data-c="prev">◀ 이전</button> <button data-c="next" class="pri">다음 ▶</button></span><button data-c="dock" title="이 창을 닫고 원래 창 안에서 보기">↙ 원래 창으로</button></div><div id="roView"></div><div id="roNone">이 지점 50m 안에는 카카오 로드뷰 사진이 없습니다</div><div id="roMsg"></div>';
+    document.body.appendChild(d);
+    d.querySelectorAll('[data-c]').forEach(function(b){ b.onclick = function(){ send({ type: 'cmd', cmd: b.dataset.c }); if(b.dataset.c === 'dock') setTimeout(function(){ window.close(); }, 50); }; });
+    addEventListener('keydown', function(e){ if(e.key === 'ArrowRight') send({ type: 'cmd', cmd: 'next' }); else if(e.key === 'ArrowLeft') send({ type: 'cmd', cmd: 'prev' }); });
+    addEventListener('resize', function(){ if(rv) try{ rv.relayout(); }catch(e){} });
+    addEventListener('pagehide', function(){ send({ type: 'closed' }); });
+    if(!bc){ msg('이 브라우저는 창끼리 연결(BroadcastChannel)을 지원하지 않습니다. 크롬·엣지 최신 버전을 써 주세요.'); return; }
+    if(!key){ msg('카카오 키가 없습니다. 원래 창의 ⚙ 설정에서 카카오 JavaScript 키를 넣어 주세요.'); return; }
+    var sc = document.createElement('script');
+    sc.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + encodeURIComponent(key) + '&autoload=false';
+    sc.onload = function(){
+      if(!(window.kakao && kakao.maps && kakao.maps.load)){ msg('카카오 지도 API를 불러오지 못했습니다(키·도메인·카카오맵 사용 설정 확인)'); return; }
+      kakao.maps.load(function(){
+        rv = new kakao.maps.Roadview($id('roView')); cli = new kakao.maps.RoadviewClient();
+        var ap = function(){ if(pan != null) try{ rv.setViewpoint({ pan: pan, tilt: 0, zoom: 0 }); }catch(e){} };
+        kakao.maps.event.addListener(rv, 'init', ap); kakao.maps.event.addListener(rv, 'panoid_changed', ap);
+        if(pend) show(pend);
+        send({ type: 'ready' });
+      });
+    };
+    sc.onerror = function(){ msg('카카오 지도 API를 불러오지 못했습니다(키·도메인·카카오맵 사용 설정 확인)'); };
+    document.head.appendChild(sc);
+  }
+  if(bc) bc.onmessage = function(e){ var m = e.data || {}; if(m.type === 'show') show(m); else if(m.type === 'close') window.close(); };
+  document.addEventListener('DOMContentLoaded', function(){ build(); send({ type: 'hello' }); });
+})();
+</script>
 </head>
 <body>
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v22</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v22-1</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button>
@@ -1159,7 +1227,7 @@ button.pulse{box-shadow:0 0 0 3px rgba(31,111,235,.35)}
       <li><b>노선 그리기</b> — <b>✏ 선</b>을 누르고 위성사진을 보며 <b>배관이 지나갈 위치</b>(보통 도로 가운데)를 따라 클릭합니다. 더블클릭(또는 Enter)으로 끝내고, Backspace는 점 하나 되돌리기, Esc는 취소입니다. 그리는 동안 커서 옆에 <b>총 길이</b>가 보입니다.<br>
         그린 노선은 오른쪽 <b>🧭 노선</b> 탭에 쌓입니다. 목록이나 지도의 회색 점선 노선을 누르면 다시 열려 고칠 수 있고, 연장·꼭짓점·시점/종점·사유지 같은 <b>노선 정보</b>와 이전 조회 결과도 그대로 보입니다.<br>
         <b>✏ 노선 편집 창</b>: 그린 <b>선</b>이나 꼭짓점 이름표를 누르거나, 도로 면 위에서 <b>우클릭 → 이 구간 편집 / 노선 전체 편집</b>을 고르면 열립니다. 도로 폭은 <b>구간마다</b> 넣습니다. 숫자를 바로 고치거나 <b>📏</b>를 누르고 위성사진에서 도로 한쪽 끝 → 반대쪽 끝을 클릭하면 잰 폭이 그 구간(또는 노선 전체)에 들어갑니다. 구간별 길이·도로 면 면적·사유지도 여기서 봅니다. <b>🔧 배관 정보</b> 탭에서는 구간마다 재질(PE·PLP)·관경(mm)·압력(저압·중압)을 적고, 지도 이름표와 엑셀 '구간별 배관' 시트로 볼 수 있습니다.<br>
-        <b>🎥 로드뷰 따라가기</b>: 노선 카드·편집 창의 버튼이나 노선 위 우클릭 → '여기서부터 로드뷰 따라가기'. 노선을 10~50m 간격으로 나눠 ◀ ▶(또는 키보드 ← →)·자동 넘김으로 차례로 봅니다. ⚙ 설정에 <b>카카오 JavaScript 키</b>를 넣고 이 프로그램을 <b>등록한 웹 주소</b>로 열면 로드뷰가 이 화면 안에서 깜빡임 없이 넘어가고 노선 진행 방향을 바라봅니다. 키가 없거나 파일로 열면 카카오맵 새 창(링크)으로 열립니다(팝업 허용 필요). 창은 머리를 끌어 옮기고 ⤢ 로 넓히고 ▁ 로 접습니다.</li>
+        <b>🎥 로드뷰 따라가기</b>: 노선 카드·편집 창의 버튼이나 노선 위 우클릭 → '여기서부터 로드뷰 따라가기'. 노선을 10~50m 간격으로 나눠 ◀ ▶(또는 키보드 ← →)·자동 넘김으로 차례로 봅니다. ⚙ 설정에 <b>카카오 JavaScript 키</b>를 넣고 이 프로그램을 <b>등록한 웹 주소</b>로 열면 로드뷰가 이 화면 안에서 깜빡임 없이 넘어가고 노선 진행 방향을 바라봅니다. 따라가기 창의 <b>↗</b>를 누르면 로드뷰만 <b>별도 창</b>으로 크게 띄울 수 있고(모니터 두 대일 때 편함), 그 창에서도 ← → 로 넘깁니다. ↙ 또는 창을 닫으면 다시 화면 안으로 돌아옵니다. 키가 없거나 파일로 열면 카카오맵 새 창(링크)으로 열립니다(팝업 허용 필요). 창은 머리를 끌어 옮기고 ⤢ 로 넓히고 ▁ 로 접습니다.</li>
       <li><b>필지 조회</b> — <b>필지 조회</b>를 누르면 <b>배관 선이 지나는 필지</b>를 불러옵니다. 위쪽 <b>[조회: 배관 선 양옆 1 m]</b>는 지적도가 실제와 조금 어긋날 때를 대비해, 선에서 그 거리 안의 필지도 <span class="tier t-near">경계 근접</span>으로 함께 보여 주는 값입니다. 0으로 하면 선이 지나는 필지만 나옵니다.</li>
       <li><b>(선택) 🛣 도로 면 확인</b> — 배관이 지나는 곳이 <b>실제 도로</b>인지 위성사진과 비교하는 도구입니다. <b>어떤 필지를 조회할지와는 상관없습니다.</b><br>
         선을 그리면 기본 도로 폭으로 도로 양쪽 가장자리(도로 면)가 그려지고, 위성사진과 다를 수 있는 곳이 목록에 뜹니다. 목록의 항목을 누르면(또는 ◀ 이전 / 다음 ▶) 그 위치로 이동합니다. 여러 곳을 한 번에 처리하려면 <b>✓ 일괄 확인 ▾</b>(남은 곳 모두 · 종류별 · 지금 보는 곳 주변 100m)을 쓰고, 잘못 누르면 바로 [되돌리기]할 수 있습니다 → 다르면 <b>✋ 가장자리 끌기</b>나 <b>📏 폭 재기</b> → [확인]을 누르면 다음 항목으로 넘어갑니다.<br>
@@ -1345,6 +1413,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
  */function i(e){return e>=65&&e<=90||95===e||e>=97&&e<=122||e>=192&&e<=214||e>=216&&e<=246||e>=248&&e<=767||e>=880&&e<=893||e>=895&&e<=8191||e>=8204&&e<=8205||e>=8304&&e<=8591||e>=11264&&e<=12271||e>=12289&&e<=55295||e>=63744&&e<=64975||e>=65008&&e<=65533||e>=65536&&e<=983039}Object.defineProperty(r,"__esModule",{value:!0}),r.NC_NAME_START_CHAR="A-Z_a-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd\ud800\udc00-\udb7f\udfff",r.NC_NAME_CHAR="-"+r.NC_NAME_START_CHAR+".0-9\xb7\u0300-\u036f\u203f-\u2040",r.NC_NAME_START_CHAR_RE=new RegExp("^["+r.NC_NAME_START_CHAR+"]$","u"),r.NC_NAME_CHAR_RE=new RegExp("^["+r.NC_NAME_CHAR+"]$","u"),r.NC_NAME_RE=new RegExp("^["+r.NC_NAME_START_CHAR+"]["+r.NC_NAME_CHAR+"]*$","u"),r.isNCNameStartChar=i,r.isNCNameChar=function(e){return i(e)||45===e||46===e||e>=48&&e<=57||183===e||e>=768&&e<=879||e>=8255&&e<=8256}},{}]},{},[15])(15)}));
 //# sourceMappingURL=exceljs.bare.min.js.map</script>
 <script>
+if(window.__RV_ONLY) throw new Error('로드뷰 전용 창 — 지도 앱은 원래 창에서 실행됩니다');
 (function(){
 'use strict';
 const FULL = true; // true = 9-2(구간별 도로폭·자동추정·폭재기·건물제외), false = 9-1
@@ -2790,6 +2859,34 @@ $('#sKakaoTest').onclick = async () => {
   finally{ cfg.kakaoKey = old; kakaoReady = null; }
 };
 let rvF = null, rvWin = null, rvLayer = L.layerGroup().addTo(map);
+let rvExtOn = false, rvExtWin = null, rvExtTimer = null, rvLastShow = null;
+const rvBC = ('BroadcastChannel' in window) ? new BroadcastChannel('kgeopRv') : null;
+if(rvBC) rvBC.onmessage = e => {
+  const m = e.data || {};
+  if(m.type === 'hello' || m.type === 'ready'){ if(rvExtOn && rvLastShow) rvBC.postMessage(rvLastShow); }
+  else if(m.type === 'cmd'){
+    if(m.cmd === 'next' && rvF && !rvF.single) rvGo(rvF.i + 1, true);
+    else if(m.cmd === 'prev' && rvF && !rvF.single) rvGo(rvF.i - 1, true);
+    else if(m.cmd === 'dock') rvDock();
+  } else if(m.type === 'closed'){ setTimeout(() => { if(rvExtWin && rvExtWin.closed) rvDock(); }, 300); }
+};
+function rvExtOpen(){
+  if(!rvBC){ toast('이 브라우저는 창끼리 연결을 지원하지 않습니다. 크롬·엣지 최신 버전을 써 주세요.'); return false; }
+  if(!(rvExtWin && !rvExtWin.closed)){
+    const W = 1000, H = 720, left = Math.max(0, (screen.availWidth || 1600) - W - 20);
+    rvExtWin = window.open(location.pathname + '?rv=1', 'kgeopRvWin', `width=${W},height=${H},left=${left},top=60`);
+    if(!rvExtWin){ toast('팝업이 차단되어 로드뷰 창을 열지 못했습니다. 주소창 오른쪽에서 이 사이트의 팝업을 허용한 뒤 다시 눌러 주세요.', 9000); return false; }
+  } else { try{ rvExtWin.focus(); }catch(e){} }
+  rvExtOn = true; LS.set('rvExt', '1');
+  clearInterval(rvExtTimer); rvExtTimer = setInterval(() => { if(rvExtWin && rvExtWin.closed) rvDock(); }, 1500);
+  return true;
+}
+function rvDock(){
+  clearInterval(rvExtTimer); rvExtTimer = null;
+  const was = rvExtOn; rvExtOn = false; LS.set('rvExt', '0');
+  try{ if(rvExtWin && !rvExtWin.closed) rvExtWin.close(); }catch(e){} rvExtWin = null;
+  if(was && rvF){ rvOpenBox(); rvGo(rvF.i, true); }
+}
 function rvBuild(step){
   const line = toLine(), Ltot = turf.length(line, { units: 'meters' }), segs = segList(), out = [];
   for(let s = 0; s < Ltot - 0.5; s += step) out.push(s);
@@ -2799,12 +2896,14 @@ function rvBuild(step){
 function rvOpenBox(){
   const box = document.getElementById('rvF'), first = box.style.display !== 'block';
   box.classList.toggle('embed', !!(rvF && rvF.embed)); box.classList.toggle('single', !!(rvF && rvF.single));
+  box.classList.toggle('ext', !!(rvF && rvF.embed && rvExtOn));
   if(!box.querySelector('#rvCtl')){
-    box.innerHTML = `<div class="rh" title="끌어서 옮기기"><b id="rvTitle">🎥 로드뷰 따라가기</b><span class="small" id="rvSub" style="color:var(--muted)"></span><button class="rx" data-r="big" title="크게/작게">⤢</button><button class="rx" data-r="close" title="닫기">✕</button></div>
+    box.innerHTML = `<div class="rh" title="끌어서 옮기기"><b id="rvTitle">🎥 로드뷰 따라가기</b><span class="small" id="rvSub" style="color:var(--muted)"></span><button class="rx" data-r="ext" title="로드뷰를 별도 창으로 띄우기 (모니터 두 대일 때 편함)">↗</button><button class="rx" data-r="big" title="크게/작게">⤢</button><button class="rx" data-r="close" title="닫기">✕</button></div>
       <div id="rvViewWrap"><div id="rvView"></div><div class="rv-none">이 지점 50m 안에는 카카오 로드뷰 사진이 없습니다</div></div>
       <div id="rvCtl"></div>`;
     dragPanel(box, box.querySelector('.rh'), 'rvf');
     box.querySelector('[data-r=close]').onclick = () => stopRvFollow();
+    box.querySelector('[data-r=ext]').onclick = () => { if(rvExtOn) rvDock(); else if(rvExtOpen() && rvF){ rvOpenBox(); rvGo(rvF.i, true); } };
     box.querySelector('[data-r=big]').onclick = () => { box.classList.toggle('big'); if(box._clamp) box._clamp(); setTimeout(() => { if(kRv) try{ kRv.relayout(); }catch(e){} }, 50); };
   }
   box.style.display = 'block';
@@ -2818,6 +2917,7 @@ async function showRoadviewAt(lat, lng){
       await loadKakao();
       if(rvF && !rvF.single) stopRvFollow();
       rvF = { single: true, embed: true, list: [{ lat, lng, s: 0, k: 0 }], i: 0, prov: 'kakao', step: 20, sec: 5 };
+      if(LS.get('rvExt', '0') === '1' && !rvExtOn) rvExtOpen();
       rvOpenBox(); rvGo(0, true); return true;
     }catch(e){ log('카카오 로드뷰: ' + e.message); }
   }
@@ -2834,7 +2934,7 @@ async function startRvFollow(fromS = 0){
   let i = rvF.list.findIndex(p => p.s >= fromS - 0.5); rvF.i = i < 0 ? 0 : i;
   rvOpenBox();
   if(kakaoUsable()){
-    try{ await loadKakao(); rvF.embed = true; rvOpenBox(); }
+    try{ await loadKakao(); rvF.embed = true; if(LS.get('rvExt', '0') === '1' && !rvExtOn) rvExtOpen(); rvOpenBox(); }
     catch(e){ toast('카카오 로드뷰를 화면 안에 넣지 못해 새 창(링크)으로 엽니다: ' + e.message, 9000); }
   }
   rvGo(rvF.i, true);
@@ -2852,7 +2952,13 @@ function rvGo(i, gesture){
   if(!rvF.single) try{ const done = turf.lineSliceAlong(toLine(), 0, Math.max(.1, p.s), { units: 'meters' }); L.geoJSON(done, { style: { color: '#7048e8', weight: 7, opacity: .45 }, interactive: false }).addTo(rvLayer); }catch(e){}
   L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', html: '<div class="rv-dot"></div>', iconSize: [0, 0] }), interactive: false, keyboard: false, zIndexOffset: 2000 }).addTo(rvLayer);
   if(!map.getBounds().pad(-.15).contains([p.lat, p.lng])) map.panTo([p.lat, p.lng]);
-  if(rvF.embed){
+  if(rvF.embed && rvExtOn){
+    const sg = rvF.single ? null : segList()[p.k];
+    rvLastShow = { type: 'show', lat: p.lat, lng: p.lng, pan: rvF.single ? null : routeBearingAt(p.s), nav: !rvF.single,
+      title: rvF.single ? '🎥 로드뷰' : `🎥 ${(activeRoute() || {}).name || '노선'} · 지점 ${rvF.i + 1}/${rvF.list.length}`,
+      sub: rvF.single ? '' : `시점에서 ${fmtLen(p.s)} · 구간 ${p.k + 1} (${vName(sg.a)}→${vName(sg.b)})${pipeText(segPipe[p.k]) ? ' · ' + pipeText(segPipe[p.k]) : ''} · ← → 로 넘기기` };
+    rvBC.postMessage(rvLastShow);
+  } else if(rvF.embed){
     kShowAt(document.getElementById('rvView'), p.lat, p.lng, rvF.single ? null : routeBearingAt(p.s));
   } else {
     const url = rvUrl(p, rvF.prov);
@@ -2875,15 +2981,18 @@ function rvPlay(){
 function renderRvF(){
   const box = document.getElementById('rvF'); if(!box || !rvF) return;
   const ctl = box.querySelector('#rvCtl'); if(!ctl) return;
+  setTimeout(() => ctl.querySelectorAll('[data-x=dock]').forEach(b => b.onclick = () => rvDock()), 0);
+  { const eb = box.querySelector('[data-r=ext]'); if(eb){ eb.style.display = rvF.embed ? '' : 'none'; eb.textContent = rvExtOn ? '↙' : '↗'; eb.title = rvExtOn ? '로드뷰를 다시 이 창 안에서 보기' : '로드뷰를 별도 창으로 띄우기 (모니터 두 대일 때 편함)'; } }
   if(rvF.single){
-    box.querySelector('#rvTitle').textContent = '🎥 로드뷰'; box.querySelector('#rvSub').textContent = '카카오 · 화면 안';
-    ctl.innerHTML = `<div class="small" style="color:var(--muted);margin-top:6px">사진을 끌어 방향을 돌리고, 길 위 화살표로 이동합니다. <a href="${rvUrl(rvF.list[0], 'kakao')}" target="roadview">카카오맵에서 크게 보기</a></div>`;
+    box.querySelector('#rvTitle').textContent = '🎥 로드뷰'; box.querySelector('#rvSub').textContent = rvExtOn ? '카카오 · 별도 창' : '카카오 · 화면 안';
+    ctl.innerHTML = (rvExtOn ? `<div class="ext-note">↗ 로드뷰는 <b>별도 창</b>에 나옵니다. <button data-x="dock">↙ 이 창 안으로</button></div>` : '') + `<div class="small" style="color:var(--muted);margin-top:6px">사진을 끌어 방향을 돌리고, 길 위 화살표로 이동합니다. <a href="${rvUrl(rvF.list[0], 'kakao')}" target="roadview">카카오맵에서 크게 보기</a></div>`;
     return;
   }
   const p = rvF.list[rvF.i], n = rvF.list.length, sg = segList()[p.k];
   box.querySelector('#rvTitle').textContent = '🎥 로드뷰 따라가기';
-  box.querySelector('#rvSub').textContent = ((activeRoute() || {}).name || '') + (rvF.embed ? ' · 화면 안(카카오 API)' : ' · 새 창(링크)');
-  ctl.innerHTML = `<div style="margin-top:4px">지점 <b>${rvF.i + 1}</b> / ${n} · 시점에서 <b>${fmtLen(p.s)}</b> · 구간 ${p.k + 1} (${vName(sg.a)}→${vName(sg.b)})${pipeText(segPipe[p.k]) ? ` · <span style="color:#2b8a3e;font-weight:700">${esc(pipeText(segPipe[p.k]))}</span>` : ''}</div>
+  box.querySelector('#rvSub').textContent = ((activeRoute() || {}).name || '') + (rvF.embed ? (rvExtOn ? ' · 별도 창(카카오 API)' : ' · 화면 안(카카오 API)') : ' · 새 창(링크)');
+  const extNote = rvF.embed && rvExtOn ? `<div class="ext-note">↗ 로드뷰는 <b>별도 창</b>에 나옵니다. 그 창에서도 ← → 로 넘길 수 있습니다. <button data-x="dock">↙ 이 창 안으로</button></div>` : '';
+  ctl.innerHTML = extNote + `<div style="margin-top:4px">지점 <b>${rvF.i + 1}</b> / ${n} · 시점에서 <b>${fmtLen(p.s)}</b> · 구간 ${p.k + 1} (${vName(sg.a)}→${vName(sg.b)})${pipeText(segPipe[p.k]) ? ` · <span style="color:#2b8a3e;font-weight:700">${esc(pipeText(segPipe[p.k]))}</span>` : ''}</div>
     <div class="bar"><i style="width:${Math.round(rvF.i / Math.max(1, n - 1) * 100)}%"></i></div>
     <div class="rvbtn"><button data-r="first" title="시점으로">⏮</button><button data-r="prev" title="이전 지점 (←)">◀ 이전</button><button data-r="play" class="${rvF.play ? '' : 'primary'}" title="자동으로 넘기기">${rvF.play ? '⏸ 멈춤' : '⏵ 자동'}</button><button data-r="next" class="primary" title="다음 지점 (→)">다음 ▶</button><button data-r="last" title="종점으로">⏭</button></div>
     <div class="row" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">간격 <select data-o="step">${[10, 20, 30, 50].map(v => `<option value="${v}"${v === rvF.step ? ' selected' : ''}>${v}m</option>`).join('')}</select>
