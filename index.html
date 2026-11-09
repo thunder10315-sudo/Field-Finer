@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v27-1</title>
+<title>노선 필지 조회기 v27-2</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1111,7 +1111,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-1</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-2</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -5433,15 +5433,17 @@ function folderListHtml(cardOf){
     const open = q ? true : (f.open || rs.some(r => r.id === activeId));
     const len = rs.reduce((a, r) => a + ((r.sum && r.sum.len) || 0), 0);
     const sys = f.id === F_NONE || f.id === F_ARCH;
-    const name = fdRen === f.id && !sys ? `<input class="fd-ren" value="${esc(f.name)}" data-ren="${f.id}">` : `<span class="fd-n">${esc(f.name)}</span>`;
-    const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + (!sys ? `<button data-fa="ren" title="폴더 이름 바꾸기">✏</button>` : '') + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
+    const name = fdRen === f.id && !sys ? `<input class="fd-ren" value="${esc(f.name)}" data-ren="${f.id}">` : `<span class="fd-n"${sys ? ' title="기본 폴더라 이름을 바꿀 수 없습니다"' : ' title="더블클릭해서 이름 바꾸기"'} data-rn="${sys ? '' : f.id}">${esc(f.name)}</span>`;
+    const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + (!sys ? `<button data-fa="ren" title="폴더 이름 바꾸기 (이름을 더블클릭해도 됨)">✏ 이름</button>` : '') + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
     return `<div class="fd${f.id === F_ARCH ? ' arch' : ''}${f.id === curFolder ? ' cur' : ''}" data-f="${f.id}"><div class="fd-h" data-fh="${f.id}" title="눌러서 접기·펴기 (접은 폴더의 노선은 지도에서도 숨김)"><span>${open ? '▾' : '▸'}</span><span>${f.id === F_ARCH ? '🗄' : '📁'}</span>${name}<span class="fd-c">${rs.length}개${len ? ' · ' + fmtLen(len) : ''}</span><span class="fd-sp"></span>${btns}</div>${open ? `<div class="fd-b">${shown.length ? shown.map(cardOf).join('') : `<div class="fd-empty">${f.id === F_ARCH ? '끝난 노선을 여기로 옮겨 두면 평소엔 숨겨집니다.' : '비어 있음 — 노선 카드를 끌어다 놓거나 [＋]로 새 노선을 그리세요.'}</div>`}</div>` : ''}</div>`;
   }).join('');
   return (q && !total ? `<div class="empty" style="padding:12px 4px">'${esc(rpQuery)}'에 맞는 노선이 없습니다.</div>` : '') + html;
 }
 function bindFolderList(box){
+  box.querySelectorAll('.fd-n[data-rn]').forEach(n => { if(!n.dataset.rn) return; n.ondblclick = e => { e.stopPropagation(); clearTimeout(n._t); fdRen = n.dataset.rn; renderRoutes(); }; });
   box.querySelectorAll('[data-fh]').forEach(h => h.onclick = e => {
     if(e.target.closest('button, input')) return;
+    if(e.target.closest('.fd-n[data-rn]') && e.target.closest('.fd-n').dataset.rn && e.detail > 1) return;
     const f = folderById(h.dataset.fh); f.open = !f.open; if(f.open && f.id !== F_ARCH) curFolder = f.id; saveFolders(); renderRoutes(); drawGhosts();
   });
   box.querySelectorAll('[data-fa]').forEach(b => b.onclick = e => {
