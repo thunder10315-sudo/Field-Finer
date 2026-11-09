@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v27-5</title>
+<title>노선 필지 조회기 v27-6</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1111,7 +1111,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-5</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-6</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1822,6 +1822,12 @@ function restyleRoute(){
   if(routeLine) routeLine.setStyle(routeStyle());
   if(shapeLayer) shapeLayer.setStyle(shapeStyle());
   vertexLayer.eachLayer(m => m.setStyle && m.setStyle({ color: cfg.routeColor }));
+  // 가지 구간·도로 면·그리는 중인 선도 같은 색·굵기로
+  if(typeof drawBranches === 'function') drawBranches();
+  if(corridorLayer) corridorLayer.setStyle({ color: cfg.routeColor, fillColor: cfg.routeColor });
+  if(rubber) rubber.setStyle({ color: cfg.routeColor });
+  if(typeof brDraw !== 'undefined' && brDraw){ if(brDraw.line) brDraw.line.setStyle(routeStyle()); if(brDraw.rub) brDraw.rub.setStyle({ color: cfg.routeColor }); }
+  if(typeof drawGhosts === 'function') drawGhosts();
 }
 
 /* 도로 면: 선을 도로 가운데로 보고, 꺾이는 점(꼭짓점)마다 정한 도로폭(전체)으로 넓힌 영역.
