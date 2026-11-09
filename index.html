@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v27-4</title>
+<title>노선 필지 조회기 v27-5</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1111,7 +1111,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-4</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-5</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -2934,6 +2934,25 @@ function applyWidthTo(vs, w, wholeSel){
   }
   afterWidthChange();
 }
+/* 편집 창을 다시 그려도 보던 위치(스크롤)와 입력 중인 칸을 그대로 유지 */
+function edSaveView(box){
+  const doc = box.ownerDocument, host = doc.getElementById('winHost');
+  const keep = { box: box.scrollTop, host: host ? host.scrollTop : 0, page: doc.scrollingElement ? doc.scrollingElement.scrollTop : 0, segs: [...box.querySelectorAll('.segs')].map(x => x.scrollTop), focus: null };
+  const ae = doc.activeElement;
+  if(ae && box.contains(ae) && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName)){
+    const at = ['data-k', 'data-f', 'data-b', 'data-v', 'id'].filter(k => ae.hasAttribute(k)).map(k => `[${k}="${CSS.escape(ae.getAttribute(k))}"]`).join('');
+    const cls = (ae.className || '').split(/\s+/).filter(Boolean)[0];
+    keep.focus = { sel: ae.tagName.toLowerCase() + (cls ? '.' + CSS.escape(cls) : '') + at, start: ae.selectionStart, end: ae.selectionEnd };
+  }
+  return keep;
+}
+function edRestoreView(box, keep){
+  if(!keep) return;
+  const doc = box.ownerDocument, host = doc.getElementById('winHost');
+  box.scrollTop = keep.box; if(host) host.scrollTop = keep.host; if(doc.scrollingElement && keep.page) doc.scrollingElement.scrollTop = keep.page;
+  [...box.querySelectorAll('.segs')].forEach((x, i) => { if(keep.segs[i] != null) x.scrollTop = keep.segs[i]; });
+  if(keep.focus){ try{ const el = box.querySelector(keep.focus.sel); if(el && el.offsetParent !== null){ el.focus({ preventScroll: true }); if(keep.focus.start != null && el.setSelectionRange && /^(text|search|)$/.test(el.type || '')) el.setSelectionRange(keep.focus.start, keep.focus.end); } }catch(e){} }
+}
 function renderEditor(){
   const box = byId('routeEd'); if(!box) return;
   if(!edOpen || !isLine() || pts.length < 2){ box.style.display = 'none'; edOpen = edOpen && isLine() && pts.length >= 2; drawEdHi(); winClose('ed'); return; }
@@ -2958,6 +2977,7 @@ function renderEditor(){
   }
   const todoN = stations ? issues.filter(x => !x.reviewed).length : 0;
   box.querySelector('#edRevWrap').style.display = edTab === 'review' ? '' : 'none';
+  const edKeep = edSaveView(box);
   box.querySelector('#edDyn').innerHTML = `<div class="eh" title="끌어서 옮기기 · 더블클릭: 처음 위치"><b>✏ 노선 편집</b><span class="small" style="color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(it ? it.name : '')}</span>
       <button class="rx" data-e="wide" title="넓게/좁게">${box.classList.contains('wide') ? '⤡' : '⤢'}</button><button class="rx" data-e="min" title="접기">▁</button><button class="rx" data-e="win" title="새 창으로 띄우기">↗</button><button class="rx" data-e="close" title="닫기">✕</button></div>
     <div class="es">
@@ -2990,6 +3010,7 @@ function renderEditor(){
     </div>`}</div>
     <div class="epane"${edTab !== 'pipe' ? ' hidden' : ''}>${pipePaneHtml(segs)}</div>`;
   box.style.display = 'block';
+  edRestoreView(box, edKeep);
   box.querySelectorAll('.etabs [data-t]').forEach(b => b.onclick = () => { edTab = b.dataset.t; renderEditor(); });
   box.querySelectorAll('input.pi').forEach(inp => {
     inp.addEventListener('click', e => e.stopPropagation());
