@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v26-3</title>
+<title>노선 필지 조회기 v27-1</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -770,6 +770,17 @@ aside:not(.tab-route) #routePane{display:none}
 body.popped aside #routePane{display:block!important}
 #routePane{flex:1;overflow:auto;padding:10px 12px;min-height:0}
 .rp-head{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.rp-tools{display:flex;gap:6px;margin:-2px 0 8px;align-items:center} .rp-tools input{flex:1;min-width:120px;padding:5px 8px} .rp-tools button{font-size:12px;padding:3px 8px;white-space:nowrap}
+.fd{margin-bottom:6px;border-radius:9px} .fd.drop{outline:2px dashed #1f6feb;outline-offset:2px;background:#f3f8ff}
+.fd-h{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;background:#f1f3f5;cursor:pointer;user-select:none;font-size:13px}
+.fd-h:hover{background:#e7f0ff} .fd-h .fd-n{font-weight:700} .fd-h .fd-c{color:var(--muted);font-size:11.5px} .fd-h .fd-sp{flex:1}
+.fd-h button{border:none;background:transparent;padding:1px 5px;font-size:12.5px;color:#495057;border-radius:5px} .fd-h button:hover{background:#d0e1fb;color:#1f6feb} .fd-h button.arm{background:#ffe3e3;color:#c92a2a}
+.fd-h input.fd-ren{font-weight:700;font-size:13px;padding:1px 4px;width:160px}
+.fd.arch .fd-h{background:#f8f9fa;color:#868e96} .fd.cur .fd-h{box-shadow:inset 3px 0 0 #1f6feb}
+.fd-b{padding:6px 0 0 10px} .fd-empty{color:var(--muted);font-size:12px;padding:6px 4px 8px}
+.rc-mv{border:none;background:transparent;padding:0 4px;font-size:13px;opacity:.55} .rc-mv:hover{opacity:1;background:#e7f0ff}
+#fdMenu{position:fixed;z-index:3500;background:#fff;border:1px solid #ced4da;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:4px;min-width:170px;max-height:300px;overflow:auto} #fdMenu button{display:block;width:100%;text-align:left;border:none;background:none;padding:5px 9px;font-size:12.5px;border-radius:5px} #fdMenu button:hover{background:#e7f0ff} #fdMenu .t{font-size:11px;color:#868e96;padding:3px 9px}
+#rpStore{color:var(--muted);margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)} #rpStore.warn{color:#e8590c;font-weight:600}
 .rcard{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;cursor:pointer;background:#fff}
 .rcard:hover{border-color:#a5c4f7;background:#f8fbff}
 .rcard .rc-top{display:flex;align-items:center;gap:8px}
@@ -1100,7 +1111,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v26-3</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-1</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1222,7 +1233,9 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
   <div id="asideTabs"><button data-tab="route" title="그린 노선 목록 · 노선 정보 · 수정">🧭 노선 <span id="tabRouteN"></span></button><button data-tab="parcel" class="on" title="조회한 필지 목록과 필지 상세">📋 필지 <span id="tabParcelN"></span></button></div>
   <div id="routePane">
     <div class="rp-head"><input id="rpName" type="text" placeholder="새 노선 이름 (미리 정하기, 선택)" title="이름을 적고 새 노선을 그리면 그 이름으로 저장됩니다"><button id="rpNew" class="primary">✏ 새 노선 그리기</button><button id="rpImport" title="GeoJSON·KML·DXF·CSV/엑셀 좌표">📂 불러오기</button><button id="rpCmp" title="노선 여러 개를 나란히 비교 (연장·사유지·허가 검토 대상)" style="display:none">⚖ 비교</button></div>
+    <div class="rp-tools"><input id="rpSearch" type="search" placeholder="🔍 노선 찾기 (이름·지번)" autocomplete="off"><button id="rpNewFolder" title="노선을 묶을 폴더 만들기">📁 새 폴더</button><span class="fdrop"><button id="rpBackupBtn" title="노선 백업·복원">💾 백업 ▾</button><div id="rpBackupMenu" class="mini-menu"><button data-bk="all">💾 전체 백업 파일로 저장</button><button data-bk="restore">📥 백업 파일 불러오기</button></div></span><input id="rpRestoreFile" type="file" accept=".json,application/json" style="display:none"></div>
     <div id="routeList"></div>
+    <div id="rpStore" class="small"></div>
   </div>
   <div id="compare"></div>
   <div id="summary"><button id="sumToggle" class="sumt" title="요약 펼치기/접기">▸</button></div>
@@ -1345,7 +1358,8 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         <li>필요할 때만: 📋 여러 지번(지번 목록 붙여넣어 한꺼번에 조회) · 노선 탭 ⚖ 비교(노선 2개 이상)</li>
         <li>갈라지는 배관은 노선 카드 <b>➕ 가지 구간 추가</b> — 노선 위 갈라지는 곳부터 그리면 같은 노선의 구간이 되어, 거리가 겹치지 않고 [필지 조회]에 모든 필지가 나옴</li>
         <li>노선 숨기기: 위쪽 노선 [보이기] 끄기 (또는 R 키) · 노선 편집·상세 ⧉·비교 창은 새 창으로 열림 (⚙ 설정에서 '화면 안'으로 바꿀 수 있음)</li>
-        <li>노선은 이 PC에 자동 보관됩니다. 다른 사람에게는 💾 파일 저장 → 📂 불러오기</li>
+        <li>노선이 많으면 <b>📁 폴더</b>로 묶으세요 — 카드를 폴더로 끌어 놓거나 카드의 📁 · 접은 폴더의 노선은 지도에서도 숨김 · 끝난 노선은 '보관' 폴더로</li>
+        <li>노선은 이 PC 브라우저에 자동 보관됩니다. 가끔 노선 탭 [💾 백업 ▾]으로 파일을 만들어 두고, 팀원에게는 폴더의 💾로 넘기세요</li>
         <li>⚙ 설정: 브이월드 키(필수) · 건축물대장 키 · 카카오 키(로드뷰를 화면 안·별도 창에서 보기)</li>
         <li>이 창은 위쪽 <b>❓ 사용법</b>(또는 F1)으로 다시 엽니다.</li>
       </ul>
@@ -2297,7 +2311,7 @@ function startDraw(mode){
   clearShapeLayers(); clearResults();
   highlightParcel(null); singleSeq++;
   if(LS.get('routeShow', '1') !== '1') setRouteShow(true, true);
-  brs = []; brLayer.clearLayers(); if(brDraw) endBranchDraw(true);
+  brs = []; brLayer.clearLayers(); if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; } if(brDraw) endBranchDraw(true);
   drawing = true; drawMode = mode; shapeKind = null; pts = []; shapeGeom = null; shapeMeta = null; vW = []; vSrc = []; bndSurface = null; segPipe = []; pipeLabLayer.clearLayers();
   stations = null; stSurface = null; manualEdits = []; reviewedList = []; issues = []; reviewAuto = true; reviewOpen = false; if(edgeLayer){ map.removeLayer(edgeLayer); edgeLayer = null; } edgeHandleLayer.clearLayers(); renderReview();
   map.doubleClickZoom.disable();
@@ -2355,6 +2369,12 @@ const brName = i => `가지 ${i + 1}`;
 function brLine(b){ return turf.lineString(b.ll.map(p => [p.lng, p.lat])); }
 function brLen(b){ return b.ll.length < 2 ? 0 : turf.length(brLine(b), { units: 'meters' }); }
 function brOk(){ return brs.filter(b => b.ll.length >= 2); }
+function brDefW(){ syncVW(); const w = Number(($('#width') || {}).value) || (vW.length ? vW.reduce((a, x) => a + x, 0) / vW.length : 0); return Math.round(w * 2) / 2 || 6; }
+function brW(b){ return b.w > 0 ? b.w : brDefW(); }
+function brCorr(b){ try{ return b.ll.length >= 2 && brW(b) > 0 ? turf.buffer(brLine(b), brW(b) / 2, { units: 'meters', steps: 6 }) : null; }catch(e){ return null; } }
+function brCorrAll(){ return brOk().map(brCorr).filter(Boolean); }
+function unionAll(list){ let u = null; list.filter(Boolean).forEach(g => { try{ u = u ? (turf.union(turf.featureCollection([u, g])) || u) : g; }catch(e){} }); return u; }
+let brCorrLayer = null;
 function totalLength(){ return routeLength() + brOk().reduce((a, b) => a + brLen(b), 0); }
 function allLines(){ return pts.length < 2 ? [] : [{ k: 0, name: brOk().length ? '본선' : '노선', line: toLine(), off: 0 }].concat((() => { let off = routeLength(); return brOk().map(b => { const o = { k: brs.indexOf(b) + 1, name: brName(brs.indexOf(b)), line: brLine(b), off }; off += brLen(b); return o; }); })()); }
 function netSnap(ll, skip){
@@ -2366,8 +2386,10 @@ function netSnap(ll, skip){
 function resnapBranches(){ if(pts.length < 2) return; brs.forEach((b, i) => { if(b.ll.length) b.ll[0] = netSnap(b.ll[0], i); }); }
 function drawBranches(){
   brLayer.clearLayers();
+  if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; }
   if(!isLine() || pts.length < 2) return;
-  brs.forEach((b, i) => { if(b.ll.length < 2) return; L.polyline(b.ll, Object.assign(routeStyle(), { interactive: true })).on('click', e => { if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); edTab = 'pipe'; openEditor(-1); }).bindTooltip(`${brName(i)} · ${fmtLen(brLen(b))} — 눌러서 배관 정보`, { sticky: true }).addTo(brLayer); });
+  { const cs = brCorrAll(); if(cs.length) brCorrLayer = L.geoJSON(turf.featureCollection(cs), { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'routeP' }).addTo(map); }
+  brs.forEach((b, i) => { if(b.ll.length < 2) return; L.polyline(b.ll, Object.assign(routeStyle(), { interactive: true })).on('click', e => { if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); if(edTab === 'review') edTab = 'width'; openEditor(-1); }).bindTooltip(`${brName(i)} · ${fmtLen(brLen(b))} · 도로 폭 ${brW(b)}m — 눌러서 도로 폭·배관 정보`, { sticky: true }).addTo(brLayer); });
 }
 function onBranchEdited(){ resnapBranches(); drawBranches(); buildEditHandles(); drawPipeLabels(); onShapeEdited(); }
 function startBranchDraw(){
@@ -2392,7 +2414,8 @@ function endBranchDraw(cancel){
   map.doubleClickZoom.enable(); document.body.classList.remove('drawing'); $('#drawHint').style.display = 'none'; { const t = byId('lenTip'); if(t) t.style.display = 'none'; }
   if(cancel || d.ll.length < 2){ buildEditHandles(); status('가지 구간 추가를 취소했습니다.'); return; }
   const near = segAt(d.ll[0]); syncSegPipe();
-  brs.push({ ll: d.ll, pipe: Object.assign({ mat: '', dia: '', pres: '' }, segPipe[Math.max(0, near)] || {}) });
+  syncVW(); const nw = vW.length ? Math.round(((vW[Math.max(0, near)] || 0) + (vW[Math.max(0, near) + 1] || 0)) / 2 * 2) / 2 : 0;
+  brs.push({ ll: d.ll, pipe: Object.assign({ mat: '', dia: '', pres: '' }, segPipe[Math.max(0, near)] || {}), w: nw > 0 ? nw : brDefW() });
   onBranchEdited();
   status(`${brName(brs.length - 1)} ${fmtLen(brLen(brs[brs.length - 1]))}을(를) 추가했습니다 — 총 연장 ${fmtLen(totalLength())}. [필지 조회]를 누르면 가지 구간 필지도 함께 나옵니다.`);
 }
@@ -2943,7 +2966,9 @@ function renderEditor(){
     <div class="ed-guide"><b>도로 폭은 구간마다 넣습니다.</b> 숫자를 바로 고치거나, <b>📏</b>를 누르고 위성사진에서 <b>도로 한쪽 끝 → 반대쪽 끝</b>을 클릭하면 잰 폭이 그 구간에 들어갑니다. 줄을 누르면 지도에 초록색으로 표시됩니다.</div>
     <div class="segs"><table><tr><th>범위</th><th>길이</th><th>도로 폭 (전체 폭)</th><th>도로 면</th>${lastQueryMeta ? '<th>사유지</th>' : ''}</tr>
       <tr class="seg${edSel < 0 ? ' on' : ''}" data-s="-1"><td><b>노선 전체</b></td><td>${fmtLen(routeLength())}</td><td>${wIn(-1, whole)}</td><td>${whole ? area(whole.area) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(isPrivate).length}</td>` : ''}</tr>
-      ${segs.map(segRow).join('')}</table></div>
+      ${segs.map(segRow).join('')}
+      ${brOk().map(b => { const i = brs.indexOf(b), w = brW(b), ar = (() => { try{ return turf.area(brCorr(b)); }catch(e){ return null; } })(); return `<tr class="seg br-row"><td>${brName(i)}<div class="small">갈라진 구간${b.w > 0 ? '' : ' · 기본 폭'}</div></td><td>${fmtLen(brLen(b))}</td><td><span class="wcell"><input class="bw" type="number" min="0" max="100" step="0.5" data-b="${i}" value="${w}" title="숫자를 고치면 ${brName(i)}에 바로 적용"><span>m</span><button class="bmeas" data-b="${i}" title="위성사진에서 도로 양 끝을 클릭해 재고 ${brName(i)}에 넣기">📏</button></span></td><td>${ar != null ? area(ar) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(r => isPrivate(r) && (r.via || []).includes(brName(i))).length}</td>` : ''}</tr>`; }).join('')}</table></div>
+    ${brOk().length ? '<div class="small" style="color:var(--muted);margin:-2px 0 6px">가지 구간은 선을 가운데로 보고 적은 폭만큼 도로 면을 잡습니다(도로 면 확인·가장자리 끌기는 본선만).</div>' : ''}
     <div class="sel-box">
       <div><b>${edSel < 0 ? '노선 전체' : `구간 ${edSel + 1} (${vName(edSel)} → ${vName(edSel + 1)})`}</b> <span class="small" style="color:var(--muted)">· 길이 ${fmtLen(edSel < 0 ? routeLength() : segs[edSel].len)} · 도로 면 ${sel ? area(sel.area) : '-'} · 평균 폭 ${sel ? sel.avg.toFixed(1) + 'm' : '-'}</span></div>
       <div class="row"><button data-e="fit">📍 지도에서 보기</button><button data-rvs="${edSel}">🎥 로드뷰 따라가기</button><button data-e="edge" title="도로 양쪽 가장자리 점(파랑=왼쪽, 주황=오른쪽)을 끌어 위성사진의 도로 끝에 맞춥니다. 한쪽만 넓은 길에 씁니다.">✋ 가장자리 직접 끌기${edgeEdit ? ' (켜짐)' : ''}</button></div>
@@ -2987,6 +3012,8 @@ function renderEditor(){
     inp.addEventListener('change', () => { const w = Number(inp.value), k = Number(inp.dataset.k); if(!(w > 0)) return; edSel = k; applyWidthTo(k < 0 ? pts.map((_, i) => i) : [k, k + 1], w, k < 0); status(`${k < 0 ? '노선 전체' : '구간 ' + (k + 1)}에 도로 폭 ${w}m 적용`); });
     inp.addEventListener('keydown', e => { if(e.key === 'Enter') inp.blur(); });
   });
+  box.querySelectorAll('input.bw').forEach(inp => { inp.addEventListener('click', e => e.stopPropagation()); inp.addEventListener('keydown', e => { if(e.key === 'Enter') inp.blur(); }); inp.addEventListener('change', () => { const b = brs[Number(inp.dataset.b)], w = Number(inp.value); if(!b || !(w >= 0)) return; b.w = Math.round(w * 2) / 2; drawBranches(); onShapeEdited(); status(`${brName(brs.indexOf(b))} 도로 폭 ${b.w}m 적용`); }); });
+  box.querySelectorAll('button.bmeas').forEach(bt => bt.onclick = e => { e.stopPropagation(); startBrMeasure(Number(bt.dataset.b)); });
   box.querySelectorAll('button.smeas').forEach(b => b.onclick = e => { e.stopPropagation(); const k = Number(b.dataset.k); edSel = k; drawEdHi(); startSegMeasure(k); });
   box.querySelectorAll('input.vin').forEach(inp => inp.addEventListener('change', () => { const w = Number(inp.value), i = Number(inp.dataset.v); if(w > 0){ edFocusV = i; applyWidthTo([i], w, false); status(`${vName(i)} 도로 폭 ${w}m 적용`); } }));
   box.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => startMeasure([Number(b.dataset.mv)]));
@@ -3299,6 +3326,15 @@ document.addEventListener('keydown', e => {
 });
 function setReviewMin(on){ const b = byId('review'); if(!b) return; b.classList.toggle('min', on); const m = byId('reviewMin'); if(m) m.textContent = on ? '▢' : '▁'; }
 let measureSeg = null; // 구간 폭 재기: 잰 폭을 그 구간(또는 -1=전체)에 넣음
+let measureBr = null;
+function startBrMeasure(i){
+  const b = brs[i]; if(!b || b.ll.length < 2) return;
+  startMeasure(null); measureBr = i;
+  map.fitBounds(L.latLngBounds(b.ll).pad(.35), { maxZoom: 20 });
+  if(measureHi) map.removeLayer(measureHi); measureHi = L.polyline(b.ll, { color: '#2b8a3e', weight: 7, opacity: .55, interactive: false, pane: 'selPane' }).addTo(map);
+  showStep();
+}
+let measureHi = null;
 function startSegMeasure(k){
   if(!isLine() || pts.length < 2) return;
   startMeasure(null); measureSeg = k;
@@ -3307,7 +3343,7 @@ function startSegMeasure(k){
   showStep();
 }
 function startMeasure(queue){
-  measureSeg = null;
+  measureSeg = null; measureBr = null;
   { const rv = byId('review'); if(rv && rv.style.display === 'block' && !rv.classList.contains('min')){ setReviewMin(true); reviewAutoMin = true; } }
   { const ed = byId('routeEd'); if(ed && ed.style.display === 'block' && !ed.classList.contains('min')){ setEdMin(true); edAutoMin = true; } }
   if(drawing) endDraw(true);
@@ -3335,8 +3371,8 @@ function showStep(){
     $('#stepW').onkeydown = e => { if(e.key === 'Enter'){ const w = Number(e.target.value); if(w > 0) assignMeasured(w, '수동'); } };
     $('#stepSkip').onclick = () => { measureQueue.shift(); measureA = null; nextStep(); };
     $('#stepEnd').onclick = () => stopMeasure(true);
-  } else if(measureSeg != null){
-    const nm = measureSeg < 0 ? '노선 전체' : `구간 ${measureSeg + 1} (${vName(measureSeg)} → ${vName(measureSeg + 1)})`;
+  } else if(measureSeg != null || measureBr != null){
+    const nm = measureBr != null ? brName(measureBr) : measureSeg < 0 ? '노선 전체' : `구간 ${measureSeg + 1} (${vName(measureSeg)} → ${vName(measureSeg + 1)})`;
     sp.innerHTML = `<span class="grip" title="끌어서 옮기기">⠿</span><b>📏 ${nm} 폭 재기</b><br>위성사진에서 <b>도로 한쪽 끝 → 반대쪽 끝</b>을 클릭하세요. 잰 폭이 <b>${nm}</b>에 바로 들어갑니다.
       <div class="small" style="margin-top:3px">초록색으로 표시된 곳 아무 데서나 재면 됩니다. 첫 점을 잘못 찍으면 우클릭으로 취소.</div>
       <div style="margin-top:4px"><button id="stepEnd">취소 (Esc)</button></div>`;
@@ -3353,7 +3389,7 @@ function showStep(){
 let vtxMarker = null;
 function nextStep(){ if(measureQueue && measureQueue.length) showStep(); else { status('모든 꼭짓점 폭 입력을 마쳤습니다. [필지 조회]를 누르세요.'); stopMeasure(true); } }
 function stopMeasure(clear){
-  measuring = false; measureA = null; measureAMk = null; measureQueue = null; measureSeg = null; measureClickT = Date.now(); document.body.classList.remove('measuring'); map.doubleClickZoom.enable();
+  measuring = false; measureA = null; measureAMk = null; measureQueue = null; measureSeg = null; measureBr = null; if(measureHi){ map.removeLayer(measureHi); measureHi = null; } measureClickT = Date.now(); document.body.classList.remove('measuring'); map.doubleClickZoom.enable();
   $('#stepPanel').style.display = 'none'; $('#btnMeasure').classList.remove('on'); $('#btnStepW').classList.remove('on');
   if(reviewAutoMin){ reviewAutoMin = false; setReviewMin(false); }
   if(edAutoMin){ edAutoMin = false; setEdMin(false); }
@@ -3398,6 +3434,14 @@ map.on('click', e => {
   const b = e.latlng, d = map.distance(measureA, b);
   if(measureRubber){ map.removeLayer(measureRubber); measureRubber = null; }
   L.polyline([measureA, b], { color: '#f08c00', weight: 3, interactive: false }).addTo(measureLayer).bindTooltip(`${d.toFixed(1)}m`, { permanent: true, direction: 'center' }).openTooltip();
+  if(measureBr != null){
+    const i = measureBr, w = Math.max(.5, Math.round(d * 2) / 2);
+    measureA = null; measureAMk = null; measureBr = null;
+    stopMeasure(false); if(brs[i]){ brs[i].w = w; drawBranches(); onShapeEdited(); }
+    status(`${brName(i)} 도로 폭 ${w}m 적용 (잰 값 ${d.toFixed(1)}m)`); toast(`${brName(i)}에 도로 폭 ${w}m를 넣었습니다.`, 4000);
+    edTab = 'width'; if(isLine()) openEditor(-1);
+    return;
+  }
   if(measureSeg != null){
     const k = measureSeg, w = Math.max(.5, Math.round(d * 2) / 2);
     measureA = null; measureAMk = null; measureSeg = null;
@@ -3602,6 +3646,7 @@ async function runQuery(){
   if(lineMode) lastFetchR = width;
   // 판별 기준 영역: 선은 도로 면(구간별 도로폭), 폭 0이면 선 자체 / 도형은 도형 내부
   let area = lineMode ? corridorGeom() : shapeGeom;
+  if(lineMode && brOk().length){ const u = unionAll([area].concat(brCorrAll())); if(u) area = u; }
   drawCorridor();
   clearResults();
   let preBlds = null;
@@ -3610,7 +3655,7 @@ async function runQuery(){
   try{
     /* 1) 연속지적도 */
     const LINES = lineMode ? allLines() : [];
-    const polys = lineMode ? LINES.flatMap(o => segmentPolygons(o.line, width)) : gridBoxes(shapeGeom);
+    const polys = lineMode ? LINES.flatMap(o => segmentPolygons(o.line, o.k ? Math.max(width, brW(brs[o.k - 1]) / 2 + .5) : width)) : gridBoxes(shapeGeom);
     status(`필지 경계 조회 중… (0/${polys.length} 구간)`); progress(2);
     const byPnu = new Map();
     const addFs = fs => fs.forEach(f => { const p = f.properties && f.properties.pnu; if(p && !byPnu.has(p)) byPnu.set(p, f); });
@@ -3992,8 +4037,22 @@ function pmsFlag(r){
   return null;
 }
 const NO_BLD_JIMOK = /^(도|구|천|제|유|철|수|도로|구거|하천|제방|유지|철도용지|수도용지)$/;
-function bldCacheGet(pnu){ if(!cfg.bldCache) return null; try{ const v = JSON.parse(localStorage.getItem('kgeopBld.' + pnu) || 'null'); if(v && Date.now() - v.t < (v.b && v.b.length ? 30 : 1) * 864e5) return v.b; /* 빈 결과는 하루만 */ }catch(e){} return null; }
-function bldCachePut(pnu, b){ if(!cfg.bldCache) return; try{ localStorage.setItem('kgeopBld.' + pnu, JSON.stringify({ t: Date.now(), b })); }catch(e){} }
+const IDBC = (() => {
+  let dbp = null;
+  const open = () => dbp || (dbp = new Promise((res, rej) => { try{ const rq = indexedDB.open('kgeopCache', 1); rq.onupgradeneeded = () => rq.result.createObjectStore('bld'); rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error); }catch(e){ rej(e); } }));
+  const tx = (mode, fn) => open().then(db => new Promise((res, rej) => { const t = db.transaction('bld', mode), r = fn(t.objectStore('bld')); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }));
+  return { get: k => tx('readonly', st => st.get(k)), set: (k, v) => tx('readwrite', st => st.put(v, k)), clear: () => tx('readwrite', st => st.clear()), count: () => tx('readonly', st => st.count()) };
+})();
+async function bldCacheGet(pnu){
+  if(!cfg.bldCache) return null;
+  let v = null; try{ v = await IDBC.get(pnu); }catch(e){ try{ v = JSON.parse(localStorage.getItem('kgeopBld.' + pnu) || 'null'); }catch(e2){} }
+  if(v && Date.now() - v.t < (v.b && v.b.length ? 30 : 1) * 864e5) return v.b; /* 빈 결과는 하루만 */
+  return null;
+}
+function bldCachePut(pnu, b){ if(!cfg.bldCache) return; IDBC.set(pnu, { t: Date.now(), b }).catch(() => {}); }
+setTimeout(async () => { // 예전에 브라우저 기본 저장소(노선과 같은 공간)에 쌓인 대장 저장분을 옮김
+  try{ const ks = Object.keys(localStorage).filter(k => k.startsWith('kgeopBld.')); if(!ks.length) return; for(const k of ks){ try{ const v = JSON.parse(localStorage.getItem(k) || 'null'); if(v) await IDBC.set(k.slice(9), v); localStorage.removeItem(k); }catch(e){} } log(`건축물대장 저장분 ${ks.length}건을 큰 저장소로 옮겼습니다.`); storeInfo(); }catch(e){}
+}, 2500);
 function bdPnu(pr){ const v = String((pr || {}).bd_mgt_sn || ''); return /^\d{25}$/.test(v) ? v.slice(0, 19) : ''; }
 function pnuJibun(pnu){ const b = Number(pnu.slice(11, 15)), j = Number(pnu.slice(15, 19)); return (pnu.charAt(10) === '2' ? '산' : '') + b + (j ? '-' + j : ''); }
 function ownBlds(r){ return (r.buildings || []).filter(b => !b._other); }
@@ -4052,7 +4111,7 @@ async function bldFollow(r){
 async function fetchBld(r){
   r.bldFail = false; r.bldSkipped = false; r.bldTimeout = false;
   if(cfg.bldSkip && NO_BLD_JIMOK.test(String(r.jimok || '').trim()) && !r.buildings.length && !(r.bOther || []).length){ r.bld = []; r.bldSkipped = true; return; }
-  const cached = bldCacheGet(r.pnu); if(cached){ r.bld = cached; r.bldCached = true; return; }
+  const cached = await bldCacheGet(r.pnu); if(cached){ r.bld = cached; r.bldCached = true; return; }
   try{
     let res, lastErr;
     for(let t = 0; t < 3; t++){
@@ -4704,6 +4763,7 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel, o){
   if(z >= 16) drawRoadLabels(ctx, P, W, H, occ, 13);
   if(o.labels && cfg.showLabels && z >= 18) drawLabels(ctx, P, W, H, 12, occ);
   // 도로 면(구간별 도로폭)
+  if(o.corr && isLine()) brCorrAll().forEach(g => { ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = cfg.routeColor; ctx.beginPath(); tracePath(ctx, g, P); ctx.fill(); ctx.globalAlpha = .9; ctx.setLineDash([6, 4]); ctx.strokeStyle = cfg.routeColor; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore(); });
   if(o.corr && isLine() && corridorCache){
     ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = cfg.routeColor; ctx.beginPath(); tracePath(ctx, corridorCache, P); ctx.fill();
     ctx.globalAlpha = .9; ctx.setLineDash([6, 4]); ctx.strokeStyle = cfg.routeColor; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
@@ -4853,7 +4913,7 @@ function shotPrep(o){
   const hidden = [], hide = ly => { if(ly && map.hasLayer(ly)){ map.removeLayer(ly); hidden.push(ly); } };
   if(!o.parcel) hide(parcelLayer);
   if(!o.labels) hide(labelLayer);
-  if(!o.corr) hide(corridorLayer);
+  if(!o.corr){ hide(corridorLayer); hide(brCorrLayer); }
   if(!o.route){ hide(routeLine); hide(shapeLayer); hide(vertexLayer); hide(typeof routeHit !== 'undefined' ? routeHit : null); }
   if(!o.pipe) hide(pipeLabLayer);
   if(!o.rv){ hide(rvLayer); hide(rvFovLayer); }
@@ -4987,7 +5047,7 @@ async function exportExcel(){
           const outLen = (bndInfo.gaps || []).filter(g => g.out).reduce((a, g) => a + g.len, 0), cutLen = (bndInfo.gaps || []).filter(g => !g.out).reduce((a, g) => a + g.len, 0);
           put('도로경계 자료', `수치지형도 ${bndInfo.scale}`, `파일: ${(bndInfo.files || []).join(', ') || '-'} · 측정 ${bndInfo.cover}%` + (outLen ? ` · 도엽 밖 ${Math.round(outLen)}m` : '') + (cutLen ? ` · 경계 끊김 ${Math.round(cutLen)}m` : ''));
         }
-        put('도로 면 면적(㎡)', corridorCache ? Math.round(turf.area(corridorCache) * 10) / 10 : null, FULL && $('#chkExclBld').checked ? '건물이 서 있는 부분 제외' : null, { num: '#,##0.0' });
+        put('도로 면 면적(㎡)', corridorCache ? Math.round((turf.area(corridorCache) + brCorrAll().reduce((a, g) => a + turf.area(g), 0)) * 10) / 10 : null, FULL && $('#chkExclBld').checked ? '건물이 서 있는 부분 제외' : null, { num: '#,##0.0' });
       }
       put('시점 지번', startInfo && startInfo.host ? startInfo.host.label : '-');
       put('종점 지번', endInfo && endInfo.host ? endInfo.host.label : '-');
@@ -5284,14 +5344,132 @@ function groupSum(it){
   routes.filter(c => c.parentId).forEach(c => { const par = routes.find(x => x.id === c.parentId); if(!par || !par.gj || !c.gj || c.gj.geometry.type !== 'LineString') return; const pr = par.gj.properties = par.gj.properties || {}; (pr.branches = pr.branches || []).push({ coords: c.gj.geometry.coordinates, pipe: (c.gj.properties && c.gj.properties.pipe && c.gj.properties.pipe[0]) || {} }); c._fold = true; moved++; if(par.sum) par.stale = true; });
   if(moved){ routes = routes.filter(c => !c._fold); routes.forEach(c => { delete c.parentId; delete c.attachS; }); try{ localStorage.setItem('kgeopRoute.routes', JSON.stringify(routes.map(({ cache, ...x }) => x))); }catch(e){} setTimeout(() => toast(`예전 '지선' ${moved}개를 본래 노선의 가지 구간으로 합쳤습니다. [필지 조회]를 다시 눌러 주세요.`, 9000), 1500); }
 })();
-function saveRoutes(){ try{ localStorage.setItem('kgeopRoute.routes', JSON.stringify(routes.map(({ cache, ...x }) => x))); }catch(e){ log('노선 목록 저장 실패: ' + e.message); } }
+/* ---- 폴더: 한 단계. '미분류'(맨 위)와 '보관'(맨 아래, 평소 접힘)은 기본 폴더 ---- */
+const F_NONE = 'f_none', F_ARCH = 'f_arch';
+let folders = (() => { try{ const v = JSON.parse(localStorage.getItem('kgeopRoute.folders') || 'null'); return Array.isArray(v) ? v : []; }catch(e){ return []; } })();
+let curFolder = (() => { try{ return localStorage.getItem('kgeopRoute.curFolder') || F_NONE; }catch(e){ return F_NONE; } })();
+let rpQuery = '', fdArm = null, fdRen = null;
+function ensureFolders(){
+  if(!folders.some(f => f.id === F_NONE)) folders.unshift({ id: F_NONE, name: '미분류', open: true });
+  if(!folders.some(f => f.id === F_ARCH)) folders.push({ id: F_ARCH, name: '보관', open: false });
+  folders = [folders.find(f => f.id === F_NONE)].concat(folders.filter(f => f.id !== F_NONE && f.id !== F_ARCH), [folders.find(f => f.id === F_ARCH)]);
+  routes.forEach(r => { if(!r.folder || !folders.some(f => f.id === r.folder)) r.folder = F_NONE; });
+  if(!folders.some(f => f.id === curFolder) || curFolder === F_ARCH) curFolder = F_NONE;
+}
+function saveFolders(){ try{ localStorage.setItem('kgeopRoute.folders', JSON.stringify(folders)); localStorage.setItem('kgeopRoute.curFolder', curFolder); }catch(e){} }
+function folderById(id){ return folders.find(f => f.id === id) || folders[0]; }
+function setCurFolder(id){ if(id === F_ARCH) id = F_NONE; curFolder = id; const f = folderById(id); if(f) f.open = true; saveFolders(); }
+function moveRoute(id, fid, quiet){
+  const it = routes.find(x => x.id === id); if(!it || it.folder === fid) return;
+  const from = it.folder; it.folder = fid; it.updated = it.updated || Date.now();
+  if(fid !== F_ARCH) setCurFolder(fid); else saveFolders();
+  saveRoutes(); renderRoutes(); drawGhosts();
+  if(!quiet) toast(`'${it.name}' → 📁 ${folderById(fid).name}${fid === F_ARCH ? ' (평소에는 숨겨짐)' : ''}`, 6000, { label: '되돌리기', fn: () => moveRoute(id, from, true) });
+}
+function newFolder(name, quiet){
+  const nm = (name || '').trim() || `새 폴더 ${folders.length - 1}`;
+  const f = { id: 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: nm, open: true };
+  folders.splice(folders.length - 1, 0, f); saveFolders();
+  if(!quiet){ fdRen = f.id; setCurFolder(f.id); renderRoutes(); }
+  return f;
+}
+function deleteFolder(fid){
+  if(fid === F_NONE || fid === F_ARCH) return;
+  const f = folderById(fid), rs = routes.filter(r => r.folder === fid);
+  rs.forEach(r => r.folder = F_NONE); folders = folders.filter(x => x.id !== fid); if(curFolder === fid) curFolder = F_NONE;
+  saveFolders(); saveRoutes(); renderRoutes(); drawGhosts();
+  toast(`📁 '${f.name}' 폴더를 지웠습니다${rs.length ? ` — 노선 ${rs.length}개는 미분류로 옮김` : ''}.`, 7000, { label: '되돌리기', fn: () => { folders.splice(folders.length - 1, 0, f); rs.forEach(r => r.folder = fid); saveFolders(); saveRoutes(); renderRoutes(); drawGhosts(); } });
+}
+function routeVisibleOnMap(it){ const f = folderById(it.folder); return it.id === activeId || (f && f.open); }
+/* 백업 파일 (폴더 + 노선) */
+function backupBlob(fid){
+  syncActive(false);
+  const fs = fid ? folders.filter(f => f.id === fid) : folders, rs = routes.filter(r => !fid || r.folder === fid);
+  return new Blob([JSON.stringify({ kind: 'kgeop-backup', version: 1, saved: new Date().toISOString(), folders: fs.map(f => ({ id: f.id, name: f.name })), routes: rs.map(({ cache, ...x }) => x) })], { type: 'application/json' });
+}
+async function saveBackup(fid){
+  const d = new Date(), stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+  const nm = fid ? `노선폴더_${safeName(folderById(fid).name)}_${stamp}` : `노선전체백업_${stamp}`;
+  const r = await offerSave(backupBlob(fid), fid ? '폴더 저장' : '전체 백업 저장', nm, '.json', 'application/json');
+  if(r){ if(!fid) LS.set('lastBackup', String(Date.now())); status(`${fid ? '폴더를' : '노선 전체를'} 저장했습니다: ${r.file} — 다른 PC에서는 [💾 백업 ▾ → 📥 백업 파일 불러오기]로 엽니다.`); }
+}
+async function restoreBackup(file){
+  try{
+    const j = JSON.parse(await readTextSmart(file));
+    if(!j || j.kind !== 'kgeop-backup' || !Array.isArray(j.routes)) throw new Error('노선 조회기 백업 파일이 아닙니다 (선·도형 파일은 [📂 불러오기]로 여세요)');
+    const fmap = {};
+    (j.folders || []).forEach(bf => { if(bf.id === F_NONE || bf.id === F_ARCH){ fmap[bf.id] = bf.id; return; } const same = folders.find(f => f.name === bf.name); fmap[bf.id] = same ? same.id : newFolder(bf.name, true).id; });
+    let add = 0, skip = 0;
+    j.routes.forEach(r => { if(!r || !r.gj) return; if(routes.some(x => x.id === r.id)){ skip++; return; } r.folder = fmap[r.folder] || F_NONE; r.stale = !!(r.sum && r.sum.n != null); routes.push(r); add++; });
+    ensureFolders(); saveFolders(); saveRoutes(); renderRoutes(); drawGhosts();
+    toast(`백업 불러오기: 노선 ${add}개 추가${skip ? ` · 이미 있는 노선 ${skip}개는 건너뜀` : ''}. 필지 정보는 노선을 열고 [필지 조회]를 다시 누르면 채워집니다.`, 10000);
+  }catch(e){ toast('백업 불러오기 실패: ' + e.message, 9000); }
+}
+function storeInfo(){
+  let bytes = 0; try{ Object.keys(localStorage).forEach(k => { if(k.startsWith('kgeopRoute.')) bytes += (k.length + (localStorage.getItem(k) || '').length) * 2; }); }catch(e){}
+  const el = byId('rpStore'); if(!el) return;
+  const mb = bytes / 1048576, lb = Number(LS.get('lastBackup', '0'));
+  el.className = 'small' + (mb > 3.5 ? ' warn' : '');
+  el.innerHTML = `노선 ${routes.length}개 · 폴더 ${folders.length - 2}개 · 이 브라우저에 저장 ${mb < .1 ? (bytes / 1024).toFixed(0) + 'KB' : mb.toFixed(2) + 'MB'} / 약 5MB` + (mb > 3.5 ? ' — 공간이 부족해지고 있습니다. 보관할 노선은 💾 백업 후 지워 주세요.' : '') + `<br>마지막 전체 백업: ${lb ? new Date(lb).toLocaleDateString('ko-KR') : '없음'} <span style="color:#adb5bd">(노선은 이 PC 브라우저에만 저장됨 — 브라우저 데이터를 지우면 사라짐)</span>`;
+}
+function openFdMenu(btn, id){
+  const doc = btn.ownerDocument, old = doc.getElementById('fdMenu'); if(old) old.remove();
+  const it = routes.find(x => x.id === id); if(!it) return;
+  const m = doc.createElement('div'); m.id = 'fdMenu';
+  m.innerHTML = '<div class="t">이 노선을 옮길 폴더</div>' + folders.filter(f => f.id !== it.folder).map(f => `<button data-to="${f.id}">${f.id === F_ARCH ? '🗄' : '📁'} ${esc(f.name)}</button>`).join('') + '<button data-to="__new">＋ 새 폴더 만들어 옮기기</button>';
+  doc.body.appendChild(m);
+  const rc = btn.getBoundingClientRect(); m.style.left = Math.min(rc.left, doc.defaultView.innerWidth - 190) + 'px'; m.style.top = Math.min(rc.bottom + 4, doc.defaultView.innerHeight - m.offsetHeight - 8) + 'px';
+  m.querySelectorAll('[data-to]').forEach(b => b.onclick = e => { e.stopPropagation(); m.remove(); if(b.dataset.to === '__new'){ const f = newFolder('', true); fdRen = f.id; moveRoute(id, f.id, true); toast(`새 폴더로 옮겼습니다. 폴더 이름을 적어 주세요.`, 5000); } else moveRoute(id, b.dataset.to); });
+  setTimeout(() => doc.addEventListener('click', function off(){ m.remove(); doc.removeEventListener('click', off); }), 0);
+}
+function folderListHtml(cardOf){
+  const q = rpQuery.trim().toLowerCase();
+  const match = it => !q || [it.name, it.sum && it.sum.start, it.sum && it.sum.end].filter(Boolean).join(' ').toLowerCase().includes(q);
+  let total = 0;
+  const html = folders.map(f => {
+    const rs = routes.filter(r => r.folder === f.id).sort((a, b) => (b.id === activeId) - (a.id === activeId) || (b.updated || 0) - (a.updated || 0));
+    const shown = rs.filter(match); total += shown.length;
+    if(q && !shown.length) return '';
+    const open = q ? true : (f.open || rs.some(r => r.id === activeId));
+    const len = rs.reduce((a, r) => a + ((r.sum && r.sum.len) || 0), 0);
+    const sys = f.id === F_NONE || f.id === F_ARCH;
+    const name = fdRen === f.id && !sys ? `<input class="fd-ren" value="${esc(f.name)}" data-ren="${f.id}">` : `<span class="fd-n">${esc(f.name)}</span>`;
+    const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + (!sys ? `<button data-fa="ren" title="폴더 이름 바꾸기">✏</button>` : '') + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
+    return `<div class="fd${f.id === F_ARCH ? ' arch' : ''}${f.id === curFolder ? ' cur' : ''}" data-f="${f.id}"><div class="fd-h" data-fh="${f.id}" title="눌러서 접기·펴기 (접은 폴더의 노선은 지도에서도 숨김)"><span>${open ? '▾' : '▸'}</span><span>${f.id === F_ARCH ? '🗄' : '📁'}</span>${name}<span class="fd-c">${rs.length}개${len ? ' · ' + fmtLen(len) : ''}</span><span class="fd-sp"></span>${btns}</div>${open ? `<div class="fd-b">${shown.length ? shown.map(cardOf).join('') : `<div class="fd-empty">${f.id === F_ARCH ? '끝난 노선을 여기로 옮겨 두면 평소엔 숨겨집니다.' : '비어 있음 — 노선 카드를 끌어다 놓거나 [＋]로 새 노선을 그리세요.'}</div>`}</div>` : ''}</div>`;
+  }).join('');
+  return (q && !total ? `<div class="empty" style="padding:12px 4px">'${esc(rpQuery)}'에 맞는 노선이 없습니다.</div>` : '') + html;
+}
+function bindFolderList(box){
+  box.querySelectorAll('[data-fh]').forEach(h => h.onclick = e => {
+    if(e.target.closest('button, input')) return;
+    const f = folderById(h.dataset.fh); f.open = !f.open; if(f.open && f.id !== F_ARCH) curFolder = f.id; saveFolders(); renderRoutes(); drawGhosts();
+  });
+  box.querySelectorAll('[data-fa]').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const fid = b.closest('[data-fh]').dataset.fh, a = b.dataset.fa;
+    if(a === 'new'){ setCurFolder(fid); renderRoutes(); startDraw('line'); }
+    else if(a === 'ren'){ fdRen = fid; renderRoutes(); }
+    else if(a === 'save') saveBackup(fid);
+    else if(a === 'cmp'){ cmpSel = new Set(routes.filter(r => r.folder === fid && r.gj && r.gj.properties && r.gj.properties.kind === 'line').slice(0, 5).map(r => r.id)); openCmp(); }
+    else if(a === 'del'){ if(fdArm === fid){ fdArm = null; deleteFolder(fid); return; } fdArm = fid; renderRoutes(); setTimeout(() => { if(fdArm === fid){ fdArm = null; renderRoutes(); } }, 3000); }
+  });
+  box.querySelectorAll('input.fd-ren').forEach(inp => { setTimeout(() => { inp.focus(); inp.select(); }, 0); const done = () => { if(fdRen !== inp.dataset.ren) return; const f = folderById(inp.dataset.ren); const v = inp.value.trim(); if(v) f.name = v; fdRen = null; saveFolders(); renderRoutes(); }; inp.onkeydown = e => { if(e.key === 'Enter') done(); if(e.key === 'Escape'){ fdRen = null; renderRoutes(); } }; inp.onblur = done; inp.onclick = e => e.stopPropagation(); });
+  box.querySelectorAll('.rc-mv').forEach(b => b.onclick = e => { e.stopPropagation(); openFdMenu(b, b.dataset.mv); });
+  // 끌어서 폴더로 옮기기
+  box.querySelectorAll('.rcard[data-id]').forEach(c => { c.draggable = true; c.addEventListener('dragstart', e => { if(e.target.closest && e.target.closest('input, textarea, select')){ e.preventDefault(); return; } e.dataTransfer.setData('text/kgeop-route', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; }); });
+  box.querySelectorAll('.fd').forEach(fd => {
+    fd.addEventListener('dragover', e => { if([...e.dataTransfer.types].includes('text/kgeop-route')){ e.preventDefault(); fd.classList.add('drop'); } });
+    fd.addEventListener('dragleave', e => { if(!fd.contains(e.relatedTarget)) fd.classList.remove('drop'); });
+    fd.addEventListener('drop', e => { e.preventDefault(); fd.classList.remove('drop'); const id = e.dataTransfer.getData('text/kgeop-route'); if(id) moveRoute(id, fd.dataset.f); });
+  });
+}
+function saveRoutes(){ try{ localStorage.setItem('kgeopRoute.routes', JSON.stringify(routes.map(({ cache, ...x }) => x))); }catch(e){ log('노선 목록 저장 실패: ' + e.message); toast('노선을 저장하지 못했습니다 — 브라우저 저장 공간이 찼습니다. [💾 백업]으로 파일에 저장한 뒤 안 쓰는 노선을 지워 주세요.', 12000); } storeInfo(); }
 function activeRoute(){ return routes.find(x => x.id === activeId) || null; }
 function kindName(k){ return { line: '선', rect: '사각형', circle: '원', poly: '다각형' }[k] || k; }
 function routeGJ(){
   if(!hasTarget()) return null;
   syncVW();
   const gj = isLine() ? toLine() : JSON.parse(JSON.stringify(shapeGeom));
-  gj.properties = Object.assign({}, gj.properties, { kind: shapeKind, width: Number($('#width').value), vW: isLine() ? vW.slice() : undefined, vSrc: isLine() ? vSrc.slice() : undefined, manualEdits: isLine() ? manualEdits.slice() : undefined, reviewed: isLine() ? reviewedList.slice() : undefined, pipe: isLine() ? (syncSegPipe(), segPipe.map(x => Object.assign({}, x))) : undefined, branches: isLine() && brOk().length ? brOk().map(b => ({ coords: b.ll.map(q => [q.lng, q.lat]), pipe: Object.assign({}, b.pipe) })) : undefined });
+  gj.properties = Object.assign({}, gj.properties, { kind: shapeKind, width: Number($('#width').value), vW: isLine() ? vW.slice() : undefined, vSrc: isLine() ? vSrc.slice() : undefined, manualEdits: isLine() ? manualEdits.slice() : undefined, reviewed: isLine() ? reviewedList.slice() : undefined, pipe: isLine() ? (syncSegPipe(), segPipe.map(x => Object.assign({}, x))) : undefined, branches: isLine() && brOk().length ? brOk().map(b => ({ coords: b.ll.map(q => [q.lng, q.lat]), pipe: Object.assign({}, b.pipe), w: b.w || undefined })) : undefined });
   return gj;
 }
 function routeSum(){
@@ -5319,7 +5497,7 @@ function newRouteFromCurrent(){
   if(!hasTarget()) return;
   const n = routes.filter(x => (x.gj && x.gj.properties && x.gj.properties.kind === 'line') === isLine()).length + 1;
   const pre = (byId('rpName') || {}).value; const preName = pre ? pre.trim() : '';
-  const it = { id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: preName || areaName || (isLine() ? `노선 ${n}` : `영역 ${n}`), gj: null, sum: null, stale: false };
+  const it = { id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: preName || areaName || (isLine() ? `노선 ${n}` : `영역 ${n}`), gj: null, sum: null, stale: false, folder: curFolder === F_ARCH ? F_NONE : curFolder };
   if(branchOf && isLine() && routeById(branchOf.id)){ it.parentId = branchOf.id; it.attachS = branchOf.s || 0; if(!preName) it.name = `${routeById(branchOf.id).name} 지선 ${routes.filter(x => x.parentId === branchOf.id).length + 1}`; }
   if(preName) byId('rpName').value = '';
   routes.push(it); activeId = it.id; areaName = it.name;
@@ -5332,7 +5510,7 @@ function clearWork(){
   if(edgeEdit) toggleEdgeEdit(false);
   highlightParcel(null); singleSeq++;
   clearShapeLayers();
-  pts = []; shapeGeom = null; shapeKind = null; shapeMeta = null; vW = []; vSrc = []; bndSurface = null; segPipe = []; pipeLabLayer.clearLayers(); stopRvFollow(); brs = []; brLayer.clearLayers(); if(brDraw) endBranchDraw(true);
+  pts = []; shapeGeom = null; shapeKind = null; shapeMeta = null; vW = []; vSrc = []; bndSurface = null; segPipe = []; pipeLabLayer.clearLayers(); stopRvFollow(); brs = []; brLayer.clearLayers(); if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; } if(brDraw) endBranchDraw(true);
   chipFilter = null; areaName = ''; lastQueryMeta = null; clearResults(); redrawRoute(); progress(0);
   editLayer.clearLayers(); prevSnap = null; lastDiff = null; lastQueryMeta = null; renderCompare(); bndSurface = null;
   stations = null; stSig = ''; stSurface = null; manualEdits = []; reviewedList = []; issues = []; if(edgeLayer){ map.removeLayer(edgeLayer); edgeLayer = null; } edgeHandleLayer.clearLayers();
@@ -5340,6 +5518,7 @@ function clearWork(){
 }
 function activateRoute(id, fit = true){
   const it = routes.find(x => x.id === id); if(!it || !it.gj) return;
+  if(it.folder && it.folder !== F_ARCH && it.folder !== curFolder){ curFolder = it.folder; saveFolders(); }
   if(id !== activeId){
     syncActive(true);
     clearWork();
@@ -5351,7 +5530,7 @@ function activateRoute(id, fit = true){
       if(pr.width != null) $('#width').value = pr.width;
       vW = (pr.vW || []).slice(); vSrc = (pr.vSrc || []).slice(); manualEdits = (pr.manualEdits || []).slice(); reviewedList = (pr.reviewed || []).slice();
       segPipe = Array.isArray(pr.pipe) ? pr.pipe.map(x => Object.assign({ mat: '', dia: '', pres: '' }, x)) : [];
-      brs = Array.isArray(pr.branches) ? pr.branches.map(b => ({ ll: b.coords.map(c => L.latLng(c[1], c[0])), pipe: Object.assign({ mat: '', dia: '', pres: '' }, b.pipe || {}) })) : [];
+      brs = Array.isArray(pr.branches) ? pr.branches.map(b => ({ ll: b.coords.map(c => L.latLng(c[1], c[0])), pipe: Object.assign({ mat: '', dia: '', pres: '' }, b.pipe || {}), w: Number(b.w) || 0 })) : [];
     } else { shapeGeom = { type: 'Feature', geometry: gj.geometry, properties: Object.assign({}, pr) }; shapeKind = pr.kind || 'poly'; }
     redrawRoute(); drawBranches(); buildEditHandles();
     if(it.cache){
@@ -5378,7 +5557,7 @@ function deleteRoute(id){
 }
 function drawGhosts(){
   ghostLayer.clearLayers();
-  routes.filter(it => it.id !== activeId && it.gj).forEach(it => {
+  routes.filter(it => it.id !== activeId && it.gj && routeVisibleOnMap(it)).forEach(it => {
     const mate = sameGroup(it, activeRoute());
     const lyr = L.geoJSON(it.gj, { pane: 'routeP', style: mate ? { color: cfg.routeColor, weight: Math.max(2, Number(cfg.routeWeight) - 1), opacity: .6 } : { color: '#343a40', weight: 4, opacity: .7, dashArray: '7,6', fillColor: '#343a40', fillOpacity: .05 } });
     const open = e => { if(drawing || measuring) return; L.DomEvent.stop(e); activateRoute(it.id); setTab('route'); };
@@ -5402,17 +5581,19 @@ function renderRoutes(){
   const tp = byId('tabParcelN'); if(tp) tp.textContent = results.length ? `(${results.length})` : '';
   const box = byId('routeList'); if(!box || curTab !== 'route' && !document.body.classList.contains('popped')) return;
   if(!routes.length){
+    storeInfo();
     box.innerHTML = `<div class="empty" style="padding:14px 4px">아직 그린 노선이 없습니다.<br><b>✏ 새 노선 그리기</b>를 누르고 지도에서 배관이 지나갈 위치를 따라 클릭하세요.<br>그린 노선은 여기에 쌓이고, 눌러서 다시 열고 고칠 수 있습니다.</div>`;
     return;
   }
   const act = activeRoute(), roots = routes.filter(x => !x.parentId || !routeById(x.parentId)).sort((a, b) => (sameGroup(b, act)) - (sameGroup(a, act)) || (b.updated || 0) - (a.updated || 0));
   const order = roots.flatMap(r => groupOf(r));
-  box.innerHTML = order.map(it => it.id === activeId ? activeCard(it) : (() => {
+  const cardOf = it => it.id === activeId ? activeCard(it) : (() => {
     const sm = it.sum || {};
     const size = sm.len != null ? fmtLen(sm.len) : sm.area != null ? fmtM2(sm.area) + '㎡' : '';
-    return `<div class="rcard${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top">${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name">${esc(it.name)}</span><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
+    return `<div class="rcard${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top">${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name">${esc(it.name)}</span><button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
       ${sm.start || sm.end ? `<div class="rc-sub">${esc(sm.start || '-')} → ${esc(sm.end || '-')}</div>` : ''}</div>`;
-  })()).join('');
+  })();
+  box.innerHTML = folderListHtml(cardOf); bindFolderList(box); storeInfo();
   box.querySelectorAll('.rcard[data-id]:not(.on)').forEach(c => c.onclick = e => { if(e.target.closest('.rc-del')) return; activateRoute(c.dataset.id); });
   box.querySelectorAll('.rc-del').forEach(b => b.onclick = e => {
     e.stopPropagation(); const id = b.dataset.del;
@@ -5476,7 +5657,7 @@ function activeCard(it){
     vt = `<details class="rc-vtx"><summary>꼭짓점 목록 (${pts.length}개) — 눌러서 위치로 이동</summary><table><tr><th>점</th><th>누적 거리</th><th>도로 폭</th></tr>` + pts.map((p, i) => { if(i) acc += map.distance(pts[i - 1], p); return `<tr data-v="${i}"><td>${i === 0 ? '시점' : i === pts.length - 1 ? '종점' : i}</td><td>${fmtLen(acc)}</td><td>${vW[i] ? vW[i] + 'm' : '-'} <span class="small" style="color:var(--muted)">${esc(vSrc[i] || '')}</span></td></tr>`; }).join('') + `</table></details>`;
   }
   const G = (t, btns) => btns.filter(Boolean).length ? `<div class="rc-g"><span class="rc-gt">${t}</span><div class="rc-gb">${btns.filter(Boolean).join('')}</div></div>` : '';
-  return `<div class="rcard on${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}"><div class="rc-top"><span class="rc-badge">수정 중</span>${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button></div>
+  return `<div class="rcard on${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}"><div class="rc-top"><span class="rc-badge">수정 중</span>${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span><button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button></div>
     <div class="rc-grid">${rows.map(([k, v]) => `<div>${k}</div><div>${v}</div>`).join('')}</div>
     ${vt}
     <div class="rc-acts2">
@@ -6124,7 +6305,7 @@ function openSettings(){
   $('#dlgSettings').showModal();
 }
 $('#sCancel').onclick = () => $('#dlgSettings').close();
-$('#sBldClear').onclick = () => { let n = 0; try{ Object.keys(localStorage).filter(k => k.startsWith('kgeopBld.')).forEach(k => { localStorage.removeItem(k); n++; }); }catch(e){} $('#sBldMsg').textContent = `저장된 건축물대장 ${n}건을 지웠습니다.`; };
+$('#sBldClear').onclick = async () => { let n = 0; try{ Object.keys(localStorage).filter(k => k.startsWith('kgeopBld.')).forEach(k => { localStorage.removeItem(k); n++; }); }catch(e){} try{ n += (await IDBC.count()) || 0; await IDBC.clear(); }catch(e){} $('#sBldMsg').textContent = `저장된 건축물대장 ${n}건을 지웠습니다.`; storeInfo(); };
 $('#sBldTest').onclick = async () => {
   const key = $('#sBldKey').value.trim(); const msg = $('#sBldMsg');
   if(!key){ msg.textContent = '인증키를 먼저 넣어 주세요.'; return; }
@@ -6478,11 +6659,11 @@ function fpanel(id, title, w, pos){
   if(!winIn(id) && el._restorePos) el._restorePos();
   return el;
 }
-function cmpRoutes(){ return routes.filter(x => x.gj && x.gj.properties && x.gj.properties.kind === 'line'); }
+function cmpRoutes(){ return routes.filter(x => x.gj && x.gj.properties && x.gj.properties.kind === 'line').sort((a, b) => folders.findIndex(f => f.id === a.folder) - folders.findIndex(f => f.id === b.folder)); }
 function openCmp(){
   syncActive(false);
   const rs = cmpRoutes(); if(rs.length < 2){ toast('비교하려면 노선이 2개 이상 있어야 합니다.'); return; }
-  if(!cmpSel) cmpSel = new Set(rs.slice(0, 5).map(x => x.id));
+  if(!cmpSel){ const mine = rs.filter(x => x.folder === curFolder); cmpSel = new Set((mine.length >= 2 ? mine : rs).slice(0, 5).map(x => x.id)); }
   cmpOpen = true; const el = fpanel('cmpPanel', '⚖ 노선 비교', 640, [70, 120]);
   el.querySelector('[data-fx]').onclick = closeCmp;
   el.querySelector('.fbtn').innerHTML = '<button data-c="copy" title="표를 복사해 엑셀에 붙여넣기">📋 표 복사</button>';
@@ -6515,7 +6696,7 @@ function renderCmp(){
   const el = byId('cmpPanel'); if(!el || !cmpOpen) return;
   const rs = cmpRoutes();
   [...cmpSel].forEach(id => { if(!rs.some(x => x.id === id)) cmpSel.delete(id); });
-  el.querySelector('.fb').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:8px">${rs.map(it => `<label><input type="checkbox" data-cid="${it.id}" ${cmpSel.has(it.id) ? 'checked' : ''}> ${esc(it.name)}</label>`).join('')}</div>` +
+  el.querySelector('.fb').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:8px">${rs.map(it => `<label><input type="checkbox" data-cid="${it.id}" ${cmpSel.has(it.id) ? 'checked' : ''}> ${esc(it.name)} <span class="small" style="color:#adb5bd">${esc(folderById(it.folder).name)}</span></label>`).join('')}</div>` +
     (cmpSel.size ? cmpTable(false) : '<div class="small">비교할 노선을 고르세요.</div>') +
     `<div class="small" style="color:#868e96;margin-top:6px">초록 글자 = 가장 유리한 값 · '조회 전'인 노선은 노선 목록에서 열고 [필지 조회]를 누르면 채워집니다.</div>`;
   el.querySelectorAll('[data-cid]').forEach(c => c.onchange = () => { if(c.checked){ if(cmpSel.size >= 5){ c.checked = false; toast('한 번에 5개까지 비교할 수 있습니다.', 3000); return; } cmpSel.add(c.dataset.cid); } else cmpSel.delete(c.dataset.cid); renderCmp(); });
@@ -6708,6 +6889,14 @@ setTimeout(() => { if(cfg.key && tileCors === null && /^https?:$/.test(location.
 document.addEventListener('click', e => { const m = byId('shotMenu'); if(m && !e.target.closest('#btnShot, #shotMenu')) m.classList.remove('open'); });
 qsa('#asideTabs button').forEach(b => b.onclick = () => { if(b.dataset.tab === 'parcel' && popWin && !popWin.closed){ popWin.focus(); return; } setTab(b.dataset.tab); });
 $('#rpNew').onclick = () => startDraw('line');
+ensureFolders(); saveFolders();
+byId('rpSearch').oninput = e => { rpQuery = e.target.value; renderRoutes(); };
+byId('rpNewFolder').onclick = () => { newFolder(''); };
+byId('rpBackupBtn').onclick = e => { e.stopPropagation(); byId('rpBackupMenu').classList.toggle('open'); };
+byId('rpBackupMenu').querySelectorAll('[data-bk]').forEach(b => b.onclick = e => { e.stopPropagation(); byId('rpBackupMenu').classList.remove('open'); if(b.dataset.bk === 'all') saveBackup(null); else byId('rpRestoreFile').click(); });
+document.addEventListener('click', e => { const m = byId('rpBackupMenu'); if(m && !e.target.closest('#rpBackupBtn, #rpBackupMenu')) m.classList.remove('open'); });
+byId('rpRestoreFile').onchange = e => { const f = e.target.files[0]; if(f) restoreBackup(f); e.target.value = ''; };
+setTimeout(() => { const lb = Number(LS.get('lastBackup', '0')); if(routes.length >= 20 && Date.now() - lb > 14 * 864e5) toast(`노선 ${routes.length}개가 이 브라우저에만 저장돼 있습니다. 가끔 전체 백업 파일을 만들어 두세요.`, 12000, { label: '💾 지금 백업', fn: () => saveBackup(null) }); }, 6000);
 $('#btnEditor').onclick = () => { edTab = 'width'; openEditor(edOpen ? edSel : -1); };
 $('#rpImport').onclick = () => $('#btnLoadRoute').click();
 drawGhosts(); renderRoutes();
