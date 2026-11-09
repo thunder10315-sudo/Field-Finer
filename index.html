@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v27-2</title>
+<title>노선 필지 조회기 v27-4</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1111,7 +1111,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-2</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-4</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1358,7 +1358,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         <li>필요할 때만: 📋 여러 지번(지번 목록 붙여넣어 한꺼번에 조회) · 노선 탭 ⚖ 비교(노선 2개 이상)</li>
         <li>갈라지는 배관은 노선 카드 <b>➕ 가지 구간 추가</b> — 노선 위 갈라지는 곳부터 그리면 같은 노선의 구간이 되어, 거리가 겹치지 않고 [필지 조회]에 모든 필지가 나옴</li>
         <li>노선 숨기기: 위쪽 노선 [보이기] 끄기 (또는 R 키) · 노선 편집·상세 ⧉·비교 창은 새 창으로 열림 (⚙ 설정에서 '화면 안'으로 바꿀 수 있음)</li>
-        <li>노선이 많으면 <b>📁 폴더</b>로 묶으세요 — 카드를 폴더로 끌어 놓거나 카드의 📁 · 접은 폴더의 노선은 지도에서도 숨김 · 끝난 노선은 '보관' 폴더로</li>
+        <li>노선이 많으면 <b>📁 폴더</b>로 묶으세요 — 카드를 폴더로 끌어 놓거나 카드의 📁 · 접은 폴더의 노선은 지도에서도 숨김 · 끝난 노선은 '보관' 폴더로 · 폴더 이름은 더블클릭이나 ✏ 이름으로 바꿈</li>
         <li>노선은 이 PC 브라우저에 자동 보관됩니다. 가끔 노선 탭 [💾 백업 ▾]으로 파일을 만들어 두고, 팀원에게는 폴더의 💾로 넘기세요</li>
         <li>⚙ 설정: 브이월드 키(필수) · 건축물대장 키 · 카카오 키(로드뷰를 화면 안·별도 창에서 보기)</li>
         <li>이 창은 위쪽 <b>❓ 사용법</b>(또는 F1)으로 다시 엽니다.</li>
@@ -2389,7 +2389,9 @@ function drawBranches(){
   if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; }
   if(!isLine() || pts.length < 2) return;
   { const cs = brCorrAll(); if(cs.length) brCorrLayer = L.geoJSON(turf.featureCollection(cs), { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'routeP' }).addTo(map); }
-  brs.forEach((b, i) => { if(b.ll.length < 2) return; L.polyline(b.ll, Object.assign(routeStyle(), { interactive: true })).on('click', e => { if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); if(edTab === 'review') edTab = 'width'; openEditor(-1); }).bindTooltip(`${brName(i)} · ${fmtLen(brLen(b))} · 도로 폭 ${brW(b)}m — 눌러서 도로 폭·배관 정보`, { sticky: true }).addTo(brLayer); });
+  brs.forEach((b, i) => { if(b.ll.length < 2) return;
+    L.polyline(b.ll, routeStyle()).addTo(brLayer);
+    L.polyline(b.ll, { weight: 14, opacity: 0, className: 'route-hit', pane: 'routeP' }).on('click', e => { if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); edBr = i; if(edTab === 'review') edTab = 'width'; openEditor(-1); }).bindTooltip(`${brName(i)} · ${fmtLen(brLen(b))} · 도로 폭 ${brW(b)}m — 눌러서 이 가지 구간 편집`, { sticky: true, direction: 'top', offset: [0, -8] }).addTo(brLayer); });
 }
 function onBranchEdited(){ resnapBranches(); drawBranches(); buildEditHandles(); drawPipeLabels(); onShapeEdited(); }
 function startBranchDraw(){
@@ -2419,7 +2421,7 @@ function endBranchDraw(cancel){
   onBranchEdited();
   status(`${brName(brs.length - 1)} ${fmtLen(brLen(brs[brs.length - 1]))}을(를) 추가했습니다 — 총 연장 ${fmtLen(totalLength())}. [필지 조회]를 누르면 가지 구간 필지도 함께 나옵니다.`);
 }
-function delBranch(i){ const b = brs[i]; if(!b) return; brs.splice(i, 1); onBranchEdited(); toast(`${brName(i)}을(를) 지웠습니다.`, 7000, { label: '되돌리기', fn: () => { brs.splice(i, 0, b); onBranchEdited(); } }); }
+function delBranch(i){ const b = brs[i]; if(!b) return; if(edBr === i) edBr = null; else if(edBr != null && edBr > i) edBr--; brs.splice(i, 1); onBranchEdited(); toast(`${brName(i)}을(를) 지웠습니다.`, 7000, { label: '되돌리기', fn: () => { brs.splice(i, 0, b); onBranchEdited(); } }); }
 function fmtLen(m){ return m >= 1000 ? (m/1000).toFixed(2)+'km' : Math.round(m)+'m'; }
 function fmtM2(v){ return Number(v || 0).toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
 function toLine(){ return turf.lineString(pts.map(p => [p.lng, p.lat])); }
@@ -2855,6 +2857,7 @@ function drawPipeLabels(){
   brOk().forEach(b => { const t = pipeText(b.pipe); if(!t) return; try{ const c = turf.along(brLine(b), brLen(b) / 2, { units: 'meters' }).geometry.coordinates; L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="pipe-lab">${esc(t)}</span>`, iconSize: [0, 0] }), interactive: false, keyboard: false, pane: 'routeMk' }).addTo(pipeLabLayer); }catch(e){} });
 }
 let edTab = 'review';
+let edBr = null; // 편집 창에서 고른 가지 구간 (없으면 null)
 let edOpen = false, edSel = -1, edHi = null, edAutoMin = false, edFocusV = null, edTimer = null;
 function segList(){
   const out = []; let acc = 0;
@@ -2884,7 +2887,7 @@ function selVerts(sel){ return sel < 0 ? pts.map((_, i) => i) : [sel, sel + 1]; 
 function openEditor(seg = -1, focusV = null){
   if(!isLine() || pts.length < 2){ status('선(노선)을 그린 뒤 편집할 수 있습니다.'); return; }
   const box = byId('routeEd'), first = box.style.display !== 'block';
-  edOpen = true; edSel = seg; edFocusV = focusV; box.classList.remove('min');
+  edOpen = true; edSel = seg; edFocusV = focusV; box.classList.remove('min'); if(seg >= 0) edBr = null; if(edBr != null && !brs[edBr]) edBr = null;
   renderEditor(); edWin(box);
   if(first && box._restorePos) box._restorePos();
   if(focusV != null) setTimeout(() => { const inp = box.querySelector(`input.vin[data-v="${focusV}"]`); if(inp){ inp.focus(); inp.select(); } }, 30);
@@ -2896,6 +2899,7 @@ function edWin(box, force){ if(!edOpen || (!force && !winWanted('ed'))) return; 
 function drawEdHi(){
   if(edHi){ map.removeLayer(edHi); edHi = null; }
   if(!edOpen || !isLine() || pts.length < 2) return;
+  if(edBr != null && brs[edBr]){ const b = brs[edBr], o2 = { pane: 'selPane', interactive: false }, parts2 = []; const g = brCorr(b); if(g) parts2.push(L.geoJSON(g, { style: Object.assign({ color: '#2b8a3e', weight: 3, dashArray: '6,4', fillColor: '#40c057', fillOpacity: .18 }, o2) })); parts2.push(L.polyline(b.ll, Object.assign({ color: '#2b8a3e', weight: 7, opacity: .55 }, o2))); edHi = L.layerGroup(parts2).addTo(map); return; }
   const S = stRange(edSel), o = { pane: 'selPane', interactive: false };
   const parts = [];
   if(S && S.length >= 2){ const ring = S.map(q => [q.L[1], q.L[0]]).concat(S.slice().reverse().map(q => [q.R[1], q.R[0]])); parts.push(L.polygon(ring, Object.assign({ color: '#2b8a3e', weight: 3, dashArray: '6,4', fillColor: '#40c057', fillOpacity: .18 }, o))); }
@@ -2904,6 +2908,7 @@ function drawEdHi(){
   edHi = L.layerGroup(parts).addTo(map);
 }
 function fitSel(){
+  if(edBr != null && brs[edBr]){ map.fitBounds(L.latLngBounds(brs[edBr].ll).pad(.3), { maxZoom: 20 }); return; }
   const S = stRange(edSel);
   const ll = S ? S.flatMap(q => [[q.L[1], q.L[0]], [q.R[1], q.R[0]]]) : (edSel < 0 ? pts : [pts[edSel], pts[edSel + 1]]);
   map.fitBounds(L.latLngBounds(ll).pad(.25), { maxZoom: 20 });
@@ -2965,11 +2970,15 @@ function renderEditor(){
     <div class="epane"${edTab !== 'width' ? ' hidden' : ''}>
     <div class="ed-guide"><b>도로 폭은 구간마다 넣습니다.</b> 숫자를 바로 고치거나, <b>📏</b>를 누르고 위성사진에서 <b>도로 한쪽 끝 → 반대쪽 끝</b>을 클릭하면 잰 폭이 그 구간에 들어갑니다. 줄을 누르면 지도에 초록색으로 표시됩니다.</div>
     <div class="segs"><table><tr><th>범위</th><th>길이</th><th>도로 폭 (전체 폭)</th><th>도로 면</th>${lastQueryMeta ? '<th>사유지</th>' : ''}</tr>
-      <tr class="seg${edSel < 0 ? ' on' : ''}" data-s="-1"><td><b>노선 전체</b></td><td>${fmtLen(routeLength())}</td><td>${wIn(-1, whole)}</td><td>${whole ? area(whole.area) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(isPrivate).length}</td>` : ''}</tr>
+      <tr class="seg${edSel < 0 && edBr == null ? ' on' : ''}" data-s="-1"><td><b>노선 전체</b></td><td>${fmtLen(routeLength())}</td><td>${wIn(-1, whole)}</td><td>${whole ? area(whole.area) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(isPrivate).length}</td>` : ''}</tr>
       ${segs.map(segRow).join('')}
-      ${brOk().map(b => { const i = brs.indexOf(b), w = brW(b), ar = (() => { try{ return turf.area(brCorr(b)); }catch(e){ return null; } })(); return `<tr class="seg br-row"><td>${brName(i)}<div class="small">갈라진 구간${b.w > 0 ? '' : ' · 기본 폭'}</div></td><td>${fmtLen(brLen(b))}</td><td><span class="wcell"><input class="bw" type="number" min="0" max="100" step="0.5" data-b="${i}" value="${w}" title="숫자를 고치면 ${brName(i)}에 바로 적용"><span>m</span><button class="bmeas" data-b="${i}" title="위성사진에서 도로 양 끝을 클릭해 재고 ${brName(i)}에 넣기">📏</button></span></td><td>${ar != null ? area(ar) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(r => isPrivate(r) && (r.via || []).includes(brName(i))).length}</td>` : ''}</tr>`; }).join('')}</table></div>
+      ${brOk().map(b => { const i = brs.indexOf(b), w = brW(b), ar = (() => { try{ return turf.area(brCorr(b)); }catch(e){ return null; } })(); return `<tr class="seg br-row${edBr === i ? ' on' : ''}" data-b="${i}"><td>${brName(i)}<div class="small">갈라진 구간${b.w > 0 ? '' : ' · 기본 폭'}</div></td><td>${fmtLen(brLen(b))}</td><td><span class="wcell"><input class="bw" type="number" min="0" max="100" step="0.5" data-b="${i}" value="${w}" title="숫자를 고치면 ${brName(i)}에 바로 적용"><span>m</span><button class="bmeas" data-b="${i}" title="위성사진에서 도로 양 끝을 클릭해 재고 ${brName(i)}에 넣기">📏</button></span></td><td>${ar != null ? area(ar) : '-'}</td>${lastQueryMeta ? `<td>${results.filter(r => isPrivate(r) && (r.via || []).includes(brName(i))).length}</td>` : ''}</tr>`; }).join('')}</table></div>
     ${brOk().length ? '<div class="small" style="color:var(--muted);margin:-2px 0 6px">가지 구간은 선을 가운데로 보고 적은 폭만큼 도로 면을 잡습니다(도로 면 확인·가장자리 끌기는 본선만).</div>' : ''}
-    <div class="sel-box">
+    ${edBr != null && brs[edBr] ? (() => { const b = brs[edBr], ar = (() => { try{ return turf.area(brCorr(b)); }catch(e){ return null; } })(), bp = lastQueryMeta ? results.filter(r => (r.via || []).includes(brName(edBr))) : null; return `<div class="sel-box">
+      <div><b>${brName(edBr)}</b> <span class="small" style="color:var(--muted)">· 길이 ${fmtLen(brLen(b))} · 도로 폭 ${brW(b)}m · 도로 면 ${ar != null ? area(ar) : '-'}</span></div>
+      <div class="row"><button data-bfit="${edBr}">📍 지도에서 보기</button><button data-bmeas2="${edBr}">📏 폭 재기</button><button data-bdel="${edBr}" style="color:#c92a2a">🗑 이 가지 구간 지우기</button></div>
+      ${bp ? `<h5>이 가지 구간의 필지 ${bp.length}개 · 사유지 ${bp.filter(isPrivate).length}개</h5>${bp.filter(isPrivate).length ? `<div class="pl">${bp.filter(isPrivate).map(r => `<button data-p="${esc(r.pnu)}" title="${esc(ownerText(r))}">${esc(riJibun(r.addr, r.jibun))}</button>`).join('')}</div>` : '<div class="small" style="color:var(--muted)">사유지 없음</div>'}` : '<div class="small" style="color:var(--muted)">[필지 조회] 뒤에 이 가지 구간의 필지가 나옵니다.</div>'}
+    </div>`; })() : `<div class="sel-box">
       <div><b>${edSel < 0 ? '노선 전체' : `구간 ${edSel + 1} (${vName(edSel)} → ${vName(edSel + 1)})`}</b> <span class="small" style="color:var(--muted)">· 길이 ${fmtLen(edSel < 0 ? routeLength() : segs[edSel].len)} · 도로 면 ${sel ? area(sel.area) : '-'} · 평균 폭 ${sel ? sel.avg.toFixed(1) + 'm' : '-'}</span></div>
       <div class="row"><button data-e="fit">📍 지도에서 보기</button><button data-rvs="${edSel}">🎥 로드뷰 따라가기</button><button data-e="edge" title="도로 양쪽 가장자리 점(파랑=왼쪽, 주황=오른쪽)을 끌어 위성사진의 도로 끝에 맞춥니다. 한쪽만 넓은 길에 씁니다.">✋ 가장자리 직접 끌기${edgeEdit ? ' (켜짐)' : ''}</button></div>
       <details class="vdet"${edFocusV != null ? ' open' : ''}><summary>세부: 꼭짓점별 폭 <span class="small">(한 구간 안에서 폭이 점점 넓어지거나 좁아질 때)</span></summary>
@@ -2978,7 +2987,7 @@ function renderEditor(){
       ${vs.map(i => `<tr><td>${vName(i)}</td><td>${fmtLen(cum[i])}</td><td><input class="vin" type="number" min="0" max="100" step="0.5" data-v="${i}" style="width:52px" value="${(() => { const q = stations && stSig === ptsSig() ? stations.find(z => z.vtx === i) : null; return q ? Math.round((q.dl + q.dr) * 2) / 2 : (vW[i] || ''); })()}"> m</td><td class="small" style="color:var(--muted)">${esc((() => { const q = stations && stSig === ptsSig() ? stations.find(z => z.vtx === i) : null; return q && q.manual ? (q.src || '직접 수정') : (vSrc[i] || '기본'); })())}</td><td><button data-mv="${i}" title="이 점에서 폭 재기">📏</button> <button data-gv="${i}" title="이 점으로 이동">📍</button></td></tr>`).join('')}</table></details>
       ${lastQueryMeta ? `<h5>이 범위의 필지 ${resIn.length}개 · 사유지 ${privIn.length}개${privArea != null && edSel < 0 ? ` · 사유지 도로 면 편입 ${area(privArea)}` : ''}</h5>
         ${privIn.length ? `<div class="pl">${privIn.map(r => `<button data-p="${esc(r.pnu)}" title="${esc(ownerText(r))}">${esc(riJibun(r.addr, r.jibun))}</button>`).join('')}</div>` : '<div class="small" style="color:var(--muted)">사유지 없음</div>'}` : '<div class="small" style="color:var(--muted);margin-top:6px">필지 조회를 하면 이 범위의 필지·사유지가 여기에 나옵니다.</div>'}
-    </div></div>
+    </div>`}</div>
     <div class="epane"${edTab !== 'pipe' ? ' hidden' : ''}>${pipePaneHtml(segs)}</div>`;
   box.style.display = 'block';
   box.querySelectorAll('.etabs [data-t]').forEach(b => b.onclick = () => { edTab = b.dataset.t; renderEditor(); });
@@ -2997,7 +3006,7 @@ function renderEditor(){
   { const cb = box.querySelector('#chkPipeLab'); if(cb) cb.onchange = () => { LS.set('pipeLab', cb.checked ? '1' : '0'); drawPipeLabels(); }; }
   box.querySelectorAll('[data-rvs]').forEach(b => b.onclick = e => { e.stopPropagation(); const k = Number(b.dataset.rvs); startRvFollow(k < 0 ? 0 : segList()[k].s0); });
   dragPanel(box, box.querySelector('.eh'), 'ed');
-  box.querySelectorAll('tr.seg').forEach(tr => tr.onclick = () => { edSel = Number(tr.dataset.s); renderEditor(); });
+  box.querySelectorAll('tr.seg').forEach(tr => tr.onclick = () => { if(tr.dataset.b != null){ edBr = Number(tr.dataset.b); edSel = -1; } else { edBr = null; edSel = Number(tr.dataset.s); } renderEditor(); });
   box.querySelectorAll('[data-e]').forEach(b => b.onclick = () => {
     const a = b.dataset.e;
     if(a === 'close') closeEditor();
@@ -3013,6 +3022,8 @@ function renderEditor(){
     inp.addEventListener('keydown', e => { if(e.key === 'Enter') inp.blur(); });
   });
   box.querySelectorAll('input.bw').forEach(inp => { inp.addEventListener('click', e => e.stopPropagation()); inp.addEventListener('keydown', e => { if(e.key === 'Enter') inp.blur(); }); inp.addEventListener('change', () => { const b = brs[Number(inp.dataset.b)], w = Number(inp.value); if(!b || !(w >= 0)) return; b.w = Math.round(w * 2) / 2; drawBranches(); onShapeEdited(); status(`${brName(brs.indexOf(b))} 도로 폭 ${b.w}m 적용`); }); });
+  box.querySelectorAll('[data-bfit]').forEach(bt => bt.onclick = e => { e.stopPropagation(); const b = brs[Number(bt.dataset.bfit)]; if(b) map.fitBounds(L.latLngBounds(b.ll).pad(.3), { maxZoom: 20 }); });
+  box.querySelectorAll('[data-bmeas2]').forEach(bt => bt.onclick = e => { e.stopPropagation(); startBrMeasure(Number(bt.dataset.bmeas2)); });
   box.querySelectorAll('button.bmeas').forEach(bt => bt.onclick = e => { e.stopPropagation(); startBrMeasure(Number(bt.dataset.b)); });
   box.querySelectorAll('button.smeas').forEach(b => b.onclick = e => { e.stopPropagation(); const k = Number(b.dataset.k); edSel = k; drawEdHi(); startSegMeasure(k); });
   box.querySelectorAll('input.vin').forEach(inp => inp.addEventListener('change', () => { const w = Number(inp.value), i = Number(inp.dataset.v); if(w > 0){ edFocusV = i; applyWidthTo([i], w, false); status(`${vName(i)} 도로 폭 ${w}m 적용`); } }));
@@ -3028,9 +3039,9 @@ function pipePaneHtml(segs){
   const combos = pipeCombos();
   return `<div class="ed-guide"><b>구간마다 배관 정보를 적습니다.</b> 재질·압력은 목록에서 고르거나 직접 쓰고, 관경은 숫자로 적으세요(예: 100). <b>노선 전체</b> 줄에 적으면 모든 구간에 들어갑니다. 점을 추가하면 나뉜 두 구간이 같은 값을 이어받습니다.</div>
     <div class="segs"><table class="pt"><tr><th>범위</th><th>길이</th><th>재질</th><th>관경(mm)</th><th>압력</th></tr>
-    <tr class="seg${edSel < 0 ? ' on' : ''}" data-s="-1"><td><b>노선 전체</b></td><td>${fmtLen(totalLength())}</td><td>${cell(-1, 'mat', same('mat'), '여러 값', 'dlMat')}</td><td>${cell(-1, 'dia', same('dia'), '여러 값')}</td><td>${cell(-1, 'pres', same('pres'), '여러 값', 'dlPres')}</td></tr>
+    <tr class="seg${edSel < 0 && edBr == null ? ' on' : ''}" data-s="-1"><td><b>노선 전체</b></td><td>${fmtLen(totalLength())}</td><td>${cell(-1, 'mat', same('mat'), '여러 값', 'dlMat')}</td><td>${cell(-1, 'dia', same('dia'), '여러 값')}</td><td>${cell(-1, 'pres', same('pres'), '여러 값', 'dlPres')}</td></tr>
     ${segs.map(sg => { const x = segPipe[sg.k] || {}; return `<tr class="seg${edSel === sg.k ? ' on' : ''}" data-s="${sg.k}"><td>구간 ${sg.k + 1}<div class="small">${vName(sg.a)}→${vName(sg.b)}</div></td><td>${fmtLen(sg.len)}</td><td>${cell(sg.k, 'mat', x.mat || '', 'PE·PLP', 'dlMat')}</td><td>${cell(sg.k, 'dia', x.dia || '', '예: 100')}</td><td>${cell(sg.k, 'pres', x.pres || '', '저압·중압', 'dlPres')}</td></tr>`; }).join('')}
-    ${brOk().map(b => { const i = brs.indexOf(b), x = b.pipe || {}; const bc = (f, ph, list) => `<input class="pib" data-b="${i}" data-f="${f}" value="${esc(x[f] || '')}" placeholder="${ph}"${list ? ` list="${list}"` : ''}>`; return `<tr class="seg br-row"><td>${brName(i)}<div class="small">갈라진 구간 <a href="javascript:void 0" data-bdel="${i}" title="이 가지 구간 지우기">지우기</a></div></td><td>${fmtLen(brLen(b))}</td><td>${bc('mat', 'PE·PLP', 'dlMat')}</td><td>${bc('dia', '예: 100')}</td><td>${bc('pres', '저압·중압', 'dlPres')}</td></tr>`; }).join('')}
+    ${brOk().map(b => { const i = brs.indexOf(b), x = b.pipe || {}; const bc = (f, ph, list) => `<input class="pib" data-b="${i}" data-f="${f}" value="${esc(x[f] || '')}" placeholder="${ph}"${list ? ` list="${list}"` : ''}>`; return `<tr class="seg br-row${edBr === i ? ' on' : ''}" data-b="${i}"><td>${brName(i)}<div class="small">갈라진 구간 <a href="javascript:void 0" data-bdel="${i}" title="이 가지 구간 지우기">지우기</a></div></td><td>${fmtLen(brLen(b))}</td><td>${bc('mat', 'PE·PLP', 'dlMat')}</td><td>${bc('dia', '예: 100')}</td><td>${bc('pres', '저압·중압', 'dlPres')}</td></tr>`; }).join('')}
     </table></div>
     <div class="row" style="margin:4px 0 8px"><button data-addbr="1" title="노선 위 한 점에서 갈라져 나가는 구간을 그립니다 — 되돌아오는 거리가 겹치지 않음">➕ 가지 구간 추가</button></div>
     <h5>재질·관경·압력별 연장</h5>
@@ -3040,7 +3051,7 @@ function pipePaneHtml(segs){
 }
 function vName(i){ return i === 0 ? '시점' : i === pts.length - 1 ? '종점' : String(i); }
 function onRouteClick(e){
-  if(drawing || measuring || brDraw) return; L.DomEvent.stop(e);
+  if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); edBr = null;
   openEditor(segAt(e.latlng));
 }
 /* ---------- 카카오 지도 JavaScript API 로드뷰 (키 + 등록된 웹 주소에서만) ---------- */
@@ -5348,7 +5359,7 @@ function groupSum(it){
 const F_NONE = 'f_none', F_ARCH = 'f_arch';
 let folders = (() => { try{ const v = JSON.parse(localStorage.getItem('kgeopRoute.folders') || 'null'); return Array.isArray(v) ? v : []; }catch(e){ return []; } })();
 let curFolder = (() => { try{ return localStorage.getItem('kgeopRoute.curFolder') || F_NONE; }catch(e){ return F_NONE; } })();
-let rpQuery = '', fdArm = null, fdRen = null;
+let rpQuery = '', fdArm = null, fdRen = null, fdClickT = null, fdRenVal = null;
 function ensureFolders(){
   if(!folders.some(f => f.id === F_NONE)) folders.unshift({ id: F_NONE, name: '미분류', open: true });
   if(!folders.some(f => f.id === F_ARCH)) folders.push({ id: F_ARCH, name: '보관', open: false });
@@ -5423,6 +5434,7 @@ function openFdMenu(btn, id){
   setTimeout(() => doc.addEventListener('click', function off(){ m.remove(); doc.removeEventListener('click', off); }), 0);
 }
 function folderListHtml(cardOf){
+  { const cur = qs('input.fd-ren'); if(cur && fdRen && cur.dataset.ren === fdRen) fdRenVal = cur.value; }
   const q = rpQuery.trim().toLowerCase();
   const match = it => !q || [it.name, it.sum && it.sum.start, it.sum && it.sum.end].filter(Boolean).join(' ').toLowerCase().includes(q);
   let total = 0;
@@ -5433,18 +5445,20 @@ function folderListHtml(cardOf){
     const open = q ? true : (f.open || rs.some(r => r.id === activeId));
     const len = rs.reduce((a, r) => a + ((r.sum && r.sum.len) || 0), 0);
     const sys = f.id === F_NONE || f.id === F_ARCH;
-    const name = fdRen === f.id && !sys ? `<input class="fd-ren" value="${esc(f.name)}" data-ren="${f.id}">` : `<span class="fd-n"${sys ? ' title="기본 폴더라 이름을 바꿀 수 없습니다"' : ' title="더블클릭해서 이름 바꾸기"'} data-rn="${sys ? '' : f.id}">${esc(f.name)}</span>`;
-    const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + (!sys ? `<button data-fa="ren" title="폴더 이름 바꾸기 (이름을 더블클릭해도 됨)">✏ 이름</button>` : '') + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
+    const name = fdRen === f.id ? `<input class="fd-ren" value="${esc(fdRenVal != null ? fdRenVal : f.name)}" data-ren="${f.id}">` : `<span class="fd-n" title="더블클릭해서 이름 바꾸기" data-rn="${f.id}">${esc(f.name)}</span>`;
+    const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + `<button data-fa="ren" title="폴더 이름 바꾸기 (이름을 더블클릭해도 됨)">✏ 이름</button>` + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
     return `<div class="fd${f.id === F_ARCH ? ' arch' : ''}${f.id === curFolder ? ' cur' : ''}" data-f="${f.id}"><div class="fd-h" data-fh="${f.id}" title="눌러서 접기·펴기 (접은 폴더의 노선은 지도에서도 숨김)"><span>${open ? '▾' : '▸'}</span><span>${f.id === F_ARCH ? '🗄' : '📁'}</span>${name}<span class="fd-c">${rs.length}개${len ? ' · ' + fmtLen(len) : ''}</span><span class="fd-sp"></span>${btns}</div>${open ? `<div class="fd-b">${shown.length ? shown.map(cardOf).join('') : `<div class="fd-empty">${f.id === F_ARCH ? '끝난 노선을 여기로 옮겨 두면 평소엔 숨겨집니다.' : '비어 있음 — 노선 카드를 끌어다 놓거나 [＋]로 새 노선을 그리세요.'}</div>`}</div>` : ''}</div>`;
   }).join('');
   return (q && !total ? `<div class="empty" style="padding:12px 4px">'${esc(rpQuery)}'에 맞는 노선이 없습니다.</div>` : '') + html;
 }
 function bindFolderList(box){
-  box.querySelectorAll('.fd-n[data-rn]').forEach(n => { if(!n.dataset.rn) return; n.ondblclick = e => { e.stopPropagation(); clearTimeout(n._t); fdRen = n.dataset.rn; renderRoutes(); }; });
-  box.querySelectorAll('[data-fh]').forEach(h => h.onclick = e => {
-    if(e.target.closest('button, input')) return;
-    if(e.target.closest('.fd-n[data-rn]') && e.target.closest('.fd-n').dataset.rn && e.detail > 1) return;
-    const f = folderById(h.dataset.fh); f.open = !f.open; if(f.open && f.id !== F_ARCH) curFolder = f.id; saveFolders(); renderRoutes(); drawGhosts();
+  box.querySelectorAll('[data-fh]').forEach(h => {
+    h.onclick = e => {
+      if(e.target.closest('button, input')) return;
+      clearTimeout(fdClickT); if(e.detail > 1) return;
+      fdClickT = setTimeout(() => { const f = folderById(h.dataset.fh); f.open = !f.open; if(f.open && f.id !== F_ARCH) curFolder = f.id; saveFolders(); renderRoutes(); drawGhosts(); }, 260);
+    };
+    h.ondblclick = e => { if(e.target.closest('button, input')) return; e.stopPropagation(); clearTimeout(fdClickT); fdRen = h.dataset.fh; renderRoutes(); };
   });
   box.querySelectorAll('[data-fa]').forEach(b => b.onclick = e => {
     e.stopPropagation(); const fid = b.closest('[data-fh]').dataset.fh, a = b.dataset.fa;
@@ -5454,7 +5468,7 @@ function bindFolderList(box){
     else if(a === 'cmp'){ cmpSel = new Set(routes.filter(r => r.folder === fid && r.gj && r.gj.properties && r.gj.properties.kind === 'line').slice(0, 5).map(r => r.id)); openCmp(); }
     else if(a === 'del'){ if(fdArm === fid){ fdArm = null; deleteFolder(fid); return; } fdArm = fid; renderRoutes(); setTimeout(() => { if(fdArm === fid){ fdArm = null; renderRoutes(); } }, 3000); }
   });
-  box.querySelectorAll('input.fd-ren').forEach(inp => { setTimeout(() => { inp.focus(); inp.select(); }, 0); const done = () => { if(fdRen !== inp.dataset.ren) return; const f = folderById(inp.dataset.ren); const v = inp.value.trim(); if(v) f.name = v; fdRen = null; saveFolders(); renderRoutes(); }; inp.onkeydown = e => { if(e.key === 'Enter') done(); if(e.key === 'Escape'){ fdRen = null; renderRoutes(); } }; inp.onblur = done; inp.onclick = e => e.stopPropagation(); });
+  box.querySelectorAll('input.fd-ren').forEach(inp => { setTimeout(() => { inp.focus(); if(fdRenVal != null){ const n = inp.value.length; inp.setSelectionRange(n, n); } else inp.select(); }, 0); const done = () => { if(fdRen !== inp.dataset.ren) return; const f = folderById(inp.dataset.ren); const v = inp.value.trim(); if(v) f.name = v; fdRen = null; fdRenVal = null; saveFolders(); renderRoutes(); toast(`폴더 이름: ${f.name}`, 2500); }; inp.onkeydown = e => { if(e.key === 'Enter') done(); if(e.key === 'Escape'){ fdRen = null; fdRenVal = null; renderRoutes(); } }; inp.onblur = () => setTimeout(() => { if(inp.isConnected) done(); }, 0); inp.onclick = e => e.stopPropagation(); });
   box.querySelectorAll('.rc-mv').forEach(b => b.onclick = e => { e.stopPropagation(); openFdMenu(b, b.dataset.mv); });
   // 끌어서 폴더로 옮기기
   box.querySelectorAll('.rcard[data-id]').forEach(c => { c.draggable = true; c.addEventListener('dragstart', e => { if(e.target.closest && e.target.closest('input, textarea, select')){ e.preventDefault(); return; } e.dataTransfer.setData('text/kgeop-route', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; }); });
@@ -5506,7 +5520,7 @@ function newRouteFromCurrent(){
   syncActive(false); drawGhosts();
 }
 function clearWork(){
-  edOpen = false; edSel = -1; renderEditor();
+  edOpen = false; edSel = -1; edBr = null; renderEditor();
   if(drawing){ anchor = null; endDraw(true); }
   if(measuring) stopMeasure(true);
   if(edgeEdit) toggleEdgeEdit(false);
