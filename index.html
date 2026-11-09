@@ -2,8 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v27-6</title>
+<title>노선 필지 조회기 v28</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -807,6 +809,12 @@ body.popped aside #routePane{display:block!important}
 .rc-vtx table{width:100%;border-collapse:collapse;margin-top:4px}
 .rc-vtx td,.rc-vtx th{padding:3px 6px;border-bottom:1px solid #f1f3f5;text-align:left}
 .rc-vtx tr[data-v]{cursor:pointer} .rc-vtx tr[data-v]:hover{background:#f3f8ff}
+.memo-mk{display:inline-flex;align-items:center;gap:1px;transform:translate(-50%,-130%);background:#fff;border:1.5px solid #f08c00;border-radius:10px;padding:0 4px;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer;white-space:nowrap} .memo-mk b{font-size:10px;color:#e8590c}
+.memo-dot{font-size:11px;line-height:1} #detail .dtabs .dot.memo{background:#f08c00}
+.memo-pane textarea{width:100%;min-height:84px;font:inherit;padding:6px 8px;border:1px solid #ced4da;border-radius:6px;resize:vertical}
+.memo-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0} .memo-btns button{font-size:12px;padding:2px 9px}
+.memo-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px} .memo-ph figure{margin:0;position:relative;border:1px solid #dee2e6;border-radius:6px;overflow:hidden;background:#f8f9fa}
+.memo-ph img{width:100%;height:110px;object-fit:cover;display:block;cursor:zoom-in} .memo-ph figcaption{font-size:11px;color:#495057;padding:3px 5px} .memo-ph button{position:absolute;right:3px;top:3px;border:none;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;width:20px;height:20px;padding:0;font-size:11px;line-height:20px}
 .ghost-lab{background:rgba(33,37,41,.78);color:#fff;font-size:11px;font-weight:600;padding:1px 7px;border-radius:8px;white-space:nowrap;cursor:pointer;transform:translate(-50%,-50%);display:inline-block}
 #summary{padding:5px 12px 6px;border-bottom:1px solid var(--line);display:flex;gap:6px;flex-wrap:nowrap;align-items:center;overflow-x:auto;scrollbar-width:thin}
 #summary.open{flex-wrap:wrap;overflow-x:visible}
@@ -1061,9 +1069,9 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
   }
   function build(){
     var d = document.createElement('div'); d.id = 'rvOnly';
-    d.innerHTML = '<div class="ro-bar"><b id="roT">🎥 로드뷰</b><span id="roS"></span><span id="roNav"><button data-c="first" title="시점으로">⏮</button> <button data-c="prev">◀ 이전</button> <button data-c="play" id="roPlay">⏵ 자동</button> <button data-c="next" class="pri">다음 ▶</button> <button data-c="last" title="종점으로">⏭</button> <select id="roStep" title="지점 간격"><option value="10">10m</option><option value="20">20m</option><option value="30">30m</option><option value="50">50m</option></select> <select id="roSec" title="자동 넘김 간격"><option value="3">3초</option><option value="5">5초</option><option value="8">8초</option><option value="12">12초</option></select></span> <label id="roFollowL" title="로드뷰 위치를 따라 원래 창 지도가 움직임"><input type="checkbox" id="roFollow" checked> 지도 따라가기</label><button data-c="dock" title="이 창을 닫고 원래 창 안에서 보기">↙ 원래 창으로</button></div><div id="roProg"><i></i></div><div id="roView"></div><div id="roNone">이 지점 50m 안에는 카카오 로드뷰 사진이 없습니다</div><div id="roMsg"></div>';
+    d.innerHTML = '<div class="ro-bar"><b id="roT">🎥 로드뷰</b><span id="roS"></span><span id="roNav"><button data-c="first" title="시점으로">⏮</button> <button data-c="prev">◀ 이전</button> <button data-c="play" id="roPlay">⏵ 자동</button> <button data-c="next" class="pri">다음 ▶</button> <button data-c="last" title="종점으로">⏭</button> <select id="roStep" title="지점 간격"><option value="10">10m</option><option value="20">20m</option><option value="30">30m</option><option value="50">50m</option></select> <select id="roSec" title="자동 넘김 간격"><option value="3">3초</option><option value="5">5초</option><option value="8">8초</option><option value="12">12초</option></select></span> <label id="roFollowL" title="로드뷰 위치를 따라 원래 창 지도가 움직임"><input type="checkbox" id="roFollow" checked> 지도 따라가기</label><button data-c="memo" id="roMemo" title="지금 보이는 로드뷰 장면을 이 위치 필지의 현장 메모에 사진으로 넣기">📷 메모에 담기</button> <button data-c="dock" title="이 창을 닫고 원래 창 안에서 보기">↙ 원래 창으로</button></div><div id="roProg"><i></i></div><div id="roView"></div><div id="roNone">이 지점 50m 안에는 카카오 로드뷰 사진이 없습니다</div><div id="roMsg"></div>';
     document.body.appendChild(d);
-    d.querySelectorAll('[data-c]').forEach(function(b){ b.onclick = function(){ send({ type: 'cmd', cmd: b.dataset.c }); if(b.dataset.c === 'dock') setTimeout(function(){ window.close(); }, 50); }; });
+    d.querySelectorAll('[data-c]').forEach(function(b){ b.onclick = function(){ if(b.dataset.c === 'memo'){ grabShot(); return; } send({ type: 'cmd', cmd: b.dataset.c }); if(b.dataset.c === 'dock') setTimeout(function(){ window.close(); }, 50); }; });
     $id('roStep').onchange = function(){ send({ type: 'cmd', cmd: 'step', v: this.value }); };
     $id('roSec').onchange = function(){ send({ type: 'cmd', cmd: 'sec', v: this.value }); };
     $id('roFollow').onchange = function(){ send({ type: 'cmd', cmd: 'mapfollow', v: this.checked ? '1' : '0' }); };
@@ -1096,13 +1104,27 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         send({ type: 'vp', lat: q.getLat(), lng: q.getLng(), pan: v.pan, zoom: v.zoom || 0, asp: r.clientWidth / Math.max(1, r.clientHeight) }); }catch(e){}
     }, 60);
   }
+  var shotSt = null;
+  async function grabShot(){
+    // 카카오 로드뷰 그림은 직접 읽을 수 없어서, 이 창을 화면 공유로 한 장 찍음 (처음 한 번만 허용)
+    try{
+      if(!(shotSt && shotSt.getVideoTracks().some(function(t){ return t.readyState === 'live'; }))){ msgT('화면 공유 창에서 [이 탭]을 고르고 [공유]를 눌러 주세요. 한 번 허용하면 이 창을 닫을 때까지 다시 묻지 않습니다.'); shotSt = await navigator.mediaDevices.getDisplayMedia({ video: { displaySurface: 'browser' }, audio: false, preferCurrentTab: true, selfBrowserSurface: 'include' }); }
+      var v = document.createElement('video'); v.srcObject = shotSt; v.muted = true; v.playsInline = true; await v.play(); await new Promise(function(r){ setTimeout(r, 300); });
+      var el = $id('roView'), rc = el.getBoundingClientRect(), sx = v.videoWidth / window.innerWidth, sy = v.videoHeight / window.innerHeight;
+      var k = Math.min(1, 1600 / (rc.width * sx)), cv = document.createElement('canvas'); cv.width = Math.round(rc.width * sx * k); cv.height = Math.round(rc.height * sy * k);
+      cv.getContext('2d').drawImage(v, rc.left * sx, rc.top * sy, rc.width * sx, rc.height * sy, 0, 0, cv.width, cv.height); v.pause(); v.srcObject = null;
+      var vp = null; try{ var q = rv.getPosition(), w = rv.getViewpoint(); vp = { lat: q.getLat(), lng: q.getLng(), pan: w.pan }; }catch(e){}
+      send({ type: 'shot', data: cv.toDataURL('image/jpeg', .82), vp: vp, title: $id('roT').textContent }); msgT('');
+    }catch(e){ msgT(''); }
+  }
+  function msgT(t){ var m = $id('roMsg'); if(!m) return; if(!t){ m.style.display = 'none'; return; } m.textContent = t; m.style.display = 'flex'; setTimeout(function(){ m.style.display = 'none'; }, 6000); }
   var playT = null;
   function setPlay(on, sec){
     clearInterval(playT); playT = null;
     var b = $id('roPlay'); if(b){ b.textContent = on ? '⏸ 멈춤' : '⏵ 자동'; b.className = on ? 'pri' : ''; }
     if(on) playT = setInterval(function(){ send({ type: 'cmd', cmd: 'next', auto: true }); }, Math.max(2, sec || 5) * 1000);
   }
-  if(bc) bc.onmessage = function(e){ var m = e.data || {}; if(m.type === 'show'){ show(m); if(m.playing != null && !!m.playing !== !!playT) setPlay(m.playing, m.sec); } else if(m.type === 'play') setPlay(m.on, m.sec); else if(m.type === 'close') window.close(); };
+  if(bc) bc.onmessage = function(e){ var m = e.data || {}; if(m.type === 'grab'){ grabShot(); return; } if(m.type === 'show'){ show(m); if(m.playing != null && !!m.playing !== !!playT) setPlay(m.playing, m.sec); } else if(m.type === 'play') setPlay(m.on, m.sec); else if(m.type === 'close') window.close(); };
   document.addEventListener('DOMContentLoaded', function(){ build(); send({ type: 'hello' }); });
 })();
 </script>
@@ -1111,7 +1133,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v27-6</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v28</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1141,6 +1163,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <select id="routeWeight"><option value="2">얇게</option><option value="3">보통</option><option value="5">굵게</option><option value="8">아주 굵게</option></select>
       <input type="color" id="routeColor" value="#e03131" title="그린 선 색">
       <label title="지도에서 그린 노선(선·점·도로 면·배관 글자·다른 노선)을 숨겼다 보였다 합니다 (단축키 R)"><input type="checkbox" id="chkRouteShow" checked> 보이기</label>
+      <span class="lbl" style="margin-left:4px" title="지금 열지 않은 다른 노선의 색">다른 노선</span><input type="color" id="ghostColor" value="#ffd43b" title="다른 노선(지금 열지 않은 노선) 색 — 위성사진에서 잘 보이는 밝은 색 추천">
     </div>
     <div class="grp" style="margin-left:auto">
       <button id="btnRetry" disabled>누락 재조회</button>
@@ -1358,6 +1381,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         <li>필요할 때만: 📋 여러 지번(지번 목록 붙여넣어 한꺼번에 조회) · 노선 탭 ⚖ 비교(노선 2개 이상)</li>
         <li>갈라지는 배관은 노선 카드 <b>➕ 가지 구간 추가</b> — 노선 위 갈라지는 곳부터 그리면 같은 노선의 구간이 되어, 거리가 겹치지 않고 [필지 조회]에 모든 필지가 나옴</li>
         <li>노선 숨기기: 위쪽 노선 [보이기] 끄기 (또는 R 키) · 노선 편집·상세 ⧉·비교 창은 새 창으로 열림 (⚙ 설정에서 '화면 안'으로 바꿀 수 있음)</li>
+        <li>필지 상세 <b>📝 메모</b> 탭: 신경 쓰이는 점을 적고 사진(파일·Ctrl+V·🗺 지도 화면)을 붙임 · 로드뷰 창의 <b>📷 메모에 담기</b>는 그 위치 필지에 장면을 넣음 · 엑셀 '현장 메모' 시트에 사진과 함께 나옴</li>
         <li>노선이 많으면 <b>📁 폴더</b>로 묶으세요 — 카드를 폴더로 끌어 놓거나 카드의 📁 · 접은 폴더의 노선은 지도에서도 숨김 · 끝난 노선은 '보관' 폴더로 · 폴더 이름은 더블클릭이나 ✏ 이름으로 바꿈</li>
         <li>노선은 이 PC 브라우저에 자동 보관됩니다. 가끔 노선 탭 [💾 백업 ▾]으로 파일을 만들어 두고, 팀원에게는 폴더의 💾로 넘기세요</li>
         <li>⚙ 설정: 브이월드 키(필수) · 건축물대장 키 · 카카오 키(로드뷰를 화면 안·별도 창에서 보기)</li>
@@ -3145,6 +3169,17 @@ function rvPanTo(q){
   if(Math.abs(c.x - sz.x / 2) < 24 && Math.abs(c.y - sz.y / 2) < 24) return;
   map.panTo([q.lat, q.lng], { animate: true, duration: .6, easeLinearity: .4 });
 }
+async function memoFromRv(m){
+  if(!activeRoute()){ toast('노선을 연 상태에서 로드뷰 장면을 메모에 담을 수 있습니다.', 6000); return; }
+  let r = memoRvTarget ? (results.find(x => x.pnu === memoRvTarget) || (lastSingle && lastSingle.pnu === memoRvTarget ? lastSingle : null)) : null; memoRvTarget = null;
+  const q = m.vp || (rvF && rvF.list ? rvF.list[rvF.i] : null);
+  if(!r && q){ const pt = turf.point([q.lng, q.lat]); r = results.find(x => pip(pt, x.feature)); if(!r){ const p0 = rvF && rvF.list ? rvF.list[rvF.i] : null; if(p0){ const pt2 = turf.point([p0.lng, p0.lat]); r = results.find(x => pip(pt2, x.feature)); } } if(!r){ try{ const f = await parcelAt(L.latLng(q.lat, q.lng)); if(f){ const pr = f.properties; r = { single: true, pnu: pr.pnu, jibun: pr.jibun || '', addr: pr.addr || '', feature: f, center: labelPoint(f) }; } }catch(e){} } }
+  if(!r){ toast('로드뷰 위치의 필지를 찾지 못했습니다. 필지를 먼저 고르고 📝 메모 탭에서 [🎥 로드뷰 장면 넣기]를 눌러 주세요.', 8000); return; }
+  const p = rvF && rvF.list && !rvF.single ? rvF.list[rvF.i] : null;
+  const cap = '로드뷰' + (p ? ` · 시점에서 ${fmtLen(p.s)}` : '') + (m.vp && m.vp.pan != null ? ` · ${['북', '북동', '동', '남동', '남', '남서', '서', '북서'][Math.round(((m.vp.pan % 360) + 360) % 360 / 45) % 8]}쪽` : '');
+  const sm = await shrinkImage(m.data); if(!sm) return;
+  if(await memoAddPhoto(r, sm, cap)){ toast(`${riJibun(r.addr, r.jibun)} 메모에 로드뷰 사진을 담았습니다.`, 6000, { label: '메모 보기', fn: () => { LS.set('dtab', 'memo'); const rr = results.find(x => x.pnu === r.pnu); if(rr) select(rr, false); else showSingleParcel(L.latLng(r.center[1], r.center[0])); } }); const sr = selR(); if(sr && sr.pnu === r.pnu) showDetail(sr); }
+}
 function drawRvFov(m){
   // 로드뷰에서 지금 보고 있는 방향·시야각을 지도에 부채꼴로 표시 (사진이 찍힌 실제 위치 기준)
   rvFovLayer.clearLayers();
@@ -3169,6 +3204,7 @@ if(rvBC) rvBC.onmessage = e => {
   const m = e.data || {};
   if(m.type === 'hello' || m.type === 'ready'){ if(rvExtOn && rvLastShow) rvBC.postMessage(rvLastShow); }
   else if(m.type === 'vp'){ if(rvF && rvExtOn) drawRvFov(m); }
+  else if(m.type === 'shot' && m.data){ memoFromRv(m); }
   else if(m.type === 'cmd'){
     if(m.cmd === 'next' && rvF && !rvF.single){ if(rvF.i >= rvF.list.length - 1){ if(rvF.play){ rvPause(); status('종점까지 따라갔습니다.'); } } else rvGo(rvF.i + 1, true); }
     else if(m.cmd === 'prev' && rvF && !rvF.single) rvGo(rvF.i - 1, true);
@@ -4077,10 +4113,76 @@ function pmsFlag(r){
 const NO_BLD_JIMOK = /^(도|구|천|제|유|철|수|도로|구거|하천|제방|유지|철도용지|수도용지)$/;
 const IDBC = (() => {
   let dbp = null;
-  const open = () => dbp || (dbp = new Promise((res, rej) => { try{ const rq = indexedDB.open('kgeopCache', 1); rq.onupgradeneeded = () => rq.result.createObjectStore('bld'); rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error); }catch(e){ rej(e); } }));
-  const tx = (mode, fn) => open().then(db => new Promise((res, rej) => { const t = db.transaction('bld', mode), r = fn(t.objectStore('bld')); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }));
-  return { get: k => tx('readonly', st => st.get(k)), set: (k, v) => tx('readwrite', st => st.put(v, k)), clear: () => tx('readwrite', st => st.clear()), count: () => tx('readonly', st => st.count()) };
+  const open = () => dbp || (dbp = new Promise((res, rej) => { try{ const rq = indexedDB.open('kgeopCache', 2); rq.onupgradeneeded = () => { const db = rq.result; if(!db.objectStoreNames.contains('bld')) db.createObjectStore('bld'); if(!db.objectStoreNames.contains('img')) db.createObjectStore('img'); }; rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error); }catch(e){ rej(e); } }));
+  const tx = (mode, fn, store = 'bld') => open().then(db => new Promise((res, rej) => { const t = db.transaction(store, mode), r = fn(t.objectStore(store)); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }));
+  return { get: k => tx('readonly', st => st.get(k)), set: (k, v) => tx('readwrite', st => st.put(v, k)), clear: () => tx('readwrite', st => st.clear()), count: () => tx('readonly', st => st.count()),
+    imgGet: k => tx('readonly', st => st.get(k), 'img'), imgSet: (k, v) => tx('readwrite', st => st.put(v, k), 'img'), imgDel: k => tx('readwrite', st => st.delete(k), 'img') };
 })();
+/* ---- 현장 메모: 노선마다 필지(PNU)별 글 + 사진(로드뷰·지도·붙여넣기). 글은 노선과 함께, 사진은 IndexedDB 'img'에 ---- */
+const memoImgCache = new Map();
+function memoBook(){ const it = activeRoute(); if(!it) return null; return it.memos || (it.memos = {}); }
+function memoOf(pnu){ const b = memoBook(); return b && b[pnu] ? b[pnu] : null; }
+function memoHas(pnu){ const m = memoOf(pnu); return !!(m && ((m.text && m.text.trim()) || (m.photos && m.photos.length))); }
+function memoTouch(r){ const b = memoBook(); if(!b) return null; const m = b[r.pnu] || (b[r.pnu] = { text: '', photos: [], t: Date.now() }); m.jibun = r.jibun; m.addr = r.addr; m.t = Date.now(); try{ m.c = r.center || labelPoint(r.feature); }catch(e){} return m; }
+function memoClean(pnu){ const b = memoBook(); if(b && b[pnu] && !memoHas(pnu)) delete b[pnu]; }
+function memoSave(){ const it = activeRoute(); if(it){ it.updated = Date.now(); saveRoutes(); } drawMemoMarks(); renderRoutes(); clearTimeout(memoSave._t); memoSave._t = setTimeout(() => renderTable(), 50); }
+async function memoImgUrl(id){ if(memoImgCache.has(id)) return memoImgCache.get(id); let v = null; try{ v = await IDBC.imgGet(id); }catch(e){} if(v && v.data) memoImgCache.set(id, v.data); return v ? v.data : null; }
+async function memoAddPhoto(r, dataUrl, cap){
+  const m = memoTouch(r); if(!m){ toast('노선을 연 상태에서 메모를 남길 수 있습니다. (새 노선을 그리거나 노선 목록에서 여세요)', 7000); return false; }
+  const id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  try{ await IDBC.imgSet(id, { data: dataUrl, cap: cap || '', t: Date.now() }); }catch(e){ toast('사진을 저장하지 못했습니다: ' + e.message, 6000); return false; }
+  memoImgCache.set(id, dataUrl); (m.photos = m.photos || []).push({ id, cap: cap || '', t: Date.now() }); memoSave(); return true;
+}
+function shrinkImage(src, max = 1600, q = .82){
+  return new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, max / Math.max(im.width, im.height)); const cv = document.createElement('canvas'); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); res(cv.toDataURL('image/jpeg', q)); }; im.onerror = () => res(null); im.src = src; });
+}
+const blobToUrl = b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(null); fr.readAsDataURL(b); });
+async function memoAddBlob(r, blob, cap){ const u = await blobToUrl(blob); if(!u) return; const sm = await shrinkImage(u); if(sm) await memoAddPhoto(r, sm, cap); if(selR() && selR().pnu === r.pnu) showDetail(r); }
+function selR(){ return results.find(x => x.pnu === selected) || (singlePnu && lastSingle && lastSingle.pnu === singlePnu ? lastSingle : null); }
+let lastSingle = null, memoLayer = L.layerGroup().addTo(map);
+function drawMemoMarks(){
+  memoLayer.clearLayers(); const b = memoBook(); if(!b) return;
+  Object.entries(b).forEach(([pnu, m]) => { if(!memoHas(pnu) || !m.c) return; const n = (m.photos || []).length;
+    L.marker([m.c[1], m.c[0]], { pane: 'routeMk', icon: L.divIcon({ className: '', html: `<span class="memo-mk" title="현장 메모">📝${n ? `<b>${n}</b>` : ''}</span>`, iconSize: [0, 0] }), keyboard: false })
+      .on('click', e => { L.DomEvent.stop(e); const r = results.find(x => x.pnu === pnu); LS.set('dtab', 'memo'); if(r) select(r, false); else showSingleParcel(L.latLng(m.c[1], m.c[0])); }).bindTooltip(`${esc(riJibun(m.addr, m.jibun))} — ${esc((m.text || '').slice(0, 40) || '사진 ' + n + '장')}`, { direction: 'top', offset: [0, -10] }).addTo(memoLayer); });
+}
+function memoCount(it){ const b = (it || {}).memos || {}; const ks = Object.keys(b).filter(k => (b[k].text && b[k].text.trim()) || (b[k].photos && b[k].photos.length)); return { n: ks.length, ph: ks.reduce((a, k) => a + (b[k].photos || []).length, 0) }; }
+function memoPaneHtml(r){
+  if(!activeRoute()) return '<div class="dempty">노선을 연 상태에서 메모를 남길 수 있습니다. 노선 목록에서 노선을 열거나 새 노선을 그리세요.</div>';
+  const m = memoOf(r.pnu) || { text: '', photos: [] };
+  return `<div class="memo-pane"><textarea class="memo-txt" placeholder="이 필지에서 신경 쓰이는 점을 적어 두세요. (예: 담장 안쪽으로 배관 불가, 소유자 협의 필요, 현장 확인 11/12)">${esc(m.text || '')}</textarea>
+    <div class="memo-btns"><button data-mm="file" title="사진 파일 고르기 (여러 장 가능)">🖼 사진 넣기</button><button data-mm="map" title="지금 지도 화면을 사진으로 넣기">🗺 지도 화면 넣기</button>${rvF ? '<button data-mm="rv" title="로드뷰 창에 보이는 장면을 이 필지 메모에 넣기">🎥 로드뷰 장면 넣기</button>' : ''}<span class="small" style="color:var(--muted)">또는 캡처한 그림을 Ctrl+V</span><input type="file" class="memo-file" accept="image/*" multiple style="display:none"></div>
+    <div class="memo-ph">${(m.photos || []).map(x => `<figure data-ph="${x.id}"><img data-src="${x.id}" alt=""><figcaption>${esc(x.cap || '')}${x.t ? ' · ' + new Date(x.t).toLocaleDateString('ko-KR') : ''}</figcaption><button data-phdel="${x.id}" title="이 사진 빼기">✕</button></figure>`).join('')}</div></div>`;
+}
+function bindMemoPane(d, r){
+  const ta = d.querySelector('.memo-txt'); if(!ta) return;
+  let tm = null; ta.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => { const m = memoTouch(r); if(!m) return; m.text = ta.value; memoClean(r.pnu); memoSave(); }, 500); });
+  ta.addEventListener('blur', () => { clearTimeout(tm); const m = memoTouch(r); if(!m) return; m.text = ta.value; memoClean(r.pnu); memoSave(); });
+  const fi = d.querySelector('.memo-file');
+  d.querySelectorAll('[data-mm]').forEach(b => b.onclick = async () => {
+    const k = b.dataset.mm;
+    if(k === 'file') fi.click();
+    else if(k === 'map'){ b.disabled = true; b.textContent = '찍는 중…'; try{ const bl = await captureMapBlob(); if(bl) await memoAddBlob(r, bl, '지도 화면'); }catch(e){ if(e && e.name !== 'NotAllowedError') toast('지도 화면을 넣지 못했습니다: ' + e.message, 6000); } finally{ showDetail(r); } }
+    else if(k === 'rv'){ memoRvTarget = r.pnu; if(rvBC && rvExtOn) rvBC.postMessage({ type: 'grab' }); else toast('로드뷰 창(별도 창)이 열려 있을 때 쓸 수 있습니다.', 5000); }
+  });
+  fi.onchange = async () => { for(const f of fi.files) await memoAddBlob(r, f, f.name.replace(/\.[^.]+$/, '')); fi.value = ''; };
+  d.querySelectorAll('[data-phdel]').forEach(b => b.onclick = async () => { const m = memoOf(r.pnu); if(!m) return; m.photos = (m.photos || []).filter(x => x.id !== b.dataset.phdel); try{ await IDBC.imgDel(b.dataset.phdel); }catch(e){} memoClean(r.pnu); memoSave(); showDetail(r); });
+  d.querySelectorAll('img[data-src]').forEach(async im => { const u = await memoImgUrl(im.dataset.src); if(u){ im.src = u; im.onclick = () => { const w = window.open(''); if(w){ w.document.write(`<title>현장 사진</title><body style="margin:0;background:#111"><img src="${u}" style="max-width:100%;display:block;margin:auto">`); } }; } });
+}
+let memoRvTarget = null;
+async function captureMapBlob(){
+  const o = shotOpt();
+  if(tileCors === null) tileCors = await testTileCors();
+  let cv = null; if(tileCors){ try{ cv = await composeView(o); }catch(e){} }
+  if(!cv){ const st = await shotGetStream(); const restore = shotPrep(o); await sleep(180); try{ cv = await shotFrame(st, $('#mapWrap')); }finally{ restore(); } }
+  return await new Promise(res => cv.toBlob(res, 'image/jpeg', .85));
+}
+// 붙여넣기: 메모 탭이 열려 있으면 그 필지에 사진 넣기
+document.addEventListener('paste', async e => {
+  const d = byId('detail'); if(!d || !d.querySelector('.memo-pane')) return; const r = selR(); if(!r) return;
+  const items = [...((e.clipboardData || {}).items || [])].filter(x => /^image\//.test(x.type)); if(!items.length) return;
+  e.preventDefault(); for(const it of items){ const f = it.getAsFile(); if(f) await memoAddBlob(r, f, '붙여넣은 사진'); } toast('사진을 메모에 넣었습니다.', 3000);
+}, true);
 async function bldCacheGet(pnu){
   if(!cfg.bldCache) return null;
   let v = null; try{ v = await IDBC.get(pnu); }catch(e){ try{ v = JSON.parse(localStorage.getItem('kgeopBld.' + pnu) || 'null'); }catch(e2){} }
@@ -4358,6 +4460,7 @@ function permitOf(r){ const j = String(r.jimok || '').trim(); for(const q of PER
 function permitList(){ return results.filter(r => (!isLine() || r.tier === 'pass' || !r.tier) && permitOf(r)); }
 function permitSum(){ const o = {}; permitList().forEach(r => { const q = permitOf(r); const x = o[q.k] || (o[q.k] = { n: 0, len: 0 }); x.n++; x.len += r.cross || 0; }); return o; }
 PERMIT.forEach(q => { CHIP_PRED['perm_' + q.k] = r => permitOf(r) === q && (!isLine() || r.tier === 'pass' || !r.tier); });
+CHIP_PRED.memo = r => memoHas(r.pnu);
 CHIP_PRED.perm = r => !!permitOf(r) && (!isLine() || r.tier === 'pass' || !r.tier);
 function renderTable(){
   const tb = $('#tbl tbody');
@@ -4374,7 +4477,7 @@ function renderTable(){
   $('#tbl').style.display = results.length ? 'table' : 'none';
   tb.innerHTML = rows.map(r => `
     <tr data-pnu="${esc(r.pnu)}" class="${r.pnu === selected ? 'sel' : ''}">
-      <td>${r.no}${r.isNew ? '<span class="badge-new">신규</span>' : ''}</td>
+      <td>${r.no}${r.isNew ? '<span class="badge-new">신규</span>' : ''}${memoHas(r.pnu) ? '<div class="memo-dot" title="현장 메모 있음">📝</div>' : ''}</td>
       <td style="white-space:nowrap"><div class="small jb-loc">${esc(shortAddr(r.addr))}</div><b class="jb-no">${esc(jibunNo(r.jibun))}</b></td>
       <td>${esc(r.jimok)}${permitOf(r) ? `<div class="perm-tag" title="점용·횡단 허가 검토 대상">${esc(permitOf(r).doc)}</div>` : ''}</td>
       <td class="num">${r.area ? fmtM2(r.area) : ''}</td>
@@ -4411,6 +4514,7 @@ function renderTable(){
      .concat([['사유지 중 계획도로 내', results.filter(r => isPrivate(r) && isRoadIn(r)).length, 'privIn'], ['사유지 중 계획도로 외', results.filter(r => isPrivate(r) && !isRoadIn(r)).length, 'privOut']])
      .concat(results.some(r => roadUseFlags(r).some(x => x[0] === '현황도로 점유')) ? [['현황도로 점유(지목≠도로)', results.filter(r => roadUseFlags(r).some(x => x[0] === '현황도로 점유')).length, 'occupy'], ['사유지 중 현황도로 점유', results.filter(r => isPrivate(r) && roadUseFlags(r).some(x => x[0] === '현황도로 점유')).length, 'privOcc']] : [])
      .concat(results.some(r => roadUseFlags(r).some(x => x[0] === '지적 밀림 의심')) ? [['지적 밀림 의심', results.filter(r => roadUseFlags(r).some(x => x[0] === '지적 밀림 의심')).length, 'shift']] : [])
+     .concat(results.some(r => memoHas(r.pnu)) ? [['📝 메모', results.filter(r => memoHas(r.pnu)).length, 'memo']] : [])
      .concat(PERMIT.filter(q => results.some(r => CHIP_PRED['perm_' + q.k](r))).map(q => [`허가·${q.t}`, results.filter(r => CHIP_PRED['perm_' + q.k](r)).length, 'perm_' + q.k]))
      .concat(results.some(r => r.bld && r.bld.length) ? [['건축물대장 있음', results.filter(r => r.bld && r.bld.length).length, 'bld']] : [])
      .concat(results.some(r => (r.bld || []).some(b => /집합/.test(b.kind))) ? [['집합건물', results.filter(r => (r.bld || []).some(b => /집합/.test(b.kind))).length, 'coll']] : [])
@@ -4524,8 +4628,9 @@ function showDetail(r){
   const bl = r.bld || [];
   const plans = (r.landUsePlan || []).slice().sort((a, b) => (ROAD_RE.test(b.name) - ROAD_RE.test(a.name)));
   const roadPlans = plans.filter(x => ROAD_RE.test(x.name));
-  const tab = ['land', 'own', 'bld', 'plan'].includes(LS.get('dtab', 'land')) ? LS.get('dtab', 'land') : 'land';
-  const cnt = { own: owners.length, bld: bl.length, plan: plans.length };
+  const tab = ['land', 'own', 'bld', 'plan', 'memo'].includes(LS.get('dtab', 'land')) ? LS.get('dtab', 'land') : 'land';
+  const cnt = { own: owners.length, bld: bl.length, plan: plans.length, memo: (memoOf(r.pnu) || {}).photos ? memoOf(r.pnu).photos.length : 0 };
+  if(r.single) lastSingle = r;
   const notes = pipeNotes(r).filter(x => !/^↪/.test(x));
   const metric = r.single ? '' : (isLine() ? `${tierBadge(r)} 노선 통과 <b>${r.cross > 0.01 ? r.cross.toFixed(1) + 'm' : '-'}</b>${hasCorridor() && r.inArea ? ` · 도로 면 ${r.inArea.toFixed(1)}㎡` : ''}` : `도형 안 <b>${r.inArea ? fmtM2(r.inArea) + '㎡' : '-'}</b>`);
   const panes = {
@@ -4546,6 +4651,7 @@ function showDetail(r){
         + (own.length ? T(['이 지번 건물 (지도) · 도로명주소', '위치', '층', '면적㎡'], own.map(x => [road(x) || (x.bp ? '' : '주소 없음'), pos(x), String(x.pr.gro_flo_co || ''), fmtM2(x.area)])) : '')
         + (oth.length ? T(['걸친 다른 지번 건물 · 소속', '도로명주소', '걸친 면적㎡', '층'], oth.map(x => [pnuJibun(x.bp), road(x), fmtM2(x.rel.ov), String(x.pr.gro_flo_co || '')])) : '');
     })(),
+    memo: memoPaneHtml(r),
     plan: r.planFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['지역·지구·시설', '저촉여부'], plans.map(x => { const row = [x.name, x.cnflc]; if(ROAD_RE.test(x.name)) row._cls = 'road-row'; return row; }))
   };
   d.innerHTML = `<button class="dclose" title="상세 닫기 (Esc)">✕</button><button class="dpop" title="${d.classList.contains('float') ? '아래 목록 쪽으로 다시 넣기' : '상세를 새 창으로 띄우기 (다음부터도 새 창)'}">${d.classList.contains('float') ? '⤓' : '⧉'}</button>
@@ -4557,13 +4663,14 @@ function showDetail(r){
       <div class="dlinks"><button data-d="kakao">🎥 로드뷰</button><button data-d="eum" style="color:#0b7285;border-color:#99e9f2">토지이음</button><button data-d="kgeop">KGEOP</button><button data-d="naver" title="네이버 지도 (로드뷰는 지도에서 직접 켜기)">네이버 지도</button></div>
     </div>
     <div class="dwin">
-      <div class="dtabs">${[['land', '토지'], ['own', '소유자'], ['bld', '건물'], ['plan', '토지이용계획']].map(([k, t]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${t}${cnt[k] ? ` <span>${cnt[k]}</span>` : ''}${k === 'plan' && r.roadPlan ? ' <i class="dot"></i>' : ''}</button>`).join('')}</div>
+      <div class="dtabs">${[['land', '토지'], ['own', '소유자'], ['bld', '건물'], ['plan', '토지이용계획'], ['memo', '📝 메모']].map(([k, t]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${t}${cnt[k] ? ` <span>${cnt[k]}</span>` : ''}${k === 'plan' && r.roadPlan ? ' <i class="dot"></i>' : ''}${k === 'memo' && memoHas(r.pnu) ? ' <i class="dot memo"></i>' : ''}</button>`).join('')}</div>
       <div class="dpane">${panes[tab]}</div>
     </div>`;
   if(!d.classList.contains('float') && !winIn('detail')){ const sp = $('#detailSplit'); if(sp) sp.style.display = 'block'; const h = Number(LS.get('detailH', '0')); if(h > 80){ d.style.height = h + 'px'; d.style.maxHeight = 'none'; } }
   else if(!winIn('detail')) dragPanel(d, d.querySelector('.dh'), 'detailf');
   d.querySelector('.dclose').onclick = closeDetail;
   d.querySelector('.dpop').onclick = () => { if(d.classList.contains('float')){ setDetailFloat(false); showDetail(r); return; } if(LS.get('winMode', 'new') !== 'new'){ setDetailFloat(true); showDetail(r); return; } LS.set('detailWin', '1'); winUndock('detail'); if(!detailWin(d, true)){ setDetailFloat(true); } showDetail(r); };
+  if(tab === 'memo') bindMemoPane(d, r);
   d.querySelectorAll('.dtabs [data-t]').forEach(b => b.onclick = () => { LS.set('dtab', b.dataset.t); showDetail(r); });
   d.style.display = 'flex';
   d.querySelector('[data-d=naver]').onclick = () => openRoadview(r.rv[1], r.rv[0], 'naver');
@@ -5141,7 +5248,7 @@ async function exportExcel(){
       { header: '현황도로\n편입면적(㎡)', key: 'inA', width: 11 }, { header: '현황도로 판정', key: 'use', width: 14 },
       { header: '구분', key: 'pc', width: 11 }, { header: '확인할 점', key: 'pw', width: 30 },
       { header: '건축물', key: 'bld', width: 18 }, { header: '토지이음', key: 'eum', width: 9 }, { header: 'PNU', key: 'pnu', width: 21 }
-    ].concat(line && brOk().length ? [{ header: '지나는 구간', key: 'via', width: 14 }] : []);
+    ].concat(line && brOk().length ? [{ header: '지나는 구간', key: 'via', width: 14 }] : []).concat([{ header: '현장 메모', key: 'memo', width: 36 }]);
     styleHead(s2.getRow(1)); s2.getRow(1).height = 32;
     results.forEach(r => {
       const re = roadEntries(r);
@@ -5157,7 +5264,7 @@ async function exportExcel(){
         use: roadUseFlags(r).map(x => x[0]).join(', '),
         pc: TIER_LBL[r.tier] || '', pw: pipeNotes(r).join(', '),
         metric: line ? (r.cross ? Math.round(r.cross * 10) / 10 : null) : (r.inArea ? Math.round(r.inArea * 10) / 10 : null),
-        bld: bldText(r), eum: { text: '열기', hyperlink: eumUrl(r.pnu) }, pnu: r.pnu, via: (r.via || []).join(', ')
+        bld: bldText(r), eum: { text: '열기', hyperlink: eumUrl(r.pnu) }, pnu: r.pnu, via: (r.via || []).join(', '), memo: (memoOf(r.pnu) || {}).text || ''
       });
       row.eachCell({ includeEmpty: true }, c => { c.border = border; c.alignment = { vertical: 'middle', wrapText: true }; });
       row.getCell('area').numFmt = '#,##0.0'; row.getCell('metric').numFmt = '#,##0.0'; row.getCell('inA').numFmt = '#,##0.0';
@@ -5228,7 +5335,7 @@ async function exportExcel(){
         inA: line && hasCorridor() && r.inArea ? Math.round(r.inArea * 10) / 10 : null,
         road: roadStatus(r), roadDetail: re.length ? re.map(x => x.name + (x.cnflc ? `(${x.cnflc})` : '')).join(' / ') : '-',
         pc: TIER_LBL[r.tier] || '', bld: bldText(r), coll: (r.bld || []).some(b => /집합/.test(b.kind)) ? 'O' : '', ug: Math.max(0, ...(r.bld || []).map(b => b.ugrnd)) || null,
-        eum: { text: '열기', hyperlink: eumUrl(r.pnu) }, state: '', sdate: '', memo: '', via: (r.via || []).join(', ')
+        eum: { text: '열기', hyperlink: eumUrl(r.pnu) }, state: '', sdate: '', memo: (memoOf(r.pnu) || {}).text || '', via: (r.via || []).join(', ')
       });
       row.eachCell({ includeEmpty: true }, c => { c.border = border; c.alignment = { vertical: 'middle', wrapText: true }; });
       row.getCell('area2').numFmt = '#,##0.0'; row.getCell('metric').numFmt = '#,##0.0';
@@ -5335,7 +5442,24 @@ async function exportExcel(){
     styleHead(s5.getRow(1));
     results.forEach(r => (r.landUsePlan || []).forEach(x => s5.addRow([r.no, riJibun(r.addr, r.jibun), r.pnu, x.name, x.cnflc, ROAD_RE.test(x.name) ? '도로' : ''])));
 
-    { const ORDER = ['요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', '건축물대장', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
+    /* 현장 메모 (글 + 사진) */
+    { const bk = memoBook() || {}, ks = Object.keys(bk).filter(k => memoHas(k));
+      if(ks.length){
+        const sm = wb.addWorksheet('현장 메모', { views: [{ state: 'frozen', ySplit: 1 }] });
+        const maxPh = Math.min(4, Math.max(1, ...ks.map(k => (bk[k].photos || []).length)));
+        sm.columns = [['순번', 6], ['읍·리(구·동)', 16], ['지번', 11], ['지나는 구간', 12], ['소유구분', 14], ['메모', 40], ['사진 설명', 22]].concat(Array.from({ length: maxPh }, (_, j) => [`사진 ${j + 1}`, 27])).map(([h, w]) => ({ header: h, width: w })); styleHead(sm.getRow(1));
+        const ordered = ks.map(k => ({ k, r: results.find(x => x.pnu === k), m: bk[k] })).sort((a, b) => ((a.r && a.r.along) || 1e9) - ((b.r && b.r.along) || 1e9));
+        for(const [i, o] of ordered.entries()){
+          const r = o.r || { addr: o.m.addr, jibun: o.m.jibun }, segs2 = isLine() && o.r ? segList() : [], sg = o.r && segs2.length ? (segs2.find(x => o.r.along <= x.s1 + .5) || null) : null;
+          const row = sm.addRow([o.r ? o.r.no : i + 1, areaLabel(r.addr), jibunNo(r.jibun), o.r ? ((o.r.via && o.r.via.length ? o.r.via.join(', ') : '') || (sg ? '구간 ' + (sg.k + 1) : '')) : '목록 밖', o.r ? ownerText(o.r) : '', o.m.text || '', (o.m.photos || []).map(x => x.cap).filter(Boolean).join(' / ')]);
+          row.eachCell({ includeEmpty: true }, c => { c.border = border; c.alignment = { vertical: 'top', wrapText: true }; });
+          const ph = o.m.photos || [];
+          for(let j = 0; j < maxPh; j++) row.getCell(8 + j).border = border;
+          if(ph.length){ row.height = 112; for(const [j, x] of ph.slice(0, 4).entries()){ const u = await memoImgUrl(x.id); if(!u) continue; const im = await new Promise(res => { const g = new Image(); g.onload = () => res(g); g.onerror = () => res(null); g.src = u; }); const k = im ? Math.min(180 / im.width, 140 / im.height) : 1; const id = wb.addImage({ base64: u, extension: /png/.test(u.slice(0, 30)) ? 'png' : 'jpeg' }); sm.addImage(id, { tl: { col: 7 + j + .03, row: row.number - 1 + .04 }, ext: { width: Math.round((im ? im.width : 180) * k), height: Math.round((im ? im.height : 140) * k) } }); } if(ph.length > 4) row.getCell(7).value = `${row.getCell(7).value || ''} (사진 ${ph.length}장 중 4장 표시, 나머지는 프로그램 메모에서)`; }
+          row.getCell(7).value = ph.map((x, j) => `${j + 1}) ${x.cap || '사진'}`).join('\n') + (ph.length > 4 ? '\n(사진 ' + ph.length + '장 중 4장 표시)' : '');
+        }
+      } }
+    { const ORDER = ['요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', '현장 메모', '건축물대장', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
       wb.worksheets.forEach(ws => { const i = ORDER.indexOf(ws.name); ws.orderNo = i < 0 ? 50 + ws.id : i + 1; }); }
     const buf = await wb.xlsx.writeBuffer();
     const d = new Date(); const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
@@ -5423,12 +5547,13 @@ function routeVisibleOnMap(it){ const f = folderById(it.folder); return it.id ==
 function backupBlob(fid){
   syncActive(false);
   const fs = fid ? folders.filter(f => f.id === fid) : folders, rs = routes.filter(r => !fid || r.folder === fid);
-  return new Blob([JSON.stringify({ kind: 'kgeop-backup', version: 1, saved: new Date().toISOString(), folders: fs.map(f => ({ id: f.id, name: f.name })), routes: rs.map(({ cache, ...x }) => x) })], { type: 'application/json' });
+  return (async () => { const imgs = {}; for(const r of rs) for(const m of Object.values(r.memos || {})) for(const x of (m.photos || [])){ const u = await memoImgUrl(x.id); if(u) imgs[x.id] = u; }
+    return new Blob([JSON.stringify({ kind: 'kgeop-backup', version: 1, saved: new Date().toISOString(), folders: fs.map(f => ({ id: f.id, name: f.name })), routes: rs.map(({ cache, ...x }) => x), images: imgs })], { type: 'application/json' }); })();
 }
 async function saveBackup(fid){
   const d = new Date(), stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
   const nm = fid ? `노선폴더_${safeName(folderById(fid).name)}_${stamp}` : `노선전체백업_${stamp}`;
-  const r = await offerSave(backupBlob(fid), fid ? '폴더 저장' : '전체 백업 저장', nm, '.json', 'application/json');
+  const r = await offerSave(await backupBlob(fid), fid ? '폴더 저장' : '전체 백업 저장', nm, '.json', 'application/json');
   if(r){ if(!fid) LS.set('lastBackup', String(Date.now())); status(`${fid ? '폴더를' : '노선 전체를'} 저장했습니다: ${r.file} — 다른 PC에서는 [💾 백업 ▾ → 📥 백업 파일 불러오기]로 엽니다.`); }
 }
 async function restoreBackup(file){
@@ -5437,6 +5562,7 @@ async function restoreBackup(file){
     if(!j || j.kind !== 'kgeop-backup' || !Array.isArray(j.routes)) throw new Error('노선 조회기 백업 파일이 아닙니다 (선·도형 파일은 [📂 불러오기]로 여세요)');
     const fmap = {};
     (j.folders || []).forEach(bf => { if(bf.id === F_NONE || bf.id === F_ARCH){ fmap[bf.id] = bf.id; return; } const same = folders.find(f => f.name === bf.name); fmap[bf.id] = same ? same.id : newFolder(bf.name, true).id; });
+    for(const [id, u] of Object.entries(j.images || {})){ try{ await IDBC.imgSet(id, { data: u, t: Date.now() }); memoImgCache.set(id, u); }catch(e){} }
     let add = 0, skip = 0;
     j.routes.forEach(r => { if(!r || !r.gj) return; if(routes.some(x => x.id === r.id)){ skip++; return; } r.folder = fmap[r.folder] || F_NONE; r.stale = !!(r.sum && r.sum.n != null); routes.push(r); add++; });
     ensureFolders(); saveFolders(); saveRoutes(); renderRoutes(); drawGhosts();
@@ -5553,6 +5679,7 @@ function clearWork(){
   if(edgeEdit) toggleEdgeEdit(false);
   highlightParcel(null); singleSeq++;
   clearShapeLayers();
+  memoLayer.clearLayers();
   pts = []; shapeGeom = null; shapeKind = null; shapeMeta = null; vW = []; vSrc = []; bndSurface = null; segPipe = []; pipeLabLayer.clearLayers(); stopRvFollow(); brs = []; brLayer.clearLayers(); if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; } if(brDraw) endBranchDraw(true);
   chipFilter = null; areaName = ''; lastQueryMeta = null; clearResults(); redrawRoute(); progress(0);
   editLayer.clearLayers(); prevSnap = null; lastDiff = null; lastQueryMeta = null; renderCompare(); bndSurface = null;
@@ -5587,7 +5714,7 @@ function activateRoute(id, fit = true){
     reviewOpen = false; renderReview();
     status(`${it.name} 열기 — ${it.cache ? '이전 조회 결과를 불러왔습니다.' : '[필지 조회]를 누르세요.'} 점을 끌어 수정할 수 있어요.`);
   }
-  drawGhosts(); renderRoutes();
+  drawGhosts(); renderRoutes(); drawMemoMarks();
   if(fit){ const b = isLine() && routeLine ? routeLine.getBounds() : shapeLayer ? shapeLayer.getBounds() : null; if(b){ if(isLine()) brs.forEach(x => x.ll.forEach(q => b.extend(q))); map.fitBounds(b, { padding: [50, 50], maxZoom: 19 }); } }
 }
 let delArm = null;
@@ -5602,10 +5729,13 @@ function drawGhosts(){
   ghostLayer.clearLayers();
   routes.filter(it => it.id !== activeId && it.gj && routeVisibleOnMap(it)).forEach(it => {
     const mate = sameGroup(it, activeRoute());
-    const lyr = L.geoJSON(it.gj, { pane: 'routeP', style: mate ? { color: cfg.routeColor, weight: Math.max(2, Number(cfg.routeWeight) - 1), opacity: .6 } : { color: '#343a40', weight: 4, opacity: .7, dashArray: '7,6', fillColor: '#343a40', fillOpacity: .05 } });
+    const gc = LS.get('ghostColor', '#ffd43b');
+    L.geoJSON(it.gj, { pane: 'routeP', interactive: false, style: { color: '#1d2330', weight: 7, opacity: .55, fill: false, lineCap: 'round', lineJoin: 'round' } }).addTo(ghostLayer);
+    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'routeP', interactive: false, color: '#1d2330', weight: 7, opacity: .55 }).addTo(ghostLayer); }catch(e){} });
+    const lyr = L.geoJSON(it.gj, { pane: 'routeP', style: mate ? { color: cfg.routeColor, weight: Math.max(2, Number(cfg.routeWeight) - 1), opacity: .6 } : { color: gc, weight: 4, opacity: .95, dashArray: '9,6', fillColor: gc, fillOpacity: .08, lineCap: 'round' } });
     const open = e => { if(drawing || measuring) return; L.DomEvent.stop(e); activateRoute(it.id); setTab('route'); };
     lyr.bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer);
-    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'routeP', color: '#343a40', weight: 4, opacity: .7, dashArray: '7,6' }).bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer); }catch(e){} });
+    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'routeP', color: LS.get('ghostColor', '#ffd43b'), weight: 4, opacity: .95, dashArray: '9,6' }).bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer); }catch(e){} });
     let c = null;
     try{ c = it.gj.geometry.type === 'LineString' ? turf.along(it.gj, turf.length(it.gj) / 2).geometry.coordinates : turf.pointOnFeature(it.gj).geometry.coordinates; }catch(e){}
     if(c) L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="ghost-lab">${esc(it.name)}</span>`, iconSize: [0, 0] }), keyboard: false, pane: 'routeMk' }).on('click', open).addTo(ghostLayer);
@@ -5660,6 +5790,7 @@ function renderRoutes(){
     else if(a === 'gquery') queryGroup();
     else if(a === 'gexcel') groupExcel();
   });
+  on.querySelectorAll('.memo-lnk').forEach(a => a.onclick = () => { chipFilter = 'memo|📝 메모'; setTab('parcel'); renderTable(); drawParcels(); });
   on.querySelectorAll('.perm-lnk').forEach(a => a.onclick = () => { const q = PERMIT.find(x => x.k === a.dataset.perm); chipFilter = 'perm_' + q.k + '|허가·' + q.t; setTab('parcel'); renderTable(); drawParcels(); });
   on.querySelectorAll('tr[data-v]').forEach(tr => tr.onclick = () => {
     const i = Number(tr.dataset.v); if(!pts[i]) return;
@@ -5693,6 +5824,7 @@ function activeCard(it){
     else html = tx.map((t, i) => `<div class="pl-row"><span>${nm(i)}</span>${t ? `<b>${esc(t)}</b>` : '<b class="none">미입력</b>'}<em>${fmtLen(ln(i))}</em></div>`).join('');
     rows.push(['배관', html]);
   }
+  { const mc = memoCount(it); if(mc.n) rows.push(['현장 메모', `<a href="javascript:void 0" class="memo-lnk" title="메모 남긴 필지만 보기">📝 ${mc.n}곳${mc.ph ? ` · 사진 ${mc.ph}장` : ''}</a>`]); }
   if(line && sm.total != null) rows.push(['도로 면 확인', sm.total ? `${sm.total - sm.todo}/${sm.total}곳 확인` + (sm.todo ? ` <a href="javascript:void 0" data-a="review">열기</a>` : ' ✓') : '확인할 곳 없음 ✓']);
   let vt = '';
   if(line){
@@ -6458,7 +6590,8 @@ $('#roadColor').value = cfg.roadColor;
 $('#roadColor').oninput = e => { cfg.roadColor = e.target.value; LS.set('roadColor2', cfg.roadColor); drawRoads(); scheduleLabels(); };
 $('#roadWeight').value = cfg.roadWeight; $('#roadWeight').onchange = e => { cfg.roadWeight = e.target.value; LS.set('roadWeight', cfg.roadWeight); drawRoads(); };
 $('#routeWeight').value = cfg.routeWeight; $('#routeColor').value = cfg.routeColor;
-$('#chkRouteShow').onchange = e => setRouteShow(e.target.checked); if(LS.get('routeShow', '1') !== '1') setRouteShow(false, true);
+$('#chkRouteShow').onchange = e => setRouteShow(e.target.checked);
+$('#ghostColor').value = LS.get('ghostColor', '#ffd43b'); $('#ghostColor').oninput = e => { LS.set('ghostColor', e.target.value); drawGhosts(); }; if(LS.get('routeShow', '1') !== '1') setRouteShow(false, true);
 document.addEventListener('keydown', e => { if((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.altKey && !e.metaKey && !drawing){ const t = e.target; if(t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return; setRouteShow(!$('#chkRouteShow').checked); } });
 $('#routeWeight').onchange = e => { cfg.routeWeight = e.target.value; LS.set('routeWeight', cfg.routeWeight); restyleRoute(); };
 $('#routeColor').oninput = e => { cfg.routeColor = e.target.value; LS.set('routeColor', cfg.routeColor); restyleRoute(); };
