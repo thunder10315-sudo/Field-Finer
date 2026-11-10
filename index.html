@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v30</title>
+<title>노선 필지 조회기 v30-1</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -677,9 +677,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;font-size:13px;color:var(--ink);background:var(--bg)}
-#app{display:grid;grid-template-columns:1fr var(--side,720px);grid-template-rows:auto 1fr;height:100vh}
+#app{display:grid;grid-template-columns:minmax(0,1fr) var(--side,720px);grid-template-rows:auto 1fr;height:100vh}
 body.popped #app{grid-template-columns:1fr 0} body.popped aside{display:none}
-body.sidecollapsed #app{grid-template-columns:1fr 0} body.sidecollapsed aside > *:not(#splitter){display:none}
+body.sidecollapsed #app{grid-template-columns:minmax(0,1fr) 0} body.sidecollapsed aside > *:not(#splitter){display:none}
 aside{position:relative}
 #splitter{position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:1000}
 #splitter:hover,#splitter.drag{background:linear-gradient(90deg,transparent 4px,#1f6feb 4px,#1f6feb 6px,transparent 6px)}
@@ -1018,6 +1018,12 @@ path.route-hit{cursor:pointer}
 #fmPanel{position:absolute;left:60px;bottom:28px;z-index:1003;background:#fff;border:1px solid #ffc078;border-radius:10px;box-shadow:0 6px 22px rgba(0,0,0,.2);padding:7px 10px;font-size:12.5px;display:none;min-width:250px}
 #fmPanel .fm-m{display:flex;gap:4px;margin-bottom:6px} #fmPanel .fm-m button{font-size:12px;padding:2px 9px} #fmPanel .fm-m button.on{background:#fff4e6;border-color:#f08c00;font-weight:700}
 #fmPanel .fm-v{font-size:15px;font-weight:700;color:#d9480f;min-height:20px} #fmPanel .fm-s{color:#495057;font-size:11.5px;margin:2px 0 6px} #fmPanel .fm-b{display:flex;gap:4px;flex-wrap:wrap} #fmPanel .fm-b button{font-size:11.5px;padding:2px 8px}
+.fm-lab2{display:inline-flex;align-items:center;gap:4px;transform:translate(-50%,-150%);white-space:nowrap;background:rgba(217,72,15,.92);color:#fff;border-radius:6px;font-weight:700;font-size:12px;padding:2px 4px 2px 7px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.fm-lab2.sel{background:#1c7ed6;outline:2px solid #fff} .fm-lab2 i{font-style:normal;opacity:.8;font-weight:600} .fm-lab2 b{display:inline-block;padding:0 5px;border-radius:4px;background:rgba(0,0,0,.25)} .fm-lab2 b:hover{background:#c92a2a}
+#fmPanel .fm-list{max-height:150px;overflow:auto;border-top:1px solid #f1f3f5;margin:2px 0 6px;padding-top:3px}
+#fmPanel .fm-it{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;cursor:pointer;font-size:12px} #fmPanel .fm-it:hover{background:#e7f5ff} #fmPanel .fm-it.sel{background:#d0ebff}
+#fmPanel .fm-it i{font-style:normal;color:#868e96;width:24px} #fmPanel .fm-it .fm-k{font-weight:700;color:#d9480f;width:28px} #fmPanel .fm-it .fm-t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #fmPanel .fm-it button{font-size:11px;padding:0 5px;border:none;background:transparent} #fmPanel .fm-it button:hover{background:#ffe3e3}
+#fmPanel{max-width:420px}
 .fm-lab{background:rgba(217,72,15,.92);color:#fff;border:none;border-radius:6px;font-weight:700;font-size:12px;padding:2px 7px;box-shadow:none} .fm-lab:before{display:none}
 body.fmeasuring #map{cursor:crosshair}
 #lenTip{position:absolute;z-index:890;pointer-events:none;background:rgba(29,35,48,.9);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;display:none;white-space:nowrap;transform:translate(14px,-28px)}
@@ -1163,7 +1169,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v30</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v30-1</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1721,6 +1727,10 @@ async function pool(items, n, fn, onProgress){
 
 /* ---------------- 지도 ---------------- */
 const map = L.map('map', { zoomControl: true, doubleClickZoom: true, maxZoom: 21 }).setView([36.64, 127.49], 13);
+/* 지도 칸 크기가 어떤 이유로든 바뀌면(오른쪽 창 폭·접기, 머리글 줄바꿈, 창 이동·배율 변경 등) 지도에 바로 알려 줌
+   — 안 알려 주면 지도는 예전 크기만큼만 위성사진·지번 글자를 그려 오른쪽·아래가 회색으로 빔 */
+if(window.ResizeObserver){ let roT = 0; new ResizeObserver(() => { cancelAnimationFrame(roT); roT = requestAnimationFrame(() => { const el = map.getContainer(), s = map.getSize(); if(Math.abs(el.clientWidth - s.x) > 1 || Math.abs(el.clientHeight - s.y) > 1) map.invalidateSize({ pan: false }); }); }).observe(document.getElementById('map')); }
+document.addEventListener('visibilitychange', () => { if(!document.hidden) setTimeout(() => map.invalidateSize({ pan: false }), 50); });
 let baseLayer = null, hybridLabel = null, cadLayer = null;
 
 function setBase(kind){
@@ -2590,48 +2600,70 @@ function fmText(o, v){
   if(o.mode === 'area') return v.a ? `면적 ${fmtM2(v.a)}㎡ (${fmtM2(v.a / PYEONG)}평) · 둘레 ${fmtM(v.per)}` : '점을 3개 이상 찍으세요';
   return `총 ${fmtM(v.len)}` + (o.pts.length > 2 ? ` · 마지막 구간 ${fmtM(v.last)}` : '');
 }
+let fmSeq = 0;
+const FM_NAME = { dist: '거리', area: '면적', circle: '원' };
 function fmDraw(o, hover){
-  if(o.g) fmLayer.removeLayer(o.g); const q = hover ? o.pts.concat([hover]) : o.pts; const ls = [];
-  if(o.mode === 'circle'){ if(q.length >= 2) ls.push(L.circle(q[0], { radius: map.distance(q[0], q[1]), color: '#f08c00', weight: 2.5, fillOpacity: .12, interactive: false }), L.polyline([q[0], q[1]], { color: '#f08c00', weight: 2, dashArray: '4,4', interactive: false })); }
-  else if(o.mode === 'area'){ if(q.length >= 2) ls.push(L.polygon(q, { color: '#f08c00', weight: 2.5, fillOpacity: .15, interactive: false })); }
-  else if(q.length >= 2) ls.push(L.polyline(q, { color: '#f08c00', weight: 3, interactive: false }));
-  q.forEach(x => ls.push(L.circleMarker(x, { radius: 4, color: '#d9480f', weight: 2, fillColor: '#fff', fillOpacity: 1, interactive: false })));
+  if(o.g) fmLayer.removeLayer(o.g); const q = hover ? o.pts.concat([hover]) : o.pts; const ls = [], col = o.sel ? '#1c7ed6' : '#f08c00', wt = o.sel ? 4 : 2.5;
+  if(o.mode === 'circle'){ if(q.length >= 2) ls.push(L.circle(q[0], { radius: map.distance(q[0], q[1]), color: col, weight: wt, fillOpacity: .12, interactive: false }), L.polyline([q[0], q[1]], { color: col, weight: 2, dashArray: '4,4', interactive: false })); }
+  else if(o.mode === 'area'){ if(q.length >= 2) ls.push(L.polygon(q, { color: col, weight: wt, fillOpacity: .15, interactive: false })); }
+  else if(q.length >= 2) ls.push(L.polyline(q, { color: col, weight: wt + .5, interactive: false }));
+  q.forEach(x => ls.push(L.circleMarker(x, { radius: 4, color: o.sel ? '#1c7ed6' : '#d9480f', weight: 2, fillColor: '#fff', fillOpacity: 1, interactive: false })));
+  if(o.v){ /* 끝난 재기: 이름표(누르면 선택, ✕는 지우기, 오른쪽 클릭도 지우기) */
+    const at = o.mode === 'circle' ? o.pts[1] : o.mode === 'area' ? L.polygon(o.pts).getBounds().getCenter() : o.pts[o.pts.length - 1];
+    const mk = L.marker(at, { icon: L.divIcon({ className: '', html: `<span class="fm-lab2${o.sel ? ' sel' : ''}" title="누르면 선택 · ✕ 또는 오른쪽 클릭으로 지우기"><i>#${o.id}</i> ${esc(fmText(o, o.v))}<b data-x="1" title="이것만 지우기">✕</b></span>`, iconSize: [0, 0] }), zIndexOffset: 900, keyboard: false });
+    mk.on('click', e => { L.DomEvent.stop(e); const t = e.originalEvent && e.originalEvent.target; if(t && t.closest && t.closest('[data-x]')) fmDel([o]); else { if(!fm) fmStart(); o.sel = !o.sel; fmDraw(o); fmPanel(); } });
+    mk.on('contextmenu', e => { L.DomEvent.stop(e); fmDel([o]); });
+    ls.push(mk);
+  }
   o.g = L.layerGroup(ls).addTo(fmLayer);
+}
+function fmDel(list){
+  if(!list.length) return; const ids = new Set(list.map(o => o.id));
+  list.forEach(o => { if(o.g) fmLayer.removeLayer(o.g); });
+  fmKeep = fmKeep.filter(o => !ids.has(o.id)); if(fm) fm.done = fm.done.filter(o => !ids.has(o.id));
+  fmPanel(); toast(`재기 ${list.length}개를 지웠습니다.`, 5000, { label: '되돌리기', fn: () => { list.forEach(o => { o.sel = false; fmDraw(o); }); if(fm){ fm.done = fm.done.concat(list).sort((a, b) => a.id - b.id); } fmKeep = fmKeep.concat(list).sort((a, b) => a.id - b.id); fmPanel(); } });
 }
 function fmPanel(){
   const el = byId('fmPanel'); if(!el) return; if(!fm){ el.style.display = 'none'; return; }
   const v = fm.cur ? fmCalc(fm.cur) : null, last = fm.done[fm.done.length - 1];
   const val = fm.cur && fm.cur.pts.length ? fmText(fm.cur, v) : last ? fmText(last, last.v) : '';
   el.style.display = 'block';
+  const nSel = fm.done.filter(o => o.sel).length;
+  const list = fm.done.length ? `<div class="fm-list">${fm.done.map(o => `<label class="fm-it${o.sel ? ' sel' : ''}" data-fid="${o.id}"><input type="checkbox" data-fsel="${o.id}"${o.sel ? ' checked' : ''}><i>#${o.id}</i><span class="fm-k">${FM_NAME[o.mode]}</span><span class="fm-t">${esc(fmText(o, o.v))}</span><button data-fgo="${o.id}" title="지도에서 보기">📍</button><button data-fdel="${o.id}" title="이것만 지우기">✕</button></label>`).join('')}</div>` : '';
   el.innerHTML = `<div class="fm-m">${[['dist', '📏 거리'], ['area', '⬠ 면적'], ['circle', '◯ 원']].map(([k, t]) => `<button data-fmm="${k}" class="${fm.mode === k ? 'on' : ''}">${t}</button>`).join('')}<span style="flex:1"></span><button data-fma="end" title="끝내기 (Esc)">✕</button></div>
     <div class="fm-v">${esc(val) || '<span style="color:var(--muted);font-weight:400;font-size:12px">지도를 눌러 재기 시작</span>'}</div>
-    <div class="fm-s">${fm.mode === 'circle' ? '중심 → 반지름 끝 클릭' : '클릭으로 점 추가 · <b>더블클릭</b>으로 한 번 재기 끝 · 오른쪽 클릭: 마지막 점 빼기'}${fm.done.length ? ` · 지도에 ${fm.done.length}개 남김` : ''}</div>
-    <div class="fm-b"><button data-fma="calc" title="잰 값을 계산기로">🧮 계산기로</button><button data-fma="copy">📋 복사</button><button data-fma="clear">🗑 모두 지우기</button></div>`;
+    <div class="fm-s">${fm.mode === 'circle' ? '중심 → 반지름 끝 클릭' : '클릭으로 점 추가 · <b>더블클릭</b>으로 한 번 재기 끝 · 오른쪽 클릭: 마지막 점 빼기'}</div>
+    ${list}
+    <div class="fm-b"><button data-fma="calc" title="잰 값(선택한 것, 없으면 마지막)을 계산기로">🧮 계산기로</button><button data-fma="copy">📋 복사</button>${fm.done.length ? `<button data-fma="all" title="모두 선택/해제">☑ 전체</button><button data-fma="delsel"${nSel ? '' : ' disabled'} style="color:#c92a2a" title="체크한 것만 지우기 (Delete 키)">✕ 선택 지우기${nSel ? ` (${nSel})` : ''}</button><button data-fma="clear" style="color:#c92a2a">🗑 모두 지우기</button>` : ''}</div>`;
+  el.querySelectorAll('[data-fsel]').forEach(c => c.onchange = () => { const o = fm.done.find(x => x.id === Number(c.dataset.fsel)); if(o){ o.sel = c.checked; fmDraw(o); fmPanel(); } });
+  el.querySelectorAll('[data-fdel]').forEach(b => b.onclick = e => { e.preventDefault(); fmDel(fm.done.filter(x => x.id === Number(b.dataset.fdel))); });
+  el.querySelectorAll('[data-fgo]').forEach(b => b.onclick = e => { e.preventDefault(); const o = fm.done.find(x => x.id === Number(b.dataset.fgo)); if(!o) return; const bb = o.mode === 'circle' ? L.latLng(o.pts[0]).toBounds(map.distance(o.pts[0], o.pts[1]) * 2) : L.latLngBounds(o.pts); map.fitBounds(bb.pad(.4), { maxZoom: 19 }); });
+  el.querySelectorAll('.fm-it').forEach(it => { it.onmouseenter = () => { const o = fm.done.find(x => x.id === Number(it.dataset.fid)); if(o && !o.sel){ o.hov = true; o.g && o.g.eachLayer(l => l.setStyle && l.setStyle({ color: '#1c7ed6' })); } }; it.onmouseleave = () => { const o = fm.done.find(x => x.id === Number(it.dataset.fid)); if(o && o.hov){ o.hov = false; fmDraw(o); } }; });
   el.querySelectorAll('[data-fmm]').forEach(b => b.onclick = () => { fmFinish(); fm.mode = b.dataset.fmm; fmPanel(); });
   el.querySelectorAll('[data-fma]').forEach(b => b.onclick = async () => {
-    const a = b.dataset.fma, o = fm.cur && fm.cur.pts.length ? fm.cur : fm.done[fm.done.length - 1], vv = o ? (o.v || fmCalc(o)) : null;
+    const a = b.dataset.fma, o = fm.cur && fm.cur.pts.length ? fm.cur : (fm.done.filter(x => x.sel).pop() || fm.done[fm.done.length - 1]), vv = o ? (o.v || fmCalc(o)) : null;
     const num = vv ? (o.mode === 'dist' ? vv.len : vv.a) : null;
     if(a === 'end') fmStop();
-    else if(a === 'clear'){ fmLayer.clearLayers(); fm.done = []; fm.cur = null; fmPanel(); }
+    else if(a === 'clear'){ if(fm.cur && fm.cur.g) fmLayer.removeLayer(fm.cur.g); fm.cur = null; fmDel(fm.done.slice()); }
+    else if(a === 'delsel') fmDel(fm.done.filter(x => x.sel));
+    else if(a === 'all'){ const on = !fm.done.every(x => x.sel); fm.done.forEach(x => { x.sel = on; fmDraw(x); }); fmPanel(); }
     else if(a === 'calc'){ openCalc(num != null ? String(Math.round(num * 100) / 100) : ''); }
     else if(a === 'copy'){ toast(await copyText(o ? fmText(o, vv) : '') ? '복사했습니다.' : '복사하지 못했습니다.', 3000); }
   });
 }
 function fmStart(){
   if(drawing) endDraw(true); if(brDraw) endBranchDraw(true); if(measuring) stopMeasure(true);
-  fm = { mode: (fm && fm.mode) || LS.get('fmMode', 'dist'), cur: null, done: fm ? fm.done : [] };
+  fm = { mode: (fm && fm.mode) || LS.get('fmMode', 'dist'), cur: null, done: fm ? fm.done : fmKeep.slice() };
   document.body.classList.add('fmeasuring'); map.doubleClickZoom.disable(); $('#btnFm').classList.add('on'); fmPanel();
   status('📏 재기: 지도를 눌러 점을 찍으세요. 더블클릭으로 한 번 재기 끝, Esc로 재기 끝 (잰 선은 지도에 남습니다).');
 }
 function fmFinish(){
   if(!fm || !fm.cur) return; const o = fm.cur; fm.cur = null;
   const need = o.mode === 'area' ? 3 : 2; if(o.pts.length < need){ if(o.g) fmLayer.removeLayer(o.g); return; }
-  fmDraw(o); o.v = fmCalc(o); fm.done.push(o);
-  const at = o.mode === 'circle' ? o.pts[1] : o.mode === 'area' ? L.polygon(o.pts).getBounds().getCenter() : o.pts[o.pts.length - 1];
-  L.tooltip({ permanent: true, direction: 'top', className: 'fm-lab', offset: [0, -6] }).setLatLng(at).setContent(esc(fmText(o, o.v))).addTo(o.g);
+  o.v = fmCalc(o); o.id = ++fmSeq; fmDraw(o); fm.done.push(o); fmKeep = fm.done.slice();
   LS.set('fmMode', o.mode);
 }
-function fmStop(){ if(!fm) return; fmFinish(); const keep = fm.done; fm = null; document.body.classList.remove('fmeasuring'); if(!drawing) map.doubleClickZoom.enable(); $('#btnFm').classList.remove('on'); fmPanel(); { const t = byId('lenTip'); if(t) t.style.display = 'none'; } if(!keep.length) fmLayer.clearLayers(); status(keep.length ? '재기를 끝냈습니다. 잰 선은 지도에 남아 있습니다 — 📏 재기 → 🗑 모두 지우기로 지울 수 있어요.' : '재기를 끝냈습니다.'); fmKeep = keep; }
+function fmStop(){ if(!fm) return; fmFinish(); const keep = fm.done; keep.forEach(o => { if(o.sel){ o.sel = false; fmDraw(o); } }); fm = null; document.body.classList.remove('fmeasuring'); if(!drawing) map.doubleClickZoom.enable(); $('#btnFm').classList.remove('on'); fmPanel(); { const t = byId('lenTip'); if(t) t.style.display = 'none'; } if(!keep.length) fmLayer.clearLayers(); status(keep.length ? '재기를 끝냈습니다. 잰 선은 지도에 남아 있습니다 — 이름표의 ✕(또는 오른쪽 클릭)로 하나씩, 📏 재기 목록에서 골라 지울 수 있어요.' : '재기를 끝냈습니다.'); fmKeep = keep; }
 let fmKeep = [], fmClickT = 0;
 map.on('click', e => {
   if(!fm) return; const now = Date.now(); if(now - fmClickT < 260) return; fmClickT = now;
@@ -2645,7 +2677,7 @@ map.on('mousemove', e => {
   if(!fm || !fm.cur || !fm.cur.pts.length) return; fmDraw(fm.cur, e.latlng);
   const tip = byId('lenTip'); if(tip){ const o = { mode: fm.cur.mode, pts: fm.cur.pts.concat([e.latlng]) }; tip.textContent = fmText(o, fmCalc(o)); const pt = map.latLngToContainerPoint(e.latlng); tip.style.left = (pt.x + 14) + 'px'; tip.style.top = (pt.y + 14) + 'px'; tip.style.display = 'block'; }
 });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && fm){ const t = e.target; if(t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return; if(fm.cur && fm.cur.pts.length) { fmFinish(); fmPanel(); } else fmStop(); } });
+document.addEventListener('keydown', e => { if(e.key === 'Delete' && fm && fm.done.some(o => o.sel)){ const t = e.target; if(t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && t.type !== 'checkbox') return; e.preventDefault(); fmDel(fm.done.filter(o => o.sel)); return; } if(e.key === 'Escape' && fm){ const t = e.target; if(t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return; if(fm.cur && fm.cur.pts.length) { fmFinish(); fmPanel(); } else fmStop(); } });
 /* ---- 🧮 계산기 ---- */
 let calcHist = (() => { try{ return JSON.parse(LS.get('calcHist', '[]')) || []; }catch(e){ return []; } })();
 function calcEval(src){
@@ -7283,6 +7315,7 @@ function fpanel(id, title, w, pos){
     document.body.appendChild(el); el.style.width = w + 'px'; el.style.left = pos[0] + 'px'; el.style.top = pos[1] + 'px';
     dragPanel(el, el.querySelector('.fh'), id);
     el.addEventListener('click', e => { if(e.target.closest('[data-fx]')) setTimeout(() => winClose(id), 0); });
+    el.querySelector('[data-fx]').onclick = () => { el.style.display = 'none'; };
     el.querySelector('[data-fw]').onclick = () => { winUndock(id); winOpen(id, el, title.replace(/^\S+\s/, ''), { w: w + 24, h: 700, onClose: () => { const x = el.querySelector('[data-fx]'); if(x) x.click(); }, onDock: () => { el.style.display = 'flex'; } }); };
   }
   el.style.display = 'flex';
@@ -7439,7 +7472,7 @@ byId('btnJbList').onclick = () => openJb();
 byId('search').addEventListener('paste', e => { const t = (e.clipboardData || window.clipboardData).getData('text') || ''; if(/[\n\t]/.test(t.trim()) || t.split(/[,;]/).filter(x => x.trim()).length >= 3){ e.preventDefault(); hideSugg(); openJb(t.trim()); } });
 
 /* 지도·목록 크기 조절 */
-document.documentElement.style.setProperty('--side', cfg.side + 'px');
+document.documentElement.style.setProperty('--side', cfg.side + 'px'); map.invalidateSize({ pan: false }); /* 저장된 오른쪽 창 폭을 지도에도 알림 (v30-1) */
 (() => {
   const sp = byId('splitter'); let drag = false, raf = 0;
   sp.addEventListener('mousedown', e => { if(document.body.classList.contains('sidecollapsed')) return; drag = true; sp.classList.add('drag'); e.preventDefault(); });
