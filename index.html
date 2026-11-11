@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v30-4</title>
+<title>노선 필지 조회기 v31</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -793,6 +793,8 @@ body.popped aside #routePane{display:block!important}
 .rcard.on .rc-name input{font-weight:700;font-size:14px;border:1px solid transparent;padding:2px 4px;width:100%;border-radius:4px}
 .rcard.on .rc-name input:hover,.rcard.on .rc-name input:focus{border-color:var(--line)}
 .rc-badge{font-size:11px;padding:1px 7px;border-radius:8px;background:#e7f5ff;color:#1864ab;font-weight:700;white-space:nowrap}
+.rc-badge.st{border:1px solid #a5d8ff;cursor:pointer;font-family:inherit} .rc-badge.st:hover{background:#d0ebff} .rc-badge.st .st-go{font-weight:400;color:#1971c2;margin-left:2px}
+.rc-badge.done{background:#ebfbee;color:#2b8a3e;border-color:#b2f2bb} .rc-badge.st.done:hover{background:#d3f9d8}
 .rc-badge.stale{background:#fff4e6;color:#d9480f}
 .rc-grid{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;margin:8px 0;font-size:12.5px}
 .rc-grid div:nth-child(odd){color:var(--muted)}
@@ -822,7 +824,12 @@ body.popped aside #routePane{display:block!important}
 .calc-k{display:grid;grid-template-columns:repeat(5,1fr);gap:4px} .calc-k button{font-size:15px;padding:7px 0} .calc-k .eq{grid-column:1/-1}
 .calc-u{display:flex;gap:4px;margin:6px 0} .calc-u button{font-size:11.5px;padding:2px 7px}
 .calc-h{max-height:150px;overflow:auto;font-size:12px;color:#495057;border-top:1px solid #eee;padding-top:4px} .calc-h div{padding:2px 4px;cursor:pointer;border-radius:4px} .calc-h div:hover{background:#f3f8ff}
-.rm-name{margin:0 0 6px} .rm-txt{min-height:220px!important;font-size:13px;line-height:1.55}
+.rm-name{margin:0 0 6px}
+.dq-sum{margin:0 0 6px;font-size:12.5px} .dq-jm{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 6px} .dq-jm button{font-size:11.5px;padding:1px 7px} .dq-jm button.on{background:#e3fafc;border-color:#0b7285;font-weight:700}
+.dq-t{width:100%;border-collapse:collapse;font-size:12px} .dq-t th{background:#f8f9fa;text-align:left;padding:3px 5px;position:sticky;top:-8px} .dq-t td{padding:3px 5px;border-bottom:1px solid #f1f3f5;vertical-align:top} .dq-t tr.on td{background:#fff4e6}
+body.dqmode #map{cursor:crosshair} #btnDragQ.on{background:#e3fafc;border-color:#0b7285;font-weight:700}
+.ma-top{display:flex;gap:6px;margin-bottom:6px} .ma-top .ma-q{flex:1;padding:4px 6px;border:1px solid #ced4da;border-radius:5px}
+.memo-where label{display:inline-flex;gap:3px;align-items:center;margin-right:6px;cursor:pointer} .rm-txt{min-height:220px!important;font-size:13px;line-height:1.55}
 .rm-lh{font-weight:600;margin:12px 0 4px;padding-top:8px;border-top:1px solid #e9ecef} .rm-lh .rm-n{font-weight:400;font-size:12px;color:var(--muted)}
 .rm-it{border:1px solid #e9ecef;border-radius:6px;padding:5px 8px;margin:4px 0;cursor:pointer} .rm-it:hover{background:#f3f8ff;border-color:#a5c8f5}
 .rm-ih{display:flex;gap:6px;align-items:center;flex-wrap:wrap} .rm-own{font-size:11px;padding:0 5px;border-radius:8px;background:#e9ecef} .rm-own.p{background:#ffe3e3;color:#c92a2a}
@@ -1173,7 +1180,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v30-4</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v31</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1189,7 +1196,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <select id="cadMode"><option value="vector">선명하게(색 선택)</option><option value="wms">브이월드 기본</option><option value="off">끄기</option></select>
       <input type="color" id="cadColor" value="#343a40" title="지적선 색 (일반지도·위성지도 각각 저장)">
       <select id="cadWeight" title="지적선 굵기"><option value="1">얇게</option><option value="1.6">보통</option><option value="2.6">굵게</option></select>
-      <label title="18레벨 이상 확대하면 필지마다 지번·지목 글자를 표시"><input type="checkbox" id="chkLabel" checked> 지번 글자</label>
+      <label title="18레벨 이상 확대하면 필지마다 지번·지목 글자를 표시"><input type="checkbox" id="chkLabel" checked> 지번 글자</label><select id="labelSize" title="지번 글자 크기"><option value="0.85">작게</option><option value="1">보통</option><option value="1.25">크게</option><option value="1.5">아주 크게</option><option value="1.8">최대</option></select>
     </div>
     <div class="sep"></div>
     <div class="grp" title="도시계획도로(결정) 구역 표시">
@@ -1247,6 +1254,8 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     <div class="grp">
       <button id="btnFm" title="노선과 상관없이 거리·면적·원을 잽니다 (Esc로 끝)">📏 재기</button>
       <button id="btnCalc" title="계산기 (㎡↔평 포함)">🧮 계산기</button>
+      <button id="btnDragQ" title="지도에서 끌어 네모를 그리면 그 안의 필지(지목·면적·소유)를 보여 줍니다 — Shift+끌기로도 됨">⬚ 영역 필지</button>
+      <button id="btnMemoAll" title="노선과 관계없이 남긴 메모까지 모든 필지 메모를 모아 봅니다">📝 메모 모아보기</button>
     </div>
     <div class="sep"></div>
  <span class="grp full-only" style="display:none"><button id="btnReview" title="선 양옆 폭(도로 면)이 실제 도로와 맞는지 점검합니다 — 도로 위 사유지·폭 안 필지 판정의 기준입니다. 사유지에 영향 있는 곳만 세어 보여 줍니다.">🛣 도로 폭 점검</button></span>
@@ -1432,6 +1441,9 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
         <li>노선 숨기기: 위쪽 노선 [보이기] 끄기 (또는 R 키) · 노선 편집·상세 ⧉·비교 창은 새 창으로 열림 (⚙ 설정에서 '화면 안'으로 바꿀 수 있음)</li>
         <li><b>조회 범위</b>: 배관이 지나는 필지 + <b>선 양옆 폭(도로 면) 안 필지</b>(기본) — 도로 위 사유지 확인용 · 🏠 건물·건축 가능 = 건물이 있거나 지목상 건물이 설 수 있는 필지</li>
         <li><b>🛣 도로 폭 점검</b>: 양옆 폭이 실제 도로와 맞는지 — 조회 후 사유지에 영향 있는 곳만 셈 · [보기]로 비교해 가장자리를 끌어 고치거나 [✓ 이대로]</li>
+        <li><b>⬚ 영역 필지</b>: 지도에서 끌어 네모를 그리면(Shift+끌기도 됨) 그 안 필지의 지목·면적·소유를 표로 · 지목별로 걸러 보기 · 📋 표 복사</li>
+        <li>노선 카드 <b>✏ 수정 중 → 완료로</b>: 검토가 끝나면 완료로 — 선이 잠겨 실수로 고쳐지지 않음 · 지번 글자 크기는 [지번 글자] 옆에서</li>
+        <li><b>📝 메모 모아보기</b>: 공통 메모와 모든 노선의 필지 메모 · 메모 탭에서 저장 위치(노선 / 📌 공통) 고르기 · 지도 우클릭 → 📝 이 필지에 메모</li>
         <li><b>📏 재기</b>(거리·면적·원, Esc로 끝) · <b>🧮 계산기</b>(㎡↔평) · <b>↶ 되돌리기 / ↷</b> (Ctrl+Z / Ctrl+Y — 노선 수정 전체)</li>
         <li>노선을 열지 않고 필지를 눌러도 <b>📝 메모</b> 가능 — '📌 공통 메모'로 필지에 저장, 노선을 열면 [이 노선 메모로 옮기기]</li>
         <li>새 창: 다시 누르면 앞으로 · 창 위 <b>✕</b>로 닫기 · 내용만큼 높이 맞춤(직접 크기를 바꾸면 그대로 둠) · 화면 안 창은 오른쪽 아래 모서리로 크기 조절</li>
@@ -1830,6 +1842,7 @@ map.on('moveend zoomend', scheduleCad);
 
 /* ---------------- 지번 글자 ---------------- */
 const LABEL_MINZOOM = 18;
+const labelScale = () => Math.max(.6, Math.min(2.2, Number(LS.get('labelScale', '1')) || 1));
 const labelPt = new Map();
 map.createPane('labelPane'); map.getPane('labelPane').style.zIndex = 460; map.getPane('labelPane').style.pointerEvents = 'none';
 function labelPoint(f){
@@ -1844,7 +1857,7 @@ function drawLabels(ctx, P, W, H, fontPx = 11, occ = []){
   const hit = (x0, y0, x1, y1) => occ.some(b => !(x1 < b[0] || x0 > b[2] || y1 < b[1] || y0 > b[3]));
   ctx.save();
   ctx.font = `600 ${fontPx}px "Malgun Gothic", sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.fillStyle = '#212529';
+  ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, Math.round(fontPx / 4)); ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.fillStyle = '#212529';
   // 조회된 필지를 먼저 그려서 겹칠 때 우선 표시
   const list = results.map(r => r.feature).concat([...cadCache.values()]);
   const seen = new Set();
@@ -1878,7 +1891,7 @@ const LabelLayer = L.Layer.extend({
     const P = ll => { const p = m.latLngToContainerPoint([ll[1], ll[0]]); return [p.x, p.y]; };
     const occ = [];
     if($('#chkRoad').checked && m.getZoom() >= 16) drawRoadLabels(ctx, P, size.x, size.y, occ, m.getZoom() >= 19 ? 13 : 12);
-    if(cfg.showLabels && m.getZoom() >= LABEL_MINZOOM) drawLabels(ctx, P, size.x, size.y, m.getZoom() >= 20 ? 13 : 11, occ);
+    if(cfg.showLabels && m.getZoom() >= LABEL_MINZOOM) drawLabels(ctx, P, size.x, size.y, Math.round((m.getZoom() >= 20 ? 13 : 11) * labelScale()), occ);
   }
 });
 let labelLayer = null, labelTimer = null;
@@ -2528,6 +2541,7 @@ function drawBranches(){
 function onBranchEdited(){ resnapBranches(); drawBranches(); buildEditHandles(); drawPipeLabels(); onShapeEdited(); }
 function startBranchDraw(){
   if(!isLine() || pts.length < 2 || drawing){ status('노선을 그린 뒤에 가지 구간을 추가할 수 있습니다.'); return; }
+  { const it = activeRoute(); if(it && it.done){ toast('완료한 노선입니다 — 카드의 [✅ 완료]를 눌러 수정 중으로 바꾼 뒤 추가하세요.', 6000); return; } }
   if(LS.get('routeShow', '1') !== '1') setRouteShow(true, true);
   brDraw = { ll: [], line: null, rub: null }; editLayer.clearLayers();
   map.doubleClickZoom.disable(); document.body.classList.add('drawing');
@@ -2729,6 +2743,95 @@ function openCalc(init){
   }
   if(init != null && init !== '') el._calcSet(init); else setTimeout(() => { const i = el.querySelector('.calc-in'); if(i) i.focus(); }, 50);
 }
+/* ---- ⬚ 끌어서 영역 안 필지 보기 (노선·조회 결과와 별개) ---- */
+let dqMode = false, dqList = [], dqSeq = 0, dqLastT = 0, dqJm = null; const dqLayer = L.layerGroup().addTo(map);
+map.boxZoom.disable();
+function dqSetMode(on){ dqMode = on; $('#btnDragQ').classList.toggle('on', on); document.body.classList.toggle('dqmode', on); if(on){ if(fm) fmStop(); status('⬚ 지도에서 끌어 네모를 그리면 그 안의 필지를 보여 줍니다 · Shift+끌기로도 됨 · Esc로 끝'); } }
+map.getContainer().addEventListener('mousedown', e => {
+  if(e.button !== 0 || !(dqMode || e.shiftKey) || drawing || brDraw || measuring || fm) return;
+  if(e.target.closest && e.target.closest('.leaflet-marker-icon, .leaflet-control, #routeEd, #fmPanel, #rvF, #review, .fpanel')) return;
+  e.preventDefault(); e.stopPropagation(); map.dragging.disable();
+  const a = map.mouseEventToLatLng(e), rect = L.rectangle([a, a], { color: '#0b7285', weight: 2, dashArray: '6,4', fillColor: '#3bc9db', fillOpacity: .1, interactive: false }).addTo(map);
+  const tip = byId('lenTip');
+  const mv = ev => { const b = L.latLngBounds(a, map.mouseEventToLatLng(ev)); rect.setBounds(b); if(tip){ const wm = map.distance(b.getSouthWest(), b.getSouthEast()), hm = map.distance(b.getSouthWest(), b.getNorthWest()); tip.textContent = `${fmtM(wm)} × ${fmtM(hm)} · ${fmtM2(wm * hm)}㎡`; const pt = map.mouseEventToContainerPoint(ev); tip.style.left = (pt.x + 14) + 'px'; tip.style.top = (pt.y + 14) + 'px'; tip.style.display = 'block'; } };
+  const up = () => { document.removeEventListener('mousemove', mv, true); document.removeEventListener('mouseup', up, true); map.dragging.enable(); if(tip) tip.style.display = 'none'; const b = rect.getBounds(); map.removeLayer(rect); dqLastT = Date.now();
+    if(map.latLngToContainerPoint(b.getNorthEast()).distanceTo(map.latLngToContainerPoint(b.getSouthWest())) < 14) return; dragQuery(b); };
+  document.addEventListener('mousemove', mv, true); document.addEventListener('mouseup', up, true);
+}, true);
+async function dragQuery(b){
+  if(!cfg.key){ openSettings(); return; }
+  const bb = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()], poly = turf.bboxPolygon(bb), areaM = turf.area(poly);
+  if(areaM > 600000){ toast(`너무 넓습니다 (${fmtM2(areaM / 1e6)}㎢) — 0.6㎢ 안으로 끌어 주세요.`, 7000); return; }
+  const seq = ++dqSeq; dqLayer.clearLayers(); dqList = []; dqJm = null;
+  L.rectangle(b, { color: '#0b7285', weight: 2, dashArray: '6,4', fill: false, interactive: false }).addTo(dqLayer);
+  openDq(); renderDq('필지 경계 가져오는 중…'); status('⬚ 영역 안 필지 경계 조회 중…');
+  const by = new Map();
+  try{ await pool(areaM > 40000 ? gridBoxes(poly) : [bb], 2, async x => { (await getFeatures('LP_PA_CBND_BUBUN', x)).forEach(f => { const k = f.properties && f.properties.pnu; if(k && !by.has(k)) by.set(k, f); }); }); }
+  catch(e){ renderDq('경계 조회 실패: ' + e.message); return; }
+  if(seq !== dqSeq) return;
+  dqList = [...by.values()].map(f => { let inA = 0; try{ const g = turf.intersect(turf.featureCollection([f, poly])); inA = g ? turf.area(g) : 0; }catch(e){ inA = turf.booleanIntersects(f, poly) ? 1 : 0; } const pr = f.properties, c = labelPoint(f);
+    return { single: true, dq: true, pnu: pr.pnu, jibun: pr.jibun || '', addr: pr.addr || '', jimok: parseJimok(pr.jibun), jiga: pr.jiga || '', owner: '', ownerClass: 'unknown', share: '', area: '', useZone: '', landUse: '', ownChange: '', ownChangeDate: '', buildings: [], ownerRows: [], landUsePlan: null, roadPlan: '', feature: f, center: c, rv: c, parcelArea: (() => { try{ return turf.area(f); }catch(e){ return 0; } })(), inBox: inA }; })
+    .filter(r => r.inBox >= 0.5).sort((x, y) => ((x.center ? -x.center[1] : 0) - (y.center ? -y.center[1] : 0)) * 1e4 + ((x.center ? x.center[0] : 0) - (y.center ? y.center[0] : 0)) || 0);
+  dqList.sort((x, y) => { const ay = Math.round((x.center || [0, 0])[1] * 4000), by2 = Math.round((y.center || [0, 0])[1] * 4000); return by2 - ay || (x.center || [0])[0] - (y.center || [0])[0]; });
+  dqList.forEach((r, i) => r.no = i + 1);
+  drawDq(); renderDq();
+  const N = Math.min(dqList.length, 250);
+  status(`⬚ 영역 안 필지 ${dqList.length}개 — 소유·면적 조회 중…`);
+  await pool(dqList.slice(0, N), 3, fetchOne, (d, n) => { if(seq !== dqSeq) return; status(`⬚ 영역 안 필지 소유·면적 조회 중… ${d}/${n}`); if(d % 8 === 0 || d === n){ drawDq(); renderDq(); } });
+  if(seq !== dqSeq) return; drawDq(); renderDq();
+  status(`⬚ 영역 안 필지 ${dqList.length}개${dqList.length > N ? ` (소유 정보는 앞 ${N}개만)` : ''} — 목록에서 누르면 상세를 봅니다.`);
+}
+function drawDq(){
+  dqLayer.eachLayer(l => { if(l._dqp) dqLayer.removeLayer(l); });
+  dqList.forEach(r => { if(dqJm && jimokName(r) !== dqJm) return; const lyr = L.geoJSON(r.feature, { style: { color: COLORS[r.ownerClass] || '#868e96', weight: 1.5, fillColor: COLORS[r.ownerClass] || '#868e96', fillOpacity: .22 } });
+    lyr._dqp = true; lyr.on('click', e => { L.DomEvent.stop(e); dqPick(r); }).bindTooltip(`${esc(riJibun(r.addr, r.jibun))} ${esc(jimokName(r))} · ${esc(ownerText(r) || '-')}`, { sticky: true }); lyr.addTo(dqLayer); });
+}
+function dqPick(r){ const c = r.center; dqLastT = Date.now(); singlePnu = null; if(c) showSingleParcel(L.latLng(c[1], c[0])); const el = byId('dqPanel'); if(el) el.querySelectorAll('tr[data-dq]').forEach(tr => tr.classList.toggle('on', tr.dataset.dq === r.pnu)); }
+function dqRows(){ return dqList.filter(r => !dqJm || jimokName(r) === dqJm); }
+function dqTsv(){ return ['순번\t소재지\t지번\t지목\t면적(㎡)\t영역 안(㎡)\t소유구분\t메모'].concat(dqRows().map(r => [r.no, areaLabel(r.addr), jibunNo(r.jibun), jimokName(r), r.area || '', Math.round(r.inBox * 10) / 10, ownerText(r), (memoOf(r.pnu) || {}).text || ''].join('\t'))).join('\n'); }
+function openDq(){
+  const el = fpanel('dqPanel', '⬚ 영역 안 필지', 560, [80, 120]);
+  el.querySelector('[data-fx]').onclick = () => { el.style.display = 'none'; dqSeq++; dqLayer.clearLayers(); dqList = []; };
+  el.querySelector('.fbtn').innerHTML = '<button data-q="copy" title="표를 복사해 엑셀에 붙여넣기">📋 표 복사</button><button data-q="again" title="다른 곳을 끌어서 다시 보기">⬚ 다시 끌기</button>';
+  el.querySelector('[data-q=copy]').onclick = async () => toast(await copyText(dqTsv()) ? '표를 복사했습니다. 엑셀에 붙여넣으세요.' : '복사하지 못했습니다.', 4000);
+  el.querySelector('[data-q=again]').onclick = () => dqSetMode(true);
+}
+function renderDq(msg){
+  const el = byId('dqPanel'); if(!el || el.style.display === 'none') return; const fb = el.querySelector('.fb');
+  if(msg){ fb.innerHTML = `<div class="small" style="padding:10px">${esc(msg)}</div>`; return; }
+  const L0 = dqList, rows = dqRows(), cnt = k => L0.filter(r => r.ownerClass === k).length, jm = new Map(); L0.forEach(r => { const k = jimokName(r); jm.set(k, (jm.get(k) || 0) + 1); });
+  const sumA = L0.reduce((a, r) => a + (Number(r.area) || r.parcelArea || 0), 0);
+  fb.innerHTML = `<div class="dq-sum"><b>필지 ${L0.length}개</b> · 면적 합 ${fmtM2(sumA)}㎡ (${fmtM2(sumA / PYEONG)}평) · <span style="color:#c92a2a">사유지 ${L0.filter(isPrivate).length}</span> (개인 ${cnt('private')} · 법인 등 ${cnt('corp')}) · 국공유 ${cnt('public')}${cnt('unknown') ? ` · 미확인 ${cnt('unknown')}` : ''}</div>
+    <div class="dq-jm"><button data-jm="" class="${dqJm ? '' : 'on'}">전체</button>${[...jm.entries()].sort((a, b) => b[1] - a[1]).map(([k, n]) => `<button data-jm="${esc(k)}" class="${dqJm === k ? 'on' : ''}">${esc(k)} ${n}</button>`).join('')}</div>
+    <table class="dq-t"><tr><th>#</th><th>지번</th><th>지목</th><th>면적㎡</th><th title="네모 안에 든 넓이">안쪽㎡</th><th>소유</th><th>📝</th></tr>${rows.map(r => `<tr data-dq="${r.pnu}" class="click"><td>${r.no}</td><td><div class="small">${esc(areaLabel(r.addr))}</div><b>${esc(jibunNo(r.jibun))}</b></td><td>${esc(jimokName(r))}</td><td style="text-align:right">${r.area ? fmtM2(r.area) : (r.ownerClass !== 'unknown' || r.ownerFail || r.charFail) ? `<span class="small" title="대장 면적이 없어 지적도로 계산한 값">${fmtM2(r.parcelArea)}</span>` : '<span class="small">…</span>'}</td><td style="text-align:right">${fmtM2(r.inBox)}</td><td style="color:${COLORS[r.ownerClass]}">${esc(ownerText(r) || (r.ownerFail ? '실패' : '…'))}</td><td>${memoHas(r.pnu) ? '📝' : ''}</td></tr>`).join('')}</table>`;
+  fb.querySelectorAll('[data-jm]').forEach(b => b.onclick = () => { dqJm = b.dataset.jm || null; drawDq(); renderDq(); });
+  fb.querySelectorAll('tr[data-dq]').forEach(tr => tr.onclick = () => { const r = dqList.find(x => x.pnu === tr.dataset.dq); if(r) dqPick(r); });
+}
+/* ---- 📝 메모 모아보기 (공통 메모 + 모든 노선의 필지 메모) ---- */
+function memoAllList(){
+  const out = []; Object.entries(freeMemos).forEach(([k, m]) => { if(m && ((m.text && m.text.trim()) || (m.photos && m.photos.length))) out.push({ k, m, rt: null }); });
+  routes.forEach(it => Object.entries(it.memos || {}).forEach(([k, m]) => { if(m && ((m.text && m.text.trim()) || (m.photos && m.photos.length))) out.push({ k, m, rt: it }); }));
+  return out.sort((a, b) => (b.m.t || 0) - (a.m.t || 0));
+}
+let maQ = '', maF = 'all';
+function openMemoAll(){
+  const el = fpanel('memoAllPanel', '📝 메모 모아보기', 520, [90, 110]);
+  el.querySelector('.fbtn').innerHTML = '<button data-ma="copy" title="목록을 글로 복사">📋 복사</button>';
+  el.querySelector('[data-ma=copy]').onclick = async () => toast(await copyText(memoAllList().map(o => `${riJibun(o.m.addr, o.m.jibun)} [${o.rt ? o.rt.name : '공통'}] ${(o.m.text || '').trim().replace(/\n+/g, ' / ')}${(o.m.photos || []).length ? ` (사진 ${o.m.photos.length})` : ''}`).join('\n')) ? '복사했습니다.' : '복사하지 못했습니다.', 3000);
+  renderMemoAll();
+}
+function renderMemoAll(){
+  const el = byId('memoAllPanel'); if(!el || el.style.display === 'none') return; const fb = el.querySelector('.fb');
+  const all = memoAllList(), q = maQ.trim(), l = all.filter(o => (maF === 'all' || (maF === 'free' ? !o.rt : maF === 'cur' ? o.rt && o.rt.id === activeId : true)) && (!q || `${o.m.jibun} ${o.m.addr} ${o.m.text} ${o.rt ? o.rt.name : '공통'}`.includes(q)));
+  const keepQ = fb.querySelector('.ma-q'), focus = keepQ && keepQ.ownerDocument.activeElement === keepQ;
+  fb.innerHTML = `<div class="ma-top"><input class="ma-q" placeholder="지번·내용·노선 찾기" value="${esc(maQ)}"><select class="ma-f"><option value="all">전체 ${all.length}</option><option value="free">📌 공통 ${all.filter(o => !o.rt).length}</option>${activeId ? `<option value="cur">🛤 이 노선 ${all.filter(o => o.rt && o.rt.id === activeId).length}</option>` : ''}</select></div>
+    ${l.length ? l.map(o => `<div class="rm-it" data-mk="${o.k}" data-rt="${o.rt ? o.rt.id : ''}" title="눌러서 그 필지 메모 보기"><div class="rm-ih"><b>${esc(riJibun(o.m.addr, o.m.jibun))}</b><span class="rm-own">${o.rt ? '🛤 ' + esc(o.rt.name) : '📌 공통'}</span>${(o.m.photos || []).length ? `<span class="small">📷 ${o.m.photos.length}</span>` : ''}<span class="small" style="margin-left:auto">${o.m.t ? new Date(o.m.t).toLocaleDateString('ko-KR') : ''}</span></div><div class="rm-it-t">${esc((o.m.text || '').trim() || '(사진만)')}</div></div>`).join('') : '<div class="small" style="color:var(--muted);padding:8px">메모가 없습니다. 지도에서 필지를 누르고 상세의 📝 메모 탭에 적으세요 (노선을 안 열어도 됨).</div>'}`;
+  const qi = fb.querySelector('.ma-q'); qi.oninput = () => { maQ = qi.value; renderMemoAll(); }; if(focus){ qi.focus(); qi.selectionStart = qi.selectionEnd = qi.value.length; }
+  const fs = fb.querySelector('.ma-f'); fs.value = maF; fs.onchange = () => { maF = fs.value; renderMemoAll(); };
+  fb.querySelectorAll('[data-mk]').forEach(d => d.onclick = () => { const k = d.dataset.mk, rid = d.dataset.rt, o = all.find(x => x.k === k && (x.rt ? x.rt.id : '') === rid); if(!o) return;
+    const go = () => { LS.set('dtab', 'memo'); const r = results.find(x => x.pnu === k); if(r) select(r, true); else if(o.m.c){ singlePnu = null; focusParcel(turf.point(o.m.c), { maxZoom: 19 }); showSingleParcel(L.latLng(o.m.c[1], o.m.c[0])); } };
+    if(rid && rid !== activeId){ activateRoute(rid, false); setTimeout(go, 300); } else go(); });
+}
 function addrText(pr){ const addr = pr.addr || '', jb = jibunNo(pr.jibun); return addr ? addr.split(' ').slice(0, -1).concat([jb]).join(' ') : jb; }
 async function copyText(text){
   const fw = (typeof winDocs === 'function' ? winDocs() : [document]).map(d => d.defaultView).find(v => { try{ return v.document.hasFocus(); }catch(e){ return false; } }) || window;
@@ -2760,11 +2863,12 @@ function showCtx(e){
   m.innerHTML = (nearRoute ? `<button data-k="edit" style="font-weight:700;color:#2b8a3e">✏ 이 구간 편집 (폭·면적)</button><button data-k="editAll" style="color:#2b8a3e">✏ 노선 전체 편집</button><button data-k="rvHere" style="color:#7048e8">🎥 여기서부터 로드뷰 따라가기</button><hr style="margin:3px 0;border:none;border-top:1px solid #eee">` : '') + `<div class="small">이 위치에서 열기</div>
     <button data-k="naver">🟢 네이버 지도·로드뷰</button><button data-k="kakao">🟡 카카오 로드뷰</button>
     <button data-k="eum">🟦 토지이음 (이 필지)</button><button data-k="kgeop">🗺 KGEOP (이 필지, 지번 복사)</button>
-    <button data-k="copy">📋 좌표 복사</button>`;
+    <button data-k="memo">📝 이 필지에 메모</button><button data-k="copy">📋 좌표 복사</button>`;
   const pt = e.containerPoint; m.style.left = Math.min(pt.x, map.getSize().x - 220) + 'px'; m.style.top = Math.min(pt.y, map.getSize().y - 200) + 'px'; m.style.display = 'block';
   m.onclick = async ev => {
     const b = ev.target.closest('button'); if(!b) return; hideCtx();
     const k = b.dataset.k;
+    if(k === 'memo'){ LS.set('dtab', 'memo'); singlePnu = null; showSingleParcel(ll); return; }
     if(k === 'edit'){ openEditor(segAt(ll)); return; }
     if(k === 'editAll'){ openEditor(-1); return; }
     if(k === 'rvHere'){ try{ startRvFollow(turf.nearestPointOnLine(toLine(), turf.point([ll.lng, ll.lat]), { units: 'meters' }).properties.location); }catch(er){ startRvFollow(0); } return; }
@@ -2826,6 +2930,7 @@ function buildEditHandles(){
   editLayer.clearLayers();
   drawPipeLabels();
   if(drawing) return;
+  { const it = activeRoute(); if(it && it.done) return; } /* 완료한 노선은 잠금 */
   const v = getVerts(); if(!v || !v.length) return;
   const closed = shapeKind !== 'line', minPts = closed ? 3 : 2;
   v.forEach((c, i) => {
@@ -4402,7 +4507,7 @@ let freeMemos = (() => { try{ return JSON.parse(LS.get('freeMemos', '{}') || '{}
 function saveFree(){ try{ LS.set('freeMemos', JSON.stringify(freeMemos)); }catch(e){ toast('메모를 저장할 공간이 부족합니다 — 💾 백업 후 오래된 노선을 정리해 주세요.', 8000); } }
 /* 노선을 열었으면 그 노선 메모, 아니면 공통 메모(노선과 관계없이 필지에 붙음). 이미 공통 메모가 있는 필지는 그 메모를 이어 씀 */
 function memoBook(){ const it = activeRoute(); return it ? (it.memos || (it.memos = {})) : freeMemos; }
-function memoHome(pnu){ const it = activeRoute(); if(it && it.memos && it.memos[pnu]) return it.memos; if(freeMemos[pnu]) return freeMemos; return memoBook(); }
+function memoHome(pnu){ const it = activeRoute(); if(it && it.memos && it.memos[pnu]) return it.memos; if(freeMemos[pnu]) return freeMemos; return it && LS.get('memoTarget', 'route') === 'free' ? freeMemos : memoBook(); }
 function memoOf(pnu){ const b = memoHome(pnu); return b && b[pnu] ? b[pnu] : null; }
 function memoIsFree(pnu){ return memoHome(pnu) === freeMemos; }
 function memoAll(onlyResults){ const it = activeRoute(), o = {}; Object.entries(freeMemos).forEach(([k, m]) => { if(!it || !onlyResults || results.some(r => r.pnu === k)) o[k] = m; }); if(it && it.memos) Object.assign(o, it.memos); return o; }
@@ -4413,7 +4518,7 @@ function rmSummary(t){ t = String(t || '').trim(); const m = t.match(/■\s*검�
 function rmemoHas(it){ const m = (it || {}).rmemo; return !!(m && ((m.text && m.text.trim()) || (m.photos && m.photos.length))); }
 function memoTouch(r){ if(r && r.route){ const m = rmemoOf(); if(m) m.t = Date.now(); return m; } const b = memoHome(r.pnu); if(!b) return null; const m = b[r.pnu] || (b[r.pnu] = { text: '', photos: [], t: Date.now() }); m.jibun = r.jibun; m.addr = r.addr; m.t = Date.now(); try{ m.c = r.center || labelPoint(r.feature); }catch(e){} return m; }
 function memoClean(pnu){ const b = memoHome(pnu); if(b && b[pnu] && !memoHas(pnu)) delete b[pnu]; }
-function memoSave(){ const it = activeRoute(); if(it){ it.updated = Date.now(); saveRoutes(); } saveFree(); drawMemoMarks(); renderRoutes(); clearTimeout(memoSave._t); memoSave._t = setTimeout(() => renderTable(), 50); }
+function memoSave(){ const it = activeRoute(); if(it){ it.updated = Date.now(); saveRoutes(); } saveFree(); drawMemoMarks(); setTimeout(() => { renderMemoAll(); renderDq(); }, 300); renderRoutes(); clearTimeout(memoSave._t); memoSave._t = setTimeout(() => renderTable(), 50); }
 async function memoImgUrl(id){ if(memoImgCache.has(id)) return memoImgCache.get(id); let v = null; try{ v = await IDBC.imgGet(id); }catch(e){} if(v && v.data) memoImgCache.set(id, v.data); return v ? v.data : null; }
 async function memoAddPhoto(r, dataUrl, cap){
   const m = memoTouch(r); if(!m){ toast('노선을 연 상태에서 메모를 남길 수 있습니다. (새 노선을 그리거나 노선 목록에서 여세요)', 7000); return false; }
@@ -4437,7 +4542,11 @@ function drawMemoMarks(){
 function memoCount(it){ const b = (it || {}).memos || {}; const ks = Object.keys(b).filter(k => (b[k].text && b[k].text.trim()) || (b[k].photos && b[k].photos.length)); return { n: ks.length, ph: ks.reduce((a, k) => a + (b[k].photos || []).length, 0) }; }
 function memoPaneHtml(r){
   const m = memoOf(r.pnu) || { text: '', photos: [] }, it = activeRoute(), fr = memoIsFree(r.pnu);
-  const where = fr ? `📌 <b>공통 메모</b> — 노선과 관계없이 이 필지에 저장${it ? ` <button data-mm="move" title="이 메모를 '${esc(it.name)}' 노선 메모로 옮깁니다">🛤 이 노선 메모로 옮기기</button>` : ''}` : `🛤 <b>${esc(it.name)}</b> 노선 메모`;
+  const has = !!memoOf(r.pnu);
+  const where = !it ? `📌 <b>공통 메모</b> — 노선을 열지 않아도 이 필지에 저장 (📝 메모 모아보기에서 모아 봄)`
+    : !has ? `저장 위치: <label><input type="radio" name="mtg${r.pnu}" data-mtg="route"${!fr ? ' checked' : ''}> 🛤 '${esc(it.name)}' 노선</label><label><input type="radio" name="mtg${r.pnu}" data-mtg="free"${fr ? ' checked' : ''}> 📌 공통(노선과 관계없이)</label>`
+    : fr ? `📌 <b>공통 메모</b> — 노선과 관계없이 이 필지에 저장 <button data-mm="move" title="이 메모를 '${esc(it.name)}' 노선 메모로 옮깁니다">🛤 이 노선 메모로 옮기기</button>`
+    : `🛤 <b>${esc(it.name)}</b> 노선 메모 <button data-mm="tofree" title="노선과 관계없이 이 필지에 붙는 공통 메모로 옮깁니다 — 다른 노선에서도 보임">📌 공통 메모로 옮기기</button>`;
   return `<div class="memo-pane"><div class="memo-where">${where}</div><textarea class="memo-txt" placeholder="이 필지에서 신경 쓰이는 점을 적어 두세요. (예: 담장 안쪽으로 배관 불가, 소유자 협의 필요, 현장 확인 11/12)">${esc(m.text || '')}</textarea>
     <div class="memo-btns"><button data-mm="file" title="사진 파일 고르기 (여러 장 가능)">🖼 사진 넣기</button><button data-mm="map" title="지금 지도 화면을 사진으로 넣기">🗺 지도 화면 넣기</button>${rvF ? '<button data-mm="rv" title="로드뷰 창에 보이는 장면을 이 필지 메모에 넣기">🎥 로드뷰 장면 넣기</button>' : ''}<span class="small" style="color:var(--muted)">또는 캡처한 그림을 Ctrl+V</span><input type="file" class="memo-file" accept="image/*" multiple style="display:none"></div>
     <div class="memo-ph">${(m.photos || []).map(x => `<figure data-ph="${x.id}"><img data-src="${x.id}" alt=""><figcaption>${esc(x.cap || '')}${x.t ? ' · ' + new Date(x.t).toLocaleDateString('ko-KR') : ''}</figcaption><button data-phdel="${x.id}" title="이 사진 빼기">✕</button></figure>`).join('')}</div></div>`;
@@ -4447,10 +4556,12 @@ function bindMemoPane(d, r){
   let tm = null; ta.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => { const m = memoTouch(r); if(!m) return; m.text = ta.value; memoClean(r.pnu); memoSave(); }, 500); });
   ta.addEventListener('blur', () => { clearTimeout(tm); const m = memoTouch(r); if(!m) return; m.text = ta.value; memoClean(r.pnu); memoSave(); });
   const fi = d.querySelector('.memo-file');
+  d.querySelectorAll('[data-mtg]').forEach(x => x.onchange = () => { LS.set('memoTarget', x.dataset.mtg); showDetail(r); });
   d.querySelectorAll('[data-mm]').forEach(b => b.onclick = async () => {
     const k = b.dataset.mm;
     if(k === 'file') fi.click();
     else if(k === 'map'){ b.disabled = true; b.textContent = '찍는 중…'; try{ const bl = await captureMapBlob(); if(bl) await memoAddBlob(r, bl, '지도 화면'); }catch(e){ if(e && e.name !== 'NotAllowedError') toast('지도 화면을 넣지 못했습니다: ' + e.message, 6000); } finally{ showDetail(r); } }
+    else if(k === 'tofree'){ const it = activeRoute(); if(!it || !it.memos || !it.memos[r.pnu]) return; freeMemos[r.pnu] = it.memos[r.pnu]; delete it.memos[r.pnu]; memoSave(); showDetail(r); toast('공통 메모로 옮겼습니다 — 노선과 관계없이 이 필지에 붙습니다.', 4000); }
     else if(k === 'move'){ const it = activeRoute(); if(!it || !freeMemos[r.pnu]) return; (it.memos || (it.memos = {}))[r.pnu] = freeMemos[r.pnu]; delete freeMemos[r.pnu]; memoSave(); showDetail(r); toast(`'${it.name}' 노선 메모로 옮겼습니다.`, 4000); }
     else if(k === 'rv'){ memoRvTarget = r.pnu; if(rvBC && rvExtOn) rvBC.postMessage({ type: 'grab' }); else toast('로드뷰 창(별도 창)이 열려 있을 때 쓸 수 있습니다.', 5000); }
   });
@@ -4980,7 +5091,7 @@ async function showSingleParcel(ll){
 let edgeHintT = 0;
 map.on('click', e => {
   if(edgeEdit && !drawing && !measuring && Date.now() - edgeHintT > 4000){ edgeHintT = Date.now(); toast('✋ 가장자리 편집 중이라 필지가 눌리지 않습니다.', 6000, { label: '가장자리 편집 끄기', fn: () => { toggleEdgeEdit(false); if(edOpen) renderEditor(); } }); }
-  if(drawing || brDraw || measuring || fm || edgeEdit || Date.now() - measureClickT < 600) return;
+  if(drawing || brDraw || measuring || fm || edgeEdit || Date.now() - measureClickT < 600 || Date.now() - dqLastT < 500) return;
   if(e.originalEvent && e.originalEvent.target && e.originalEvent.target.closest && e.originalEvent.target.closest('.leaflet-marker-icon, .leaflet-popup, #review, #stepPanel, #ctxMenu')) return;
   showSingleParcel(e.latlng);
 });
@@ -5332,7 +5443,7 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel, o){
   // 글자: 도시계획도로 이름 → 지번 (선·번호보다 아래)
   const occ = [];
   if(z >= 16) drawRoadLabels(ctx, P, W, H, occ, 13);
-  if(o.labels && cfg.showLabels && z >= 18) drawLabels(ctx, P, W, H, 12, occ);
+  if(o.labels && cfg.showLabels && z >= 18) drawLabels(ctx, P, W, H, Math.round(12 * labelScale()), occ);
   // 도로 면(구간별 도로폭)
   if(o.corr && isLine()) brCorrAll().forEach(g => { ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = cfg.routeColor; ctx.beginPath(); tracePath(ctx, g, P); ctx.fill(); ctx.globalAlpha = .9; ctx.setLineDash([6, 4]); ctx.strokeStyle = cfg.routeColor; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore(); });
   if(o.corr && isLine() && corridorCache){
@@ -5606,6 +5717,7 @@ async function exportExcel(){
       return row;
     };
     put('조회일시', new Date().toLocaleString('ko-KR'));
+    { const it = activeRoute(); if(it) put('검토 상태', it.done ? '완료 (' + new Date(it.done).toLocaleDateString('ko-KR') + ')' : '수정 중'); }
     put('조회 영역', ({ line: '선(노선)', rect: '사각형', circle: '원', poly: '다각형' })[shapeKind]);
     if(line){
       put('노선 연장(m)', Math.round(totalLength() * 10) / 10, brOk().length ? `본선 ${Math.round(routeLength() * 10) / 10}m + ` + brOk().map(b => `${brName(brs.indexOf(b))} ${Math.round(brLen(b) * 10) / 10}m`).join(' + ') + ' (가지 구간은 노선 위 한 점에서 갈라지므로 겹치는 거리 없음)' : null, { num: '#,##0.0' });
@@ -6030,7 +6142,7 @@ function folderListHtml(cardOf){
     const sys = f.id === F_NONE || f.id === F_ARCH;
     const name = fdRen === f.id ? `<input class="fd-ren" value="${esc(fdRenVal != null ? fdRenVal : f.name)}" data-ren="${f.id}">` : `<span class="fd-n" title="더블클릭해서 이름 바꾸기" data-rn="${f.id}">${esc(f.name)}</span>`;
     const btns = (f.id !== F_ARCH ? `<button data-fa="new" title="이 폴더에 새 노선 그리기">＋</button>` : '') + `<button data-fa="ren" title="폴더 이름 바꾸기 (이름을 더블클릭해도 됨)">✏ 이름</button>` + (rs.length ? `<button data-fa="save" title="이 폴더를 파일로 저장 (팀원에게 넘기기)">💾</button>` : '') + (rs.filter(r => r.gj && r.gj.properties && r.gj.properties.kind === 'line').length >= 2 ? `<button data-fa="cmp" title="이 폴더 노선끼리 비교">⚖</button>` : '') + (!sys ? `<button data-fa="del" class="${fdArm === f.id ? 'arm' : ''}" title="폴더 지우기 (노선은 미분류로 옮김, 두 번 눌러 확인)">${fdArm === f.id ? '지울까요?' : '🗑'}</button>` : '');
-    return `<div class="fd${f.id === F_ARCH ? ' arch' : ''}${f.id === curFolder ? ' cur' : ''}" data-f="${f.id}"><div class="fd-h" data-fh="${f.id}" title="눌러서 접기·펴기 (접은 폴더의 노선은 지도에서도 숨김)"><span>${open ? '▾' : '▸'}</span><span>${f.id === F_ARCH ? '🗄' : '📁'}</span>${name}<span class="fd-c">${rs.length}개${len ? ' · ' + fmtLen(len) : ''}</span><span class="fd-sp"></span>${btns}</div>${open ? `<div class="fd-b">${shown.length ? shown.map(cardOf).join('') : `<div class="fd-empty">${f.id === F_ARCH ? '끝난 노선을 여기로 옮겨 두면 평소엔 숨겨집니다.' : '비어 있음 — 노선 카드를 끌어다 놓거나 [＋]로 새 노선을 그리세요.'}</div>`}</div>` : ''}</div>`;
+    return `<div class="fd${f.id === F_ARCH ? ' arch' : ''}${f.id === curFolder ? ' cur' : ''}" data-f="${f.id}"><div class="fd-h" data-fh="${f.id}" title="눌러서 접기·펴기 (접은 폴더의 노선은 지도에서도 숨김)"><span>${open ? '▾' : '▸'}</span><span>${f.id === F_ARCH ? '🗄' : '📁'}</span>${name}<span class="fd-c">${rs.length}개${rs.some(r => r.done) ? ` · ✅ ${rs.filter(r => r.done).length}` : ''}${len ? ' · ' + fmtLen(len) : ''}</span><span class="fd-sp"></span>${btns}</div>${open ? `<div class="fd-b">${shown.length ? shown.map(cardOf).join('') : `<div class="fd-empty">${f.id === F_ARCH ? '끝난 노선을 여기로 옮겨 두면 평소엔 숨겨집니다.' : '비어 있음 — 노선 카드를 끌어다 놓거나 [＋]로 새 노선을 그리세요.'}</div>`}</div>` : ''}</div>`;
   }).join('');
   return (q && !total ? `<div class="empty" style="padding:12px 4px">'${esc(rpQuery)}'에 맞는 노선이 없습니다.</div>` : '') + html;
 }
@@ -6240,7 +6352,7 @@ function renderRoutes(){
   const cardOf = it => it.id === activeId ? activeCard(it) : (() => {
     const sm = it.sum || {};
     const size = sm.len != null ? fmtLen(sm.len) : sm.area != null ? fmtM2(sm.area) + '㎡' : '';
-    return `<div class="rcard${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top">${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name">${esc(it.name)}</span>${rmemoHas(it) ? `<span class="rc-rmi" title="노선 메모 — ${esc((rmSummary(it.rmemo.text) || '사진').slice(0, 90))}">📝</span>` : ''}<button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
+    return `<div class="rcard${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}" title="눌러서 열기·수정"><div class="rc-top">${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name">${esc(it.name)}</span>${it.done ? '<span class="rc-badge done" title="검토 완료">✅ 완료</span>' : ''}${rmemoHas(it) ? `<span class="rc-rmi" title="노선 메모 — ${esc((rmSummary(it.rmemo.text) || '사진').slice(0, 90))}">📝</span>` : ''}<button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button><span class="small" style="color:var(--muted)">${kindName(sm.kind)} ${size}</span><span style="margin-left:auto" class="small">${sm.n != null ? `필지 ${sm.n} · 사유지 ${sm.priv}` : '조회 전'}</span></div>
       ${sm.start || sm.end ? `<div class="rc-sub">${esc(sm.start || '-')} → ${esc(sm.end || '-')}</div>` : ''}</div>`;
   })();
   box.innerHTML = folderListHtml(cardOf); bindFolderList(box); storeInfo();
@@ -6265,6 +6377,8 @@ function renderRoutes(){
     else if(a === 'excel') exportExcel();
     else if(a === 'branch') startBranchDraw();
     else if(a === 'rmemo') openRmemo();
+    else if(a === 'status'){ const was = it.done || null; it.done = was ? null : Date.now(); it.updated = Date.now(); saveRoutes(); buildEditHandles(); renderRoutes();
+      toast(it.done ? `✅ '${it.name}' 완료 — 선이 잠겼습니다 (점 끌기·가지 추가 안 됨).` : `✏ '${it.name}' 다시 수정 중으로 바꿨습니다.`, 6000, { label: '되돌리기', fn: () => { it.done = was; saveRoutes(); buildEditHandles(); renderRoutes(); } }); }
     else if(a === 'gquery') queryGroup();
     else if(a === 'gexcel') groupExcel();
   });
@@ -6313,7 +6427,7 @@ function activeCard(it){
     vt = `<details class="rc-vtx"><summary>꼭짓점 목록 (${pts.length}개) — 눌러서 위치로 이동</summary><table><tr><th>점</th><th>누적 거리</th><th>도로 폭</th></tr>` + pts.map((p, i) => { if(i) acc += map.distance(pts[i - 1], p); return `<tr data-v="${i}"><td>${i === 0 ? '시점' : i === pts.length - 1 ? '종점' : i}</td><td>${fmtLen(acc)}</td><td>${vW[i] ? vW[i] + 'm' : '-'} <span class="small" style="color:var(--muted)">${esc(vSrc[i] || '')}</span></td></tr>`; }).join('') + `</table></details>`;
   }
   const G = (t, btns) => btns.filter(Boolean).length ? `<div class="rc-g"><span class="rc-gt">${t}</span><div class="rc-gb">${btns.filter(Boolean).join('')}</div></div>` : '';
-  return `<div class="rcard on${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}"><div class="rc-top"><span class="rc-badge">수정 중</span>${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span><button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button></div>
+  return `<div class="rcard on${it.parentId && routeById(it.parentId) ? ' rc-child' : ''}" data-id="${it.id}"><div class="rc-top">${it.done ? `<button class="rc-badge st done" data-a="status" title="검토 완료 — 선이 잠겨 지도에서 점을 끌어도 바뀌지 않습니다. 눌러서 다시 '수정 중'으로">✅ 완료 ${new Date(it.done).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}</button>` : `<button class="rc-badge st" data-a="status" title="검토가 끝나면 눌러서 '완료'로 — 완료한 노선은 선이 잠겨 실수로 고쳐지지 않습니다">✏ 수정 중 <span class="st-go">→ 완료로</span></button>`}${it.parentId && routeById(it.parentId) ? '<span class="rc-badge br">지선</span>' : ''}<span class="rc-name" style="flex:1"><input class="rname" value="${esc(it.name)}" title="눌러서 이름 바꾸기"></span><button class="rc-mv" data-mv="${it.id}" title="다른 폴더로 옮기기 (카드를 폴더로 끌어 놓아도 됨)">📁</button><button class="rc-del" data-del="${it.id}" title="이 노선 삭제 (두 번 눌러 확인)">🗑</button></div>
     <div class="rc-grid">${rows.map(([k, v]) => `<div>${k}</div><div>${v}</div>`).join('')}</div>
     ${vt}
     <div class="rc-acts2">
@@ -6997,6 +7111,9 @@ $('#sSave').onclick = () => {
 qsa('.tool').forEach(b => b.onclick = () => { if(fm) fmStop(); (drawing && drawMode === b.dataset.mode) ? endDraw(false) : startDraw(b.dataset.mode); });
 $('#btnFm').onclick = () => fm ? fmStop() : fmStart();
 $('#btnCalc').onclick = () => openCalc();
+$('#btnDragQ').onclick = () => dqSetMode(!dqMode);
+$('#btnMemoAll').onclick = () => openMemoAll();
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && dqMode){ const t = e.target; if(t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return; dqSetMode(false); status('영역 필지 보기를 끝냈습니다.'); } });
 $('#btnFinish').onclick = () => endDraw(false);
 $('#btnUndo').onclick = () => doUndo();
 $('#btnRedo').onclick = () => doRedo();
@@ -7049,6 +7166,8 @@ $('#bndOk').onclick = applyBnd;
 $('#dlgImport').addEventListener('close', () => { if(impPreview){ map.removeLayer(impPreview); impPreview = null; } });
 $('#chkLabel').checked = cfg.showLabels;
 $('#chkLabel').onchange = e => { cfg.showLabels = e.target.checked; LS.set('showLabels', cfg.showLabels ? '1' : '0'); scheduleLabels(); };
+$('#labelSize').value = LS.get('labelScale', '1'); if(!$('#labelSize').value) $('#labelSize').value = '1';
+$('#labelSize').onchange = e => { LS.set('labelScale', e.target.value); if(!cfg.showLabels){ cfg.showLabels = true; $('#chkLabel').checked = true; LS.set('showLabels', '1'); } scheduleLabels(); };
 $('#btnSettings').onclick = openSettings;
 $('#btnLog').onclick = () => { const l = $('#log'); l.style.display = l.style.display === 'block' ? 'none' : 'block'; };
 $('#btnSearch').onclick = () => suggest($('#search').value, true);
@@ -7218,18 +7337,28 @@ function winOpen(key, el, title, opt = {}){
   });
   return true;
 }
+/* 새 창 크기를 내용에 맞춤: 처음 열 때는 가로·세로 모두, 그 뒤로는 세로는 늘고 줄며 가로는 내용이 넘칠 때만 넓힘(창이 좌우로 출렁이지 않게) */
+const WIN_W = { detail: [380, 700], ed: [380, 640], rmemoPanel: [400, 680], calcPanel: [280, 360], cmpPanel: [420, 900], diagPanel: [420, 760], jbPanel: [360, 760], dqPanel: [420, 820], memoAllPanel: [380, 720] };
 function winFit(key, force){
   const W = WINS[key]; if(!winIn(key) || !W.el || (W.userSized && !force)) return;
-  const w = W.w, d = w.document, el = W.el, bar = d.querySelector('.winbar');
+  const w = W.w, d = w.document, el = W.el, bar = d.querySelector('.winbar'), host = d.getElementById('winHost');
   try{
-    const ps = [el.style.flex, el.style.height]; el.style.flex = 'none'; el.style.height = 'auto';
+    const sc = w.screen || {}, top = sc.availTop || 0, ah = sc.availHeight || 900, left0 = sc.availLeft || 0, aw = sc.availWidth || 1600;
+    const [mn, mx0] = WIN_W[key] || [360, Math.max(480, Math.round((W.opt.w || 560) * 1.3))], mx = Math.min(mx0, aw - 40);
+    const ps = [el.style.flex, el.style.height, el.style.width];
+    el.style.flex = 'none'; el.style.height = 'auto';
+    let tw = w.innerWidth;
+    const over = host && host.scrollWidth > host.clientWidth + 2;
+    if(force || !W.wFitted || over){ el.style.width = 'max-content'; const nat = Math.ceil(el.getBoundingClientRect().width) + 4; tw = Math.max(mn, Math.min(mx, nat)); if(!force && W.wFitted) tw = Math.max(tw, w.innerWidth); W.wFitted = true; }
+    el.style.width = tw + 'px';
     const need = Math.ceil(el.getBoundingClientRect().height + (bar ? bar.offsetHeight : 0) + 6);
-    el.style.flex = ps[0]; el.style.height = ps[1];
-    const chrome = Math.max(0, w.outerHeight - w.innerHeight), sc = w.screen || {}, top = sc.availTop || 0, ah = sc.availHeight || 900;
-    const target = Math.max(220, Math.min(ah - 20 - chrome, need));
-    if(Math.abs(target - w.innerHeight) < 10) return;
-    W.fitT = Date.now(); w.resizeBy(0, target - w.innerHeight);
-    const over = (w.screenY + target + chrome) - (top + ah); if(over > 0) w.moveBy(0, -over);
+    el.style.flex = ps[0]; el.style.height = ps[1]; el.style.width = ps[2];
+    const chH = Math.max(0, w.outerHeight - w.innerHeight), chW = Math.max(0, w.outerWidth - w.innerWidth);
+    const th = Math.max(200, Math.min(ah - 20 - chH, need));
+    if(Math.abs(th - w.innerHeight) < 10 && Math.abs(tw - w.innerWidth) < 10) return;
+    W.fitT = Date.now(); w.resizeTo(tw + chW, th + chH);
+    const ob = (w.screenY + th + chH) - (top + ah), orr = (w.screenX + tw + chW) - (left0 + aw);
+    if(ob > 0 || orr > 0) w.moveBy(orr > 0 ? -orr : 0, ob > 0 ? -ob : 0);
   }catch(e){}
 }
 /* 이미 열린 창을 앞으로 — 브라우저가 막으면(다른 모니터·뒤에 숨음) 안내 + 이 화면 앞에 다시 띄우기 */
