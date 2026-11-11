@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v30-2</title>
+<title>노선 필지 조회기 v30-4</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -716,7 +716,7 @@ body.popped #sideTgl{display:none}
 #ctxMenu button{display:block;width:100%;text-align:left;border:none;padding:6px 10px;border-radius:5px}
 #ctxMenu .small{padding:4px 10px}
 .side-tools{display:flex;gap:4px;margin-left:auto}
-header{grid-column:1/3;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+header{position:relative;z-index:1005;grid-column:1/3;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
 .hrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .hrow.toolbar{padding-top:6px;border-top:1px dashed var(--line)}
 .lbl{color:#495057;white-space:nowrap}
@@ -840,6 +840,10 @@ body.popped aside #routePane{display:block!important}
 .mini-menu.open{display:block} .mini-menu button{display:block;width:100%;text-align:left;border:none;background:none;padding:6px 10px;font-size:12.5px;border-radius:5px;white-space:nowrap} .mini-menu button:hover{background:#f3f8ff}
 #fMenu label{display:flex;gap:6px;align-items:center;padding:3px 0;white-space:nowrap}
 #fMenu.open{display:block}
+#visMenu{position:absolute;left:0;top:calc(100% + 4px);z-index:950;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.15);padding:6px 10px;display:none;min-width:230px;font-size:12.5px}
+#visMenu.open{display:block} #visMenu label{display:flex;gap:6px;align-items:center;padding:3px 0;white-space:nowrap} #visMenu .vm-a{display:flex;gap:6px;align-items:center;margin-top:4px} #visMenu .vm-a input{flex:1}
+#btnVis{padding:2px 6px} #btnVis.on{background:#fff4e6;border-color:#f08c00} #btnPeek{font-size:12px;padding:2px 8px;user-select:none} #btnPeek:active,#btnPeek.on{background:#fff3bf}
+.zlock{background:#fff;border:2px solid rgba(0,0,0,.2);border-radius:4px;font-size:12px;font-weight:700;padding:3px 6px;cursor:pointer;white-space:nowrap;line-height:1.3} .zlock.on{background:#fff3bf;border-color:#f08c00;color:#d9480f}
 #fJimok .fj-h{display:flex;gap:6px;align-items:center;font-weight:600;margin:2px 0 4px} #fJimok .fj-h select{font-size:12px;padding:1px 3px} #fJimok .fj-h a{font-weight:400;font-size:12px;margin-left:auto}
 #fJimok .fj-g{display:grid;grid-template-columns:repeat(3,auto);gap:0 12px;max-height:190px;overflow:auto} #fJimok .fj-g label{padding:2px 0} #fJimok .fj-g em{font-style:normal;color:var(--muted);font-size:11px}
 #fJimok .fj-q{display:flex;gap:4px;flex-wrap:wrap;margin:2px 0 5px} #fJimok .fj-q button{font-size:11px;padding:1px 7px}
@@ -1169,7 +1173,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v30-2</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v30-4</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1198,7 +1202,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
       <span class="lbl">노선</span>
       <select id="routeWeight"><option value="2">얇게</option><option value="3">보통</option><option value="5">굵게</option><option value="8">아주 굵게</option></select>
       <input type="color" id="routeColor" value="#e03131" title="그린 선 색">
-      <label title="지도에서 그린 노선(선·점·도로 면·배관 글자·다른 노선)을 숨겼다 보였다 합니다 (단축키 R)"><input type="checkbox" id="chkRouteShow" checked> 보이기</label>
+      <label title="지도에서 그린 노선(선·가지·점·도로 면·강조·배관 글자·다른 노선·메모)을 숨겼다 보였다 합니다 (단축키 R · H를 누르고 있는 동안만 숨김)"><input type="checkbox" id="chkRouteShow" checked> 보이기</label><span class="fdrop vdrop"><button id="btnVis" title="무엇을 보일지 고르기 · 진하기">▾</button><div id="visMenu"></div></span><button id="btnPeek" title="누르고 있는 동안만 노선을 모두 숨김 — 위성사진·지적선을 바로 확인 (키보드 H)">👁 잠깐 숨김</button>
       <span class="lbl" style="margin-left:4px" title="지금 열지 않은 다른 노선의 색">다른 노선</span><input type="color" id="ghostColor" value="#ffd43b" title="다른 노선(지금 열지 않은 노선) 색 — 위성사진에서 잘 보이는 밝은 색 추천">
     </div>
     <div class="grp" style="margin-left:auto">
@@ -1762,6 +1766,12 @@ const CAD_MINZOOM = 17, CAD_CELL = 0.003; // 약 270m × 330m 칸 단위로 받�
 const cadCache = new Map(), cadCells = new Map();
 map.createPane('routeP'); map.getPane('routeP').style.zIndex = 452;
 map.createPane('routeMk'); map.getPane('routeMk').style.zIndex = 640;
+/* v30-3: 숨기기를 나눠서 — 도로 면(양옆 폭) · 다른 노선 · 선택 구간 강조·가장자리 · 배관 글자 · 메모 표시 */
+map.createPane('corrP'); map.getPane('corrP').style.zIndex = 451; map.getPane('corrP').style.pointerEvents = 'none';
+map.createPane('ghostP'); map.getPane('ghostP').style.zIndex = 449;
+map.createPane('routeHi'); map.getPane('routeHi').style.zIndex = 456; map.getPane('routeHi').style.pointerEvents = 'none';
+map.createPane('pipeLabP'); map.getPane('pipeLabP').style.zIndex = 641; map.getPane('pipeLabP').style.pointerEvents = 'none';
+map.createPane('memoP'); map.getPane('memoP').style.zIndex = 642;
 map.createPane('cadPane'); map.getPane('cadPane').style.zIndex = 350; map.getPane('cadPane').style.pointerEvents = 'none';
 const cadRenderer = L.canvas({ padding: 0.4, pane: 'cadPane' });
 let cadVec = null, cadTimer = null, cadBusy = 0;
@@ -1891,10 +1901,16 @@ const HINTS = {
 };
 function shapeStyle(){ return { color: cfg.routeColor, weight: Number(cfg.routeWeight), fillColor: cfg.routeColor, fillOpacity: .06, interactive: false, pane: 'routeP' }; }
 function routeStyle(){ return { color: cfg.routeColor, weight: Number(cfg.routeWeight), interactive: false, lineJoin: 'round', lineCap: 'round', pane: 'routeP' }; }
+const VIS_PARTS = [['line', '노선 선 · 가지 · 점 · 선택 강조', ['routeP', 'routeMk', 'routeHi']], ['corr', '도로 면(양옆 폭)', ['corrP']], ['pipe', '배관 글자', ['pipeLabP']], ['ghost', '다른 노선', ['ghostP']], ['memo', '📝 메모 표시', ['memoP']]];
+let visParts = (() => { try{ return Object.assign({ line: true, corr: true, pipe: true, ghost: true, memo: true }, JSON.parse(LS.get('visParts', '{}') || '{}')); }catch(e){ return { line: true, corr: true, pipe: true, ghost: true, memo: true }; } })(), visPeek = false;
+function applyVis(){
+  const on = LS.get('routeShow', '1') === '1' && !visPeek, a = Math.max(.15, Math.min(1, Number(LS.get('routeAlpha', '100')) / 100));
+  VIS_PARTS.forEach(([k, , ps]) => ps.forEach(pn => { const el = map.getPane(pn); if(!el) return; el.style.display = on && visParts[k] ? '' : 'none'; el.style.opacity = ['routeP', 'corrP', 'ghostP', 'routeHi'].includes(pn) && a < 1 ? String(a) : ''; }));
+  const b = byId('btnVis'); if(b){ const off = VIS_PARTS.filter(([k]) => !visParts[k]).length; b.textContent = off ? `▾ ${off}개 숨김` : '▾'; b.classList.toggle('on', !!off || a < 1); }
+}
 function setRouteShow(on, quiet){
-  ['routeP', 'routeMk'].forEach(k => map.getPane(k).style.display = on ? '' : 'none');
   const c = byId('chkRouteShow'); if(c) c.checked = on;
-  LS.set('routeShow', on ? '1' : '0');
+  LS.set('routeShow', on ? '1' : '0'); applyVis();
   if(!quiet) status(on ? '노선을 다시 보입니다.' : '노선을 숨겼습니다. [보이기]를 다시 켜면 나옵니다.');
 }
 function restyleRoute(){
@@ -2231,7 +2247,7 @@ function gotoIssue(it){
   if(it.type === 'shift'){ const r = results.find(x => x.pnu === it.pnu); if(r){ select(r, true); } return; }
   const seg = stations.slice(Math.max(0, it.i0 - 1), it.i1 + 2);
   issueHi = L.layerGroup([
-    L.polygon(seg.map(q => [q.L[1], q.L[0]]).concat(seg.slice().reverse().map(q => [q.R[1], q.R[0]])), { color: '#fab005', weight: 3, dashArray: '6,4', fillColor: '#fab005', fillOpacity: .15, interactive: false })
+    L.polygon(seg.map(q => [q.L[1], q.L[0]]).concat(seg.slice().reverse().map(q => [q.R[1], q.R[0]])), { pane: 'routeHi', color: '#fab005', weight: 3, dashArray: '6,4', fillColor: '#fab005', fillOpacity: .15, interactive: false })
   ]).addTo(map);
   map.fitBounds(L.latLngBounds(seg.map(q => [q.L[1], q.L[0]]).concat(seg.map(q => [q.R[1], q.R[0]]))).pad(.6), { maxZoom: 20 });
   if(!edgeEdit) toggleEdgeEdit(true);
@@ -2251,7 +2267,7 @@ function drawEdges(){
     });
     if(cur) runs.push(cur);
   });
-  edgeLayer = L.layerGroup(runs.map(r => L.polyline(r.pts, { color: r.col, weight: 2.5, opacity: .95, dashArray: r.col === '#868e96' ? '6,5' : null, interactive: false }))).addTo(map);
+  edgeLayer = L.layerGroup(runs.map(r => L.polyline(r.pts, { pane: 'routeHi', color: r.col, weight: 2.5, opacity: .95, dashArray: r.col === '#868e96' ? '6,5' : null, interactive: false }))).addTo(map);
 }
 function toggleEdgeEdit(on){
   edgeEdit = on == null ? !edgeEdit : on;
@@ -2268,7 +2284,7 @@ function drawEdgeHandles(){
   stations.forEach((q, k) => {
     ['L', 'R'].forEach(side => {
       const ll = L.latLng(q[side][1], q[side][0]); if(!b.contains(ll)) return;
-      const m = L.marker(ll, { draggable: true, icon: L.divIcon({ className: 'vtx', html: `<div class="ehandle ${side}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] }), zIndexOffset: 1200, keyboard: false }).addTo(edgeHandleLayer);
+      const m = L.marker(ll, { draggable: true, pane: 'routeMk', icon: L.divIcon({ className: 'vtx', html: `<div class="ehandle ${side}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] }), zIndexOffset: 1200, keyboard: false }).addTo(edgeHandleLayer);
       m.bindTooltip(`${side === 'L' ? '왼쪽' : '오른쪽'} 가장자리 · 폭 ${(q.dl + q.dr).toFixed(1)}m · ${esc(q.manual ? '직접 수정' : q.src)} — 끌어서 맞추기`, { direction: 'top', offset: [0, -8] });
       m.on('drag', e => {
         const c0 = pts[0], P = localProj(c0.lat, c0.lng), p2 = P.xy([e.latlng.lng, e.latlng.lat]);
@@ -2375,7 +2391,7 @@ function pipeClass(r){
 function drawCorridor(){
   if(corridorLayer){ map.removeLayer(corridorLayer); corridorLayer = null; }
   corridorCache = drawing ? null : corridorGeom();
-  if(corridorCache) corridorLayer = L.geoJSON(corridorCache, { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'routeP' }).addTo(map);
+  if(corridorCache) corridorLayer = L.geoJSON(corridorCache, { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'corrP' }).addTo(map);
   frontRoute();
 }
 function scheduleCorridor(){ cancelAnimationFrame(corridorTimer); corridorTimer = requestAnimationFrame(drawCorridor); }
@@ -2504,7 +2520,7 @@ function drawBranches(){
   brLayer.clearLayers();
   if(brCorrLayer){ map.removeLayer(brCorrLayer); brCorrLayer = null; }
   if(!isLine() || pts.length < 2) return;
-  { const cs = brCorrAll(); if(cs.length) brCorrLayer = L.geoJSON(turf.featureCollection(cs), { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'routeP' }).addTo(map); }
+  { const cs = brCorrAll(); if(cs.length) brCorrLayer = L.geoJSON(turf.featureCollection(cs), { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'corrP' }).addTo(map); }
   brs.forEach((b, i) => { if(b.ll.length < 2) return;
     L.polyline(b.ll, routeStyle()).addTo(brLayer);
     L.polyline(b.ll, { weight: 14, opacity: 0, className: 'route-hit', pane: 'routeP' }).on('click', e => { if(drawing || measuring || brDraw) return; L.DomEvent.stop(e); edBr = i; if(edTab === 'review') edTab = 'width'; openEditor(-1); }).bindTooltip(`${brName(i)} · ${fmtLen(brLen(b))} · 도로 폭 ${brW(b)}m — 눌러서 이 가지 구간 편집`, { sticky: true, direction: 'top', offset: [0, -8] }).addTo(brLayer); });
@@ -3061,7 +3077,7 @@ function drawCoverage(gaps, P){
   if(!gaps || !gaps.length) return;
   coverLayer = L.layerGroup(gaps.map(g => {
     const a = P.ll([g.from.px, g.from.py]), b = P.ll([g.to.px, g.to.py]);
-    return L.polyline([[a[1], a[0]], [b[1], b[0]]], { color: g.out ? '#495057' : '#f08c00', weight: 9, opacity: .45, dashArray: '2,8', lineCap: 'butt', interactive: true })
+    return L.polyline([[a[1], a[0]], [b[1], b[0]]], { pane: 'routeHi', color: g.out ? '#495057' : '#f08c00', weight: 9, opacity: .45, dashArray: '2,8', lineCap: 'butt', interactive: true })
       .bindTooltip(g.out ? `도엽 밖 ${Math.round(g.len)}m — 인접 도엽 추가 필요` : `경계선 끊김 ${Math.round(g.len)}m — 직접 입력 권장`, { sticky: true });
   })).addTo(map);
 }
@@ -3116,9 +3132,9 @@ function drawPipeLabels(){
   for(let k = 0; k < pts.length - 1; k++){
     const t = pipeText(segPipe[k]); if(!t) continue;
     const a = pts[k], b = pts[k + 1], c = L.latLng((a.lat + b.lat) / 2, (a.lng + b.lng) / 2);
-    L.marker(c, { icon: L.divIcon({ className: '', html: `<span class="pipe-lab">${esc(t)}</span>`, iconSize: [0, 0] }), interactive: false, keyboard: false, pane: 'routeMk' }).addTo(pipeLabLayer);
+    L.marker(c, { icon: L.divIcon({ className: '', html: `<span class="pipe-lab">${esc(t)}</span>`, iconSize: [0, 0] }), interactive: false, keyboard: false, pane: 'pipeLabP' }).addTo(pipeLabLayer);
   }
-  brOk().forEach(b => { const t = pipeText(b.pipe); if(!t) return; try{ const c = turf.along(brLine(b), brLen(b) / 2, { units: 'meters' }).geometry.coordinates; L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="pipe-lab">${esc(t)}</span>`, iconSize: [0, 0] }), interactive: false, keyboard: false, pane: 'routeMk' }).addTo(pipeLabLayer); }catch(e){} });
+  brOk().forEach(b => { const t = pipeText(b.pipe); if(!t) return; try{ const c = turf.along(brLine(b), brLen(b) / 2, { units: 'meters' }).geometry.coordinates; L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="pipe-lab">${esc(t)}</span>`, iconSize: [0, 0] }), interactive: false, keyboard: false, pane: 'pipeLabP' }).addTo(pipeLabLayer); }catch(e){} });
 }
 let edTab = 'review';
 let edBr = null; // 편집 창에서 고른 가지 구간 (없으면 null)
@@ -3165,8 +3181,8 @@ function edWin(box, force, front){ if(!edOpen || (!force && !winWanted('ed'))) r
 function drawEdHi(){
   if(edHi){ map.removeLayer(edHi); edHi = null; }
   if(!edOpen || !isLine() || pts.length < 2) return;
-  if(edBr != null && brs[edBr]){ const b = brs[edBr], o2 = { pane: 'selPane', interactive: false }, parts2 = []; const g = brCorr(b); if(g) parts2.push(L.geoJSON(g, { style: Object.assign({ color: '#2b8a3e', weight: 3, dashArray: '6,4', fillColor: '#40c057', fillOpacity: .18 }, o2) })); parts2.push(L.polyline(b.ll, Object.assign({ color: '#2b8a3e', weight: 7, opacity: .55 }, o2))); edHi = L.layerGroup(parts2).addTo(map); return; }
-  const S = stRange(edSel), o = { pane: 'selPane', interactive: false };
+  if(edBr != null && brs[edBr]){ const b = brs[edBr], o2 = { pane: 'routeHi', interactive: false }, parts2 = []; const g = brCorr(b); if(g) parts2.push(L.geoJSON(g, { style: Object.assign({ color: '#2b8a3e', weight: 3, dashArray: '6,4', fillColor: '#40c057', fillOpacity: .18 }, o2) })); parts2.push(L.polyline(b.ll, Object.assign({ color: '#2b8a3e', weight: 7, opacity: .55 }, o2))); edHi = L.layerGroup(parts2).addTo(map); return; }
+  const S = stRange(edSel), o = { pane: 'routeHi', interactive: false };
   const parts = [];
   if(S && S.length >= 2){ const ring = S.map(q => [q.L[1], q.L[0]]).concat(S.slice().reverse().map(q => [q.R[1], q.R[0]])); parts.push(L.polygon(ring, Object.assign({ color: '#2b8a3e', weight: 3, dashArray: '6,4', fillColor: '#40c057', fillOpacity: .18 }, o))); }
   const vs = edSel < 0 ? pts : [pts[edSel], pts[edSel + 1]];
@@ -3544,7 +3560,7 @@ function rvGo(i, gesture){
   rvF.i = Math.max(0, Math.min(rvF.list.length - 1, i));
   const p = rvF.list[rvF.i];
   rvLayer.clearLayers();
-  if(!rvF.single) try{ const done = turf.lineSliceAlong(toLine(), 0, Math.max(.1, p.s), { units: 'meters' }); L.geoJSON(done, { style: { color: '#7048e8', weight: 7, opacity: .45 }, interactive: false }).addTo(rvLayer); }catch(e){}
+  if(!rvF.single) try{ const done = turf.lineSliceAlong(toLine(), 0, Math.max(.1, p.s), { units: 'meters' }); L.geoJSON(done, { pane: 'routeHi', style: { color: '#7048e8', weight: 7, opacity: .45 }, interactive: false }).addTo(rvLayer); }catch(e){}
   L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', html: '<div class="rv-dot"></div>', iconSize: [0, 0] }), interactive: false, keyboard: false, zIndexOffset: 2000 }).addTo(rvLayer);
   rvLastCam = null;
   if(rvMapFollow()) rvPanTo(p); else if(!map.getBounds().pad(-.15).contains([p.lat, p.lng])) map.panTo([p.lat, p.lng]);
@@ -4023,7 +4039,7 @@ async function runQuery(){
           log(`도로 면에서 건물 ${bp.length}동 부분 제외 (${Math.round(before - turf.area(area))}㎡)`);
           corridorCache = area;
           if(corridorLayer){ map.removeLayer(corridorLayer); }
-          corridorLayer = L.geoJSON(area, { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'routeP' }).addTo(map);
+          corridorLayer = L.geoJSON(area, { style: { color: cfg.routeColor, weight: 1.2, dashArray: '5,4', fillColor: cfg.routeColor, fillOpacity: .13 }, interactive: false, pane: 'corrP' }).addTo(map);
         }
       }catch(e){ log('건물 조회 실패: ' + e.message); }
     }
@@ -4415,7 +4431,7 @@ let lastSingle = null, memoLayer = L.layerGroup().addTo(map);
 function drawMemoMarks(){
   memoLayer.clearLayers(); const b = memoAll(false); const fr = k => b[k] === freeMemos[k];
   Object.entries(b).forEach(([pnu, m]) => { if(!memoHas(pnu) || !m.c) return; const n = (m.photos || []).length;
-    L.marker([m.c[1], m.c[0]], { pane: 'routeMk', icon: L.divIcon({ className: '', html: `<span class="memo-mk${fr(pnu) ? ' free' : ''}" title="${fr(pnu) ? '공통 메모' : '현장 메모'}">📝${n ? `<b>${n}</b>` : ''}</span>`, iconSize: [0, 0] }), keyboard: false })
+    L.marker([m.c[1], m.c[0]], { pane: 'memoP', icon: L.divIcon({ className: '', html: `<span class="memo-mk${fr(pnu) ? ' free' : ''}" title="${fr(pnu) ? '공통 메모' : '현장 메모'}">📝${n ? `<b>${n}</b>` : ''}</span>`, iconSize: [0, 0] }), keyboard: false })
       .on('click', e => { L.DomEvent.stop(e); const r = results.find(x => x.pnu === pnu); LS.set('dtab', 'memo'); if(r) select(r, false); else showSingleParcel(L.latLng(m.c[1], m.c[0])); }).bindTooltip(`${esc(riJibun(m.addr, m.jibun))} — ${esc((m.text || '').slice(0, 40) || '사진 ' + n + '장')}`, { direction: 'top', offset: [0, -10] }).addTo(memoLayer); });
 }
 function memoCount(it){ const b = (it || {}).memos || {}; const ks = Object.keys(b).filter(k => (b[k].text && b[k].text.trim()) || (b[k].photos && b[k].photos.length)); return { n: ks.length, ph: ks.reduce((a, k) => a + (b[k].photos || []).length, 0) }; }
@@ -4859,6 +4875,7 @@ PERMIT.forEach(q => { CHIP_PRED['perm_' + q.k] = r => permitOf(r) === q && (!isL
 CHIP_PRED.memo = r => memoHas(r.pnu);
 CHIP_PRED.perm = r => !!permitOf(r) && (!isLine() || r.tier === 'pass' || !r.tier);
 function renderTable(){
+  if(ptrDown){ rtPending = true; return; }
   const tb = $('#tbl tbody');
   $('#thMetric').textContent = isLine() ? '배관 통과' : '포함㎡';
   const sortBy = $('#sortSel') ? $('#sortSel').value : 'route';
@@ -4975,13 +4992,26 @@ function closeDetail(){
   highlightParcel(null); singlePnu = null; singleSeq++;
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape' && !drawing && !measuring && $('#detail') && ['block','flex'].includes($('#detail').style.display) && !qs('dialog[open]')) closeDetail(); });
+/* 필지로 갈 때: 기본은 필지에 맞춰 확대·축소 / 🔒 줌 유지면 지금 배율 그대로, 화면 밖일 때만 옮김 */
+let zoomLock = LS.get('zoomLock', '0') === '1';
+function focusParcel(f, opt){
+  let b = null; try{ b = L.geoJSON(f).getBounds(); }catch(e){} if(!b || !b.isValid()) return;
+  if(!zoomLock){ map.fitBounds(b, opt); return; }
+  const v = map.getBounds(), inner = L.latLngBounds(map.containerPointToLatLng([60, 60]), map.containerPointToLatLng(map.getSize().subtract([60, 60])));
+  if(!inner.contains(b.getCenter()) || !v.intersects(b)) map.panTo(b.getCenter(), { animate: true, duration: .35 });
+}
+function setZoomLock(v){ zoomLock = v; LS.set('zoomLock', v ? '1' : '0'); const b = byId('zlockBtn'); if(b){ b.classList.toggle('on', v); b.innerHTML = v ? `🔒 줌 ${map.getZoom()}` : '🔍 자동 줌'; b.title = v ? '필지를 눌러도 지금 배율(줌) 그대로 — 화면 밖 필지일 때만 그쪽으로 옮김 · 눌러서 끄기 (단축키 Z)' : '필지를 누르면 그 필지에 맞춰 확대·축소 · 눌러서 줌 유지로 바꾸기 (단축키 Z)'; } }
+{ const C = L.Control.extend({ onAdd(){ const b = L.DomUtil.create('div', 'zlock'); b.id = 'zlockBtn'; L.DomEvent.disableClickPropagation(b); b.onclick = () => { setZoomLock(!zoomLock); status(zoomLock ? `🔒 줌 유지: 필지를 눌러도 배율(줌 ${map.getZoom()})이 바뀌지 않습니다.` : '🔍 자동 줌: 필지를 누르면 그 필지에 맞춰 확대·축소합니다.'); }; return b; } });
+  new C({ position: 'topleft' }).addTo(map); setTimeout(() => setZoomLock(zoomLock), 0);
+  map.on('zoomend', () => { if(zoomLock){ const b = byId('zlockBtn'); if(b) b.innerHTML = `🔒 줌 ${map.getZoom()}`; } });
+  document.addEventListener('keydown', e => { if((e.key === 'z' || e.key === 'Z' || e.key === 'ㅋ') && !e.ctrlKey && !e.altKey && !e.metaKey && !drawing){ const t = e.target; if(t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return; setZoomLock(!zoomLock); status(zoomLock ? '🔒 줌 유지 켬' : '🔍 자동 줌으로 바꿈'); } }); }
 function select(r, fly){
   singlePnu = null;
   if(selected){ const p = results.find(x => x.pnu === selected); if(p && p.layer) p.layer.setStyle(styleFor(p, false)); }
   selected = r.pnu;
   if(r.layer){ r.layer.setStyle(styleFor(r, true)); frontRoute(); }
   highlightParcel(r.feature);
-  if(fly && r.feature) map.fitBounds(L.geoJSON(r.feature).getBounds(), { maxZoom: 19, padding: [60, 60] });
+  if(fly && r.feature) focusParcel(r.feature, { maxZoom: 19, padding: [60, 60] });
   $$('#tbl tbody tr').forEach(tr => tr.classList.toggle('sel', tr.dataset.pnu === r.pnu));
   const tr = $(`#tbl tbody tr[data-pnu="${CSS.escape(r.pnu)}"]`);
   if(tr && !fly) tr.scrollIntoView({ block: 'nearest' });
@@ -6167,15 +6197,15 @@ function drawGhosts(){
   routes.filter(it => it.id !== activeId && it.gj && routeVisibleOnMap(it)).forEach(it => {
     const mate = sameGroup(it, activeRoute());
     const gc = LS.get('ghostColor', '#ffd43b');
-    L.geoJSON(it.gj, { pane: 'routeP', interactive: false, style: { color: '#1d2330', weight: 7, opacity: .55, fill: false, lineCap: 'round', lineJoin: 'round' } }).addTo(ghostLayer);
-    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'routeP', interactive: false, color: '#1d2330', weight: 7, opacity: .55 }).addTo(ghostLayer); }catch(e){} });
-    const lyr = L.geoJSON(it.gj, { pane: 'routeP', style: mate ? { color: cfg.routeColor, weight: Math.max(2, Number(cfg.routeWeight) - 1), opacity: .6 } : { color: gc, weight: 4, opacity: .95, dashArray: '9,6', fillColor: gc, fillOpacity: .08, lineCap: 'round' } });
+    L.geoJSON(it.gj, { pane: 'ghostP', interactive: false, style: { color: '#1d2330', weight: 7, opacity: .55, fill: false, lineCap: 'round', lineJoin: 'round' } }).addTo(ghostLayer);
+    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'ghostP', interactive: false, color: '#1d2330', weight: 7, opacity: .55 }).addTo(ghostLayer); }catch(e){} });
+    const lyr = L.geoJSON(it.gj, { pane: 'ghostP', style: mate ? { color: cfg.routeColor, weight: Math.max(2, Number(cfg.routeWeight) - 1), opacity: .6 } : { color: gc, weight: 4, opacity: .95, dashArray: '9,6', fillColor: gc, fillOpacity: .08, lineCap: 'round' } });
     const open = e => { if(drawing || measuring) return; L.DomEvent.stop(e); activateRoute(it.id); setTab('route'); };
     lyr.bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer);
-    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'routeP', color: LS.get('ghostColor', '#ffd43b'), weight: 4, opacity: .95, dashArray: '9,6' }).bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer); }catch(e){} });
+    ((it.gj.properties || {}).branches || []).forEach(b => { try{ L.polyline(b.coords.map(c => [c[1], c[0]]), { pane: 'ghostP', color: LS.get('ghostColor', '#ffd43b'), weight: 4, opacity: .95, dashArray: '9,6' }).bindTooltip(`${esc(it.name)} — 눌러서 열기·수정`, { sticky: true }).on('click', open).addTo(ghostLayer); }catch(e){} });
     let c = null;
     try{ c = it.gj.geometry.type === 'LineString' ? turf.along(it.gj, turf.length(it.gj) / 2).geometry.coordinates : turf.pointOnFeature(it.gj).geometry.coordinates; }catch(e){}
-    if(c) L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="ghost-lab">${esc(it.name)}</span>`, iconSize: [0, 0] }), keyboard: false, pane: 'routeMk' }).on('click', open).addTo(ghostLayer);
+    if(c) L.marker([c[1], c[0]], { icon: L.divIcon({ className: '', html: `<span class="ghost-lab">${esc(it.name)}</span>`, iconSize: [0, 0] }), keyboard: false, pane: 'ghostP' }).on('click', open).addTo(ghostLayer);
   });
 }
 function setTab(t){
@@ -6185,7 +6215,16 @@ function setTab(t){
   if(t === 'route') renderRoutes();
 }
 function fmtTime(ms){ if(!ms) return ''; const d = new Date(ms); return `${d.getMonth() + 1}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
+/* v30-4: 마우스를 누르고 있는 동안에는 목록을 다시 그리지 않음 — 메모 칸 등에서 빠져나올 때(blur) 저장하며 목록이 바뀌면
+   누르던 버튼이 사라져 클릭이 엉뚱한 곳에 먹던 문제 (예: 노선 메모를 쓰다 [🎥 로드뷰 따라가기]를 누르면 안 열림) */
+let ptrDown = false, rrPending = false, rtPending = false;
+function ptrWatch(doc){
+  doc.addEventListener('mousedown', e => { if(e.button === 0) ptrDown = true; }, true);
+  doc.addEventListener('mouseup', () => { if(!ptrDown) return; ptrDown = false; setTimeout(() => { if(ptrDown) return; if(rrPending){ rrPending = false; renderRoutes(); } if(rtPending){ rtPending = false; renderTable(); } }, 0); }, true);
+}
+ptrWatch(document); window.addEventListener('blur', () => { if(ptrDown){ ptrDown = false; setTimeout(() => { if(rrPending){ rrPending = false; renderRoutes(); } if(rtPending){ rtPending = false; renderTable(); } }, 0); } });
 function renderRoutes(){
+  if(ptrDown){ rrPending = true; return; }
   const tn = byId('tabRouteN'); if(tn) tn.textContent = routes.length ? `(${routes.length})` : '';
   { const cb = byId('rpCmp'); if(cb) cb.style.display = routes.filter(x => x.gj && x.gj.properties && x.gj.properties.kind === 'line').length >= 2 ? '' : 'none'; if(cmpOpen) renderCmp(); }
   const tp = byId('tabParcelN'); if(tp) tp.textContent = results.length ? `(${results.length})` : '';
@@ -7042,6 +7081,21 @@ $('#roadColor').oninput = e => { cfg.roadColor = e.target.value; LS.set('roadCol
 $('#roadWeight').value = cfg.roadWeight; $('#roadWeight').onchange = e => { cfg.roadWeight = e.target.value; LS.set('roadWeight', cfg.roadWeight); drawRoads(); };
 $('#routeWeight').value = cfg.routeWeight; $('#routeColor').value = cfg.routeColor;
 $('#chkRouteShow').onchange = e => setRouteShow(e.target.checked);
+{ const vb = $('#btnVis'), vm = $('#visMenu');
+  const draw = () => { vm.innerHTML = VIS_PARTS.map(([k, t]) => `<label><input type="checkbox" data-vp="${k}"${visParts[k] ? ' checked' : ''}> ${t}</label>`).join('')
+      + `<div class="vm-a" title="노선·도로 면·다른 노선을 반투명하게 — 아래 위성사진·지번이 비쳐 보임"><span>진하기</span><input type="range" min="20" max="100" step="10" id="visAlpha" value="${LS.get('routeAlpha', '100')}"><b id="visAlphaV">${LS.get('routeAlpha', '100')}%</b></div>`
+      + '<div class="small" style="color:var(--muted);margin-top:4px;white-space:normal">R: 모두 숨기기/보이기 · H(또는 👁)를 누르고 있는 동안만 숨김</div>';
+    vm.querySelectorAll('[data-vp]').forEach(c => c.onchange = () => { visParts[c.dataset.vp] = c.checked; LS.set('visParts', JSON.stringify(visParts)); if(c.checked && LS.get('routeShow', '1') !== '1') setRouteShow(true, true); applyVis(); });
+    const al = vm.querySelector('#visAlpha'); al.oninput = () => { LS.set('routeAlpha', al.value); vm.querySelector('#visAlphaV').textContent = al.value + '%'; applyVis(); }; };
+  vb.onclick = e => { e.stopPropagation(); if(!vm.classList.contains('open')) draw(); vm.classList.toggle('open'); };
+  document.addEventListener('mousedown', e => { if(vm.classList.contains('open') && !e.target.closest('.vdrop')) vm.classList.remove('open'); });
+  const pk = $('#btnPeek'), peek = v => { if(visPeek === v) return; visPeek = v; pk.classList.toggle('on', v); applyVis(); };
+  pk.addEventListener('mousedown', e => { e.preventDefault(); peek(true); }); ['mouseup', 'mouseleave'].forEach(ev => pk.addEventListener(ev, () => peek(false)));
+  pk.addEventListener('touchstart', e => { e.preventDefault(); peek(true); }, { passive: false }); pk.addEventListener('touchend', () => peek(false));
+  document.addEventListener('keydown', e => { if((e.key === 'h' || e.key === 'H' || e.key === 'ㅗ') && !e.ctrlKey && !e.altKey && !e.metaKey){ const t = e.target; if(t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return; e.preventDefault(); peek(true); } });
+  document.addEventListener('keyup', e => { if(e.key === 'h' || e.key === 'H' || e.key === 'ㅗ') peek(false); });
+  window.addEventListener('blur', () => peek(false));
+  applyVis(); }
 $('#ghostColor').value = LS.get('ghostColor', '#ffd43b'); $('#ghostColor').oninput = e => { LS.set('ghostColor', e.target.value); drawGhosts(); }; if(LS.get('routeShow', '1') !== '1') setRouteShow(false, true);
 document.addEventListener('keydown', e => { if((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.altKey && !e.metaKey && !drawing){ const t = e.target; if(t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return; setRouteShow(!$('#chkRouteShow').checked); } });
 $('#routeWeight').onchange = e => { cfg.routeWeight = e.target.value; LS.set('routeWeight', cfg.routeWeight); restyleRoute(); };
@@ -7138,7 +7192,7 @@ function winOpen(key, el, title, opt = {}){
   w.document.getElementById('winHost').appendChild(w.document.adoptNode(el));
   if(opt.show) opt.show(el);
   w.document.getElementById('winDock').onclick = () => { W.docking = true; LS.set('win.in.' + key, '1'); w.close(); };
-  w.document.getElementById('winX').onclick = () => w.close();
+  w.document.getElementById('winX').onclick = () => w.close(); ptrWatch(w.document);
   /* 내용만큼 높이 맞춤 — 사용자가 창 크기를 직접 바꾸면 그 뒤로는 그대로 둠 */
   w.addEventListener('resize', () => { if(Date.now() - (W.fitT || 0) > 900) W.userSized = true; });
   { let ft = null; const fit = () => { clearTimeout(ft); ft = setTimeout(() => winFit(key), 160); };
@@ -7438,7 +7492,7 @@ async function runJb(txt){
 function jbFit(){ const fs = jbItems.filter(x => x.r).map(x => x.r.feature); if(fs.length) map.fitBounds(L.geoJSON(turf.featureCollection(fs)).getBounds(), { maxZoom: 19, padding: [60, 60] }); }
 function jbPick(it){
   jbItems.forEach(x => x.on = x === it); renderJb();
-  map.fitBounds(L.geoJSON(it.r.feature).getBounds(), { maxZoom: 19, padding: [80, 80] });
+  focusParcel(it.r.feature, { maxZoom: 19, padding: [80, 80] });
   highlightParcel(it.r.feature); singlePnu = it.r.pnu; showDetail(it.r);
   if(cfg.bldKey && !it.r.bld && !it.r.bldFail){ fetchBld(it.r).then(() => { if(singlePnu === it.r.pnu) showDetail(it.r); }).catch(() => {}); }
 }
