@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v33</title>
+<title>노선 필지 조회기 v33-1</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -850,7 +850,7 @@ body.dqmode #map{cursor:crosshair} #btnDragQ.on{background:#e3fafc;border-color:
 .vd{display:inline-block;border-radius:4px;padding:0 5px;font-size:11.5px;font-weight:700;white-space:nowrap}
 .vd.ok{background:#ebfbee;color:#2b8a3e} .vd.permit{background:#fff4e6;color:#d9480f} .vd.no{background:#ffe3e3;color:#c92a2a} .vd.hold{background:#f3f0ff;color:#6741d9} .vd.ref{background:#f1f3f5;color:#868e96;font-weight:400}
 .vdtd{white-space:nowrap} .sr-b{display:inline-block;font-size:10.5px;border-radius:3px;padding:0 4px;margin-top:2px} .sr-b.high{background:#e03131;color:#fff} .sr-b.sus{background:#fff0f6;color:#a61e4d;border:1px solid #fcc2d7} .sr-b.okd{background:#f1f3f5;color:#495057}
-.kgdiff{color:#e8590c} .kgsrc{color:#ae3ec9;font-weight:600;font-size:10.5px} .kg-dot{margin-left:3px;display:inline-block;font-size:9.5px;font-weight:700;color:#fff;background:#ae3ec9;border-radius:3px;padding:0 3px;margin-top:2px}
+.dfront{display:block;color:#868e96;margin:2px 0} .kgdiff{color:#e8590c} .kgsrc{color:#ae3ec9;font-weight:600;font-size:10.5px} .kg-dot{margin-left:3px;display:inline-block;font-size:9.5px;font-weight:700;color:#fff;background:#ae3ec9;border-radius:3px;padding:0 3px;margin-top:2px}
 .vdbox{margin:6px 0 2px;padding:6px 8px;border-radius:7px;border:1px solid #dee2e6;font-size:12.5px;line-height:1.45} .vdbox.ok{background:#ebfbee;border-color:#b2f2bb} .vdbox.permit{background:#fff4e6;border-color:#ffd8a8} .vdbox.no{background:#fff5f5;border-color:#ffc9c9} .vdbox.hold{background:#f3f0ff;border-color:#d0bfff} .vdbox.ref{background:#f8f9fa}
 .vdbox .vd-segs{color:#495057;margin-top:2px} .vd-ov{margin-top:4px;color:#495057} .vd-ov select{font-size:12px} .vd-ov input{width:170px;font-size:12px}
 .srbox{margin:5px 0 2px;padding:5px 8px;border-radius:7px;border:1px dashed #fcc2d7;background:#fff9fb;font-size:12.5px} .srbox.high{border:1px solid #ffa8a8;background:#fff5f5} .srbox.okd{border-color:#dee2e6;background:#f8f9fa;color:#495057}
@@ -1198,7 +1198,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v33</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v33-1</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -5544,6 +5544,7 @@ map.on('click', e => {
   showSingleParcel(e.latlng);
 });
 function closeDetail(){
+  detailShownPnu = null;
   winClose('detail');
   $('#detail').style.display = 'none'; if($('#detailSplit')) $('#detailSplit').style.display = 'none';
   if(selected){ const p = results.find(x => x.pnu === selected); if(p && p.layer) p.layer.setStyle(styleFor(p, false)); }
@@ -5601,6 +5602,7 @@ function detailWin(d, focus){
   return winOpen('detail', d, '필지 상세', { w: 560, h: 640, focus, show: el => { el.style.display = 'flex'; el.style.height = ''; el.style.maxHeight = 'none'; const sp = byId('detailSplit'); if(sp) sp.style.display = 'none'; },
     onClose: () => closedWin(), onDock: () => { LS.set('detailWin2', '0'); backHome(); } });
   function closedWin(){
+    detailShownPnu = null;
     /* 새 창 ✕·Esc = 상세 닫기 (다음 필지도 새 창) */
     d.style.display = 'none'; const sp = byId('detailSplit'); if(sp) sp.style.display = 'none';
     if(selected){ const p = results.find(x => x.pnu === selected); if(p && p.layer) p.layer.setStyle(styleFor(p, false)); }
@@ -5612,6 +5614,8 @@ function detailWin(d, focus){
 function showDetail(r){
   kgSync([r]);
   { const d0 = byId('detail'); if(d0 && LS.get('detailWin2', '1') === '1' && LS.get('winMode', 'new') === 'new') detailWin(d0, false); }
+  /* v33-1: 새 창 상세가 뒤에 숨어 있어도 다른 필지를 누르면 앞으로 (같은 필지를 다시 그릴 때는 그대로) */
+  { const fresh = r.pnu !== detailShownPnu; detailShownPnu = r.pnu; if(fresh && winIn('detail') && LS.get('detailFront', '1') === '1') winPeek('detail'); }
   if(LS.get('detailFloat', '0') === '1' && !winIn('detail') && !(popWin && !popWin.closed)) setDetailFloat(true, true);
   if(curTab !== 'parcel' && !document.body.classList.contains('popped') && !$('#detail').classList.contains('float') && !winIn('detail')) setTab('parcel');
   const d = $('#detail');
@@ -5654,6 +5658,7 @@ function showDetail(r){
       <div class="dtitle"><b>${esc(jibunNo(r.jibun))}</b> <span class="dchip">${esc(r.jimok || '-')}</span> <span class="dchip own ${r.ownerClass}">${esc(ownerText(r) || '…')}</span>${r.loading ? ' <span class="small" style="color:#1f6feb">불러오는 중…</span>' : ''}</div>
       <div class="dsub">${metric}${metric ? ' · ' : ''}<span class="small">PNU ${esc(r.pnu)}</span></div>
       ${vdBoxHtml(r)}${notes.length ? `<div class="dnote">확인할 점: ${esc(notes.join(' · '))}</div>` : ''}${r.avoid ? `<div class="avoid">↪ ${esc(avoidText(r))}</div>` : ''}
+      ${winIn('detail') ? `<label class="small dfront" title="끄면 상세 창이 뒤에 있을 때 그대로 둠"><input type="checkbox" data-d="front"${LS.get('detailFront', '1') === '1' ? ' checked' : ''}> 필지 누를 때마다 이 창을 앞으로</label>` : ''}
       <div class="dlinks"><button data-d="kakao">🎥 로드뷰</button><button data-d="eum" style="color:#0b7285;border-color:#99e9f2">토지이음</button><button data-d="kgeop">KGEOP</button><button data-d="naver" title="네이버 지도 (로드뷰는 지도에서 직접 켜기)">네이버 지도</button></div>
     </div>
     <div class="dwin">
@@ -5666,6 +5671,7 @@ function showDetail(r){
   d.querySelector('.dpop').onclick = () => { if(d.classList.contains('float')){ setDetailFloat(false); showDetail(r); return; } if(LS.get('winMode', 'new') !== 'new'){ setDetailFloat(true); showDetail(r); return; } LS.set('detailWin2', '1'); winUndock('detail'); if(!detailWin(d, true)){ setDetailFloat(true); } showDetail(r); };
   if(tab === 'memo') bindMemoPane(d, r);
   bindVdBox(d, r);
+  { const c = d.querySelector('[data-d=front]'); if(c) c.onchange = () => LS.set('detailFront', c.checked ? '1' : '0'); }
   d.querySelectorAll('.dtabs [data-t]').forEach(b => b.onclick = () => { LS.set('dtab', b.dataset.t); showDetail(r); });
   d.style.display = 'flex';
   d.querySelector('[data-d=naver]').onclick = () => openRoadview(r.rv[1], r.rv[0], 'naver');
@@ -7991,6 +7997,12 @@ function bringFront(w, name, recall){
   try{ const d = w.document; if(d && !w._blink){ const t0 = d.title.replace(/^👉 /, ''); let n = 0; w._blink = setInterval(() => { try{ d.title = (n++ % 2 ? '' : '👉 ') + t0; if(n > 8){ clearInterval(w._blink); w._blink = null; d.title = t0; } }catch(e){} }, 450); } }catch(e){}
   try{ const b = w.document.querySelector('.winbar'); if(b){ b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); } }catch(e){}
   setTimeout(() => { let on = false; try{ on = w.document.hasFocus(); }catch(e){} if(!on && document.hasFocus()) toast('그 창은 이미 열려 있습니다 — 작업 표시줄이나 다른 모니터를 확인하세요.', 8000, recall ? { label: '이 화면 앞에 다시 띄우기', fn: recall } : null); }, 450);
+}
+let detailShownPnu = null;
+function winPeek(key){
+  const w = WINS[key] && WINS[key].w; if(!w || w.closed) return;
+  try{ w.focus(); }catch(e){}
+  try{ if(navigator.userActivation && navigator.userActivation.isActive) window.open('', 'kgeop_' + key); }catch(e){}
 }
 function winFront(key){ if(winIn(key)) bringFront(WINS[key].w, 'kgeop_' + key, () => winRecall(key)); }
 function winRecall(key){
