@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v31</title>
+<title>노선 필지 조회기 v32</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -768,7 +768,7 @@ aside{display:flex;flex-direction:column;background:var(--panel);border-left:1px
 #asideTabs button{border:none;border-bottom:3px solid transparent;border-radius:0;background:none;padding:7px 14px 6px;font-weight:700;color:#6b7280;font-size:13px}
 #asideTabs button.on{color:#1f6feb;border-bottom-color:#1f6feb}
 #asideTabs button span{font-weight:400;font-size:12px}
-aside.tab-route #compare, aside.tab-route #summary, aside.tab-route #filterBar, aside.tab-route #tableWrap, aside.tab-route #detailSplit, aside.tab-route #detail{display:none!important}
+aside.tab-route #compare, aside.tab-route #vdCard, aside.tab-route #summary, aside.tab-route #filterBar, aside.tab-route #tableWrap, aside.tab-route #detailSplit, aside.tab-route #detail{display:none!important}
 aside:not(.tab-route) #routePane{display:none}
 body.popped aside #routePane{display:block!important}
 #routePane{flex:1;overflow:auto;padding:10px 12px;min-height:0}
@@ -838,6 +838,23 @@ body.dqmode #map{cursor:crosshair} #btnDragQ.on{background:#e3fafc;border-color:
 .rc-rmi{margin-left:4px;cursor:help}
 .memo-ph img{width:100%;height:110px;object-fit:cover;display:block;cursor:zoom-in} .memo-ph figcaption{font-size:11px;color:#495057;padding:3px 5px} .memo-ph button{position:absolute;right:3px;top:3px;border:none;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;width:20px;height:20px;padding:0;font-size:11px;line-height:20px}
 .ghost-lab{background:rgba(33,37,41,.78);color:#fff;font-size:11px;font-weight:600;padding:1px 7px;border-radius:8px;white-space:nowrap;cursor:pointer;transform:translate(-50%,-50%);display:inline-block}
+#vdCard{display:none;padding:7px 12px 7px;border-bottom:1px solid var(--line);background:#fbfcfe;font-size:12.5px;border-left:5px solid #adb5bd}
+#vdCard.on{display:block} #vdCard.vk-no{border-left-color:#e03131;background:#fff8f8} #vdCard.vk-hold{border-left-color:#7048e8;background:#faf8ff} #vdCard.vk-permit{border-left-color:#f76707;background:#fffaf3} #vdCard.vk-ok{border-left-color:#2f9e44;background:#f6fdf7}
+#vdCard .vd-h{display:flex;align-items:center;gap:6px} #vdCard .vd-head{font-weight:700;font-size:14px;flex:1;min-width:0}
+#vdCard .vd-sub{color:#495057;margin:1px 0 0} #vdCard .mini{font-size:11.5px;padding:1px 7px}
+#vdCard .vd-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:5px 0 5px;background:#e9ecef} #vdCard .vd-bar i{display:block;height:100%}
+#vdCard .vd-ch{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.vdc{border:1px solid;border-radius:12px;padding:1px 8px;cursor:pointer;background:#fff;font-size:12px;white-space:nowrap} .vdc.on{box-shadow:0 0 0 2px #1971c2}
+.vdc.ok{color:#2b8a3e;border-color:#8ce99a} .vdc.permit{color:#d9480f;border-color:#ffc078} .vdc.no{color:#c92a2a;border-color:#ffa8a8} .vdc.hold{color:#6741d9;border-color:#b197fc} .vdc.sh{color:#fff;background:#c92a2a;border-color:#c92a2a} .vdc.shs{color:#a61e4d;border-color:#fcc2d7}
+.vd{display:inline-block;border-radius:4px;padding:0 5px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.vd.ok{background:#ebfbee;color:#2b8a3e} .vd.permit{background:#fff4e6;color:#d9480f} .vd.no{background:#ffe3e3;color:#c92a2a} .vd.hold{background:#f3f0ff;color:#6741d9} .vd.ref{background:#f1f3f5;color:#868e96;font-weight:400}
+.vdtd{white-space:nowrap} .sr-b{display:inline-block;font-size:10.5px;border-radius:3px;padding:0 4px;margin-top:2px} .sr-b.high{background:#e03131;color:#fff} .sr-b.sus{background:#fff0f6;color:#a61e4d;border:1px solid #fcc2d7} .sr-b.okd{background:#f1f3f5;color:#495057}
+.kg-dot{display:inline-block;font-size:9.5px;font-weight:700;color:#fff;background:#ae3ec9;border-radius:3px;padding:0 3px;margin-top:2px}
+.vdbox{margin:6px 0 2px;padding:6px 8px;border-radius:7px;border:1px solid #dee2e6;font-size:12.5px;line-height:1.45} .vdbox.ok{background:#ebfbee;border-color:#b2f2bb} .vdbox.permit{background:#fff4e6;border-color:#ffd8a8} .vdbox.no{background:#fff5f5;border-color:#ffc9c9} .vdbox.hold{background:#f3f0ff;border-color:#d0bfff} .vdbox.ref{background:#f8f9fa}
+.vdbox .vd-segs{color:#495057;margin-top:2px} .vd-ov{margin-top:4px;color:#495057} .vd-ov select{font-size:12px} .vd-ov input{width:170px;font-size:12px}
+.srbox{margin:5px 0 2px;padding:5px 8px;border-radius:7px;border:1px dashed #fcc2d7;background:#fff9fb;font-size:12.5px} .srbox.high{border:1px solid #ffa8a8;background:#fff5f5} .srbox.okd{border-color:#dee2e6;background:#f8f9fa;color:#495057}
+.srbox ul{margin:3px 0 3px 2px;padding:0;list-style:none} .srbox li.st{color:#c92a2a;font-weight:600}
+.kgline{margin:4px 0 2px;color:#5f3dc4} .kgp textarea{width:100%;height:70px;font:11px monospace;box-sizing:border-box;margin-top:6px} .kg-steps{margin:8px 0 4px;padding-left:20px} .kg-steps li{margin:4px 0} .kg-row{display:flex;gap:6px;align-items:center;margin-top:5px} .kg-row .sp{flex:1} .kg-msg{margin-top:5px;color:#1971c2;min-height:16px} .kg-st{font-size:13px}
 #summary{padding:5px 12px 6px;border-bottom:1px solid var(--line);display:flex;gap:6px;flex-wrap:nowrap;align-items:center;overflow-x:auto;scrollbar-width:thin}
 #summary.open{flex-wrap:wrap;overflow-x:visible}
 #summary .chip{flex:none;font-size:12px;padding:2px 8px}
@@ -1180,7 +1197,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v31</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v32</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -1298,6 +1315,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     <div><span class="sw" style="background:var(--public)"></span>국·공유지</div>
     <div><span class="sw" style="background:var(--unknown)"></span>미확인</div>
     <div><span class="sw" id="roadSw" style="background:rgba(240,62,62,.08);opacity:1;border:2px solid #f03e3e;width:16px;height:12px"></span>도시계획도로(결정)</div>
+    <div title="배관 선 아래 색 띠 — 숨기려면 노선 [보이기 ▾]에서 끄기"><span class="sw" style="width:16px;height:8px;background:linear-gradient(90deg,#2f9e44 25%,#f76707 25% 50%,#e03131 50% 75%,#7048e8 75%);opacity:1"></span>배관 판정 (가능·시 허가·불가·보류)</div>
     <label class="small" style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="chkFill" checked> 필지 색 표시 <span style="color:var(--muted)">(끄면 선만 보임)</span></label>
     <div class="small">지도 우클릭 → 그 위치 로드뷰</div>
     <div class="small" id="cadHint"></div>
@@ -1317,9 +1335,10 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     <div id="rpStore" class="small"></div>
   </div>
   <div id="compare"></div>
+  <div id="vdCard"></div>
   <div id="summary"><button id="sumToggle" class="sumt" title="요약 펼치기/접기">▸</button></div>
   <div id="filterBar" style="padding:5px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px;align-items:center;flex-wrap:nowrap">
-    <select id="sortSel" title="표 정렬"><option value="route">노선 순서</option><option value="priv">사유지 먼저</option><option value="area">편입면적 큰 순</option><option value="owner">소유구분 순</option><option value="org">기관구분 순 (국유지 등)</option></select>
+    <select id="sortSel" title="표 정렬"><option value="route">노선 순서</option><option value="vd">판정 (불가·보류 먼저)</option><option value="priv">사유지 먼저</option><option value="area">편입면적 큰 순</option><option value="owner">소유구분 순</option><option value="org">기관구분 순 (국유지 등)</option></select>
     <span class="fdrop"><button id="btnFilter" title="필터">필터 ▾</button><div id="fMenu">
       <label><input type="checkbox" id="fPrivate"> 사유지만</label>
       <label><input type="checkbox" id="fBuilding"> 건물 있는 필지만</label>
@@ -1342,7 +1361,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
     </div>
     <table id="tbl" style="display:none">
       <thead><tr>
-        <th>순번</th><th>지번</th><th>지목</th><th class="num">면적㎡</th><th>소유구분</th><th>소유권 변동</th><th>공유</th><th>도시계획도로</th><th class="num" id="thMetric">통과m</th><th>건물</th><th>바로가기</th>
+        <th>순번</th><th title="배관 판정 · 지적 밀림">판정</th><th>지번</th><th>지목</th><th class="num">면적㎡</th><th>소유구분</th><th>소유권 변동</th><th>공유</th><th>도시계획도로</th><th class="num" id="thMetric">통과m</th><th>건물</th><th>바로가기</th>
       </tr></thead>
       <tbody></tbody>
     </table>
@@ -1914,8 +1933,8 @@ const HINTS = {
 };
 function shapeStyle(){ return { color: cfg.routeColor, weight: Number(cfg.routeWeight), fillColor: cfg.routeColor, fillOpacity: .06, interactive: false, pane: 'routeP' }; }
 function routeStyle(){ return { color: cfg.routeColor, weight: Number(cfg.routeWeight), interactive: false, lineJoin: 'round', lineCap: 'round', pane: 'routeP' }; }
-const VIS_PARTS = [['line', '노선 선 · 가지 · 점 · 선택 강조', ['routeP', 'routeMk', 'routeHi']], ['corr', '도로 면(양옆 폭)', ['corrP']], ['pipe', '배관 글자', ['pipeLabP']], ['ghost', '다른 노선', ['ghostP']], ['memo', '📝 메모 표시', ['memoP']]];
-let visParts = (() => { try{ return Object.assign({ line: true, corr: true, pipe: true, ghost: true, memo: true }, JSON.parse(LS.get('visParts', '{}') || '{}')); }catch(e){ return { line: true, corr: true, pipe: true, ghost: true, memo: true }; } })(), visPeek = false;
+const VIS_PARTS = [['line', '노선 선 · 가지 · 점 · 선택 강조', ['routeP', 'routeMk', 'routeHi']], ['corr', '도로 면(양옆 폭)', ['corrP']], ['pipe', '배관 글자', ['pipeLabP']], ['ghost', '다른 노선', ['ghostP']], ['memo', '📝 메모 표시', ['memoP']], ['vd', '배관 판정 색 띠 (가능·시 허가·불가·보류)', ['vdP']]];
+let visParts = (() => { try{ return Object.assign({ line: true, corr: true, pipe: true, ghost: true, memo: true, vd: true }, JSON.parse(LS.get('visParts', '{}') || '{}')); }catch(e){ return { line: true, corr: true, pipe: true, ghost: true, memo: true, vd: true }; } })(), visPeek = false;
 function applyVis(){
   const on = LS.get('routeShow', '1') === '1' && !visPeek, a = Math.max(.15, Math.min(1, Number(LS.get('routeAlpha', '100')) / 100));
   VIS_PARTS.forEach(([k, , ps]) => ps.forEach(pn => { const el = map.getPane(pn); if(!el) return; el.style.display = on && visParts[k] ? '' : 'none'; el.style.opacity = ['routeP', 'corrP', 'ghostP', 'routeHi'].includes(pn) && a < 1 ? String(a) : ''; }));
@@ -2367,38 +2386,411 @@ function pipeNotes(r){
   const w = [];
   if(!isLine() || r.single) return w;
   if(r.tier === 'near') w.push(`선에서 ${r.dist.toFixed(1)}m — 지적이 밀려 있으면 실제로 지날 수 있음`);
-  if(hasCorridor()){
-    const fl = roadUseFlags(r).map(x => x[0]);
-    if(fl.includes('지적 밀림 의심') && !nearestReviewed('shift', r.rv || r.center || [0, 0])) w.push('지적 밀림 의심');
-    if(r.bldOnRoad) w.push('도로 면에 건물');
+  if(r.avoid) w.push('↪ ' + avoidText(r));
+  return w;
+}
+/* v32: 판정은 vdAll()(구간 단위) — 아래 둘은 예전 이름 호환용 */
+function pipeWhy(r){ const v = vdOf(r); return v ? v.why.slice() : []; }
+function pipeClass(r){ const v = vdOf(r); return v ? VD[v.k].t : ''; }
+/* ===================== v32 배관 판정 (구간 단위) =====================
+   양옆 폭은 '필지를 조회할 범위'만 정함 — 판정은 배관 선이 실제로 지나는 필지와 도시계획도로(결정) 구역으로 함.
+   ① 지적 밀림 위험 높음 → 판정 보류  ② 국·공유지 → 가능  ③ 사유지 ∩ 도시계획도로 → 시 허가 필요  ④ 사유지 − 도시계획도로 → 통과 불가(판단 필요) */
+const VD = {
+  ok: { t: '가능', i: '✅', c: '#2f9e44', x: 'FF2B8A3E', bg: 'FFEBFBEE', d: '국·공유지 — 점용·횡단 허가로 진행' },
+  permit: { t: '시 허가 필요', i: '🟠', c: '#f76707', x: 'FFD9480F', bg: 'FFFFF4E6', d: '도시계획도로 안 사유지 — 시 허가 받으면 가능' },
+  no: { t: '통과 불가(판단 필요)', i: '⛔', c: '#e03131', x: 'FFC92A2A', bg: 'FFFFE3E3', d: '도시계획도로 밖 사유지 — 보통 허가 불가, 판단 필요' },
+  hold: { t: '판정 보류', i: '❓', c: '#7048e8', x: 'FF6741D9', bg: 'FFF3F0FF', d: '지적 밀림 위험·소유 미확인 등 — 먼저 확인 후 판정' }
+};
+const VD_RANK = { ok: 1, permit: 2, hold: 3, no: 4 }, VD_SHORT = { ok: '가능', permit: '시 허가', no: '불가(판단)', hold: '보류' }, VD_KS = ['no', 'hold', 'permit', 'ok'];
+let freeVdOv = (() => { try{ return JSON.parse(LS.get('vdOvFree', '{}') || '{}') || {}; }catch(e){ return {}; } })();
+let shiftOkMap = (() => { try{ return JSON.parse(LS.get('shiftOk', '{}') || '{}') || {}; }catch(e){ return {}; } })();
+let vdV = 0;
+function vdBook(){ const it = activeRoute(); return it ? (it.vdOv || (it.vdOv = {})) : freeVdOv; }
+function vdOvOf(pnu){ const b = vdBook(); return b && b[pnu] ? b[pnu] : null; }
+function vdOvSet(pnu, v, why){
+  const b = vdBook(); if(v) b[pnu] = { v, why: why || '', t: Date.now() }; else delete b[pnu]; vdV++;
+  if(activeRoute()) saveRoutes(); else try{ LS.set('vdOvFree', JSON.stringify(freeVdOv)); }catch(e){}
+}
+function shiftOkSet(pnu, on){ if(on) shiftOkMap[pnu] = Date.now(); else delete shiftOkMap[pnu]; try{ LS.set('shiftOk', JSON.stringify(shiftOkMap)); }catch(e){} vdV++; }
+
+/* ---- KGEOP 자료 (KGEOP 페이지에서 콘솔 스크립트로 모아 붙여넣은 것) — PNU별, 이 브라우저에만 저장 ---- */
+const KG = new Map(); let KGV = 0;
+const KGDB = (() => {
+  let dbp = null;
+  const open = () => dbp || (dbp = new Promise((res, rej) => { try{ const rq = indexedDB.open('kgeopKG', 1); rq.onupgradeneeded = () => { const db = rq.result; if(!db.objectStoreNames.contains('kg')) db.createObjectStore('kg'); }; rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error); rq.onblocked = () => rej(new Error('blocked')); }catch(e){ rej(e); } }));
+  const tx = (mode, fn) => open().then(db => new Promise((res, rej) => { const t = db.transaction('kg', mode), r = fn(t.objectStore('kg')); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }));
+  return { set: (k, v) => tx('readwrite', st => st.put(v, k)), clear: () => tx('readwrite', st => st.clear()), all: () => tx('readonly', st => st.getAll()) };
+})();
+setTimeout(() => { KGDB.all().then(a => { (a || []).forEach(v => { if(v && v.pnu) KG.set(v.pnu, v); }); if(a && a.length){ KGV++; try{ renderTable(); }catch(e){} } }).catch(() => {}); }, 0);
+function kgOf(r){ return r && r.pnu ? KG.get(r.pnu) || null : null; }
+function kgClean(x, at){
+  const S = v => v == null ? '' : String(v).slice(0, 200), N = v => v == null || v === '' || isNaN(+v) ? null : +v;
+  return { pnu: String(x.pnu), at: S(x.at || at), addr: S(x.addr), roadAddr: S(x.roadAddr), jimok: S(x.jimok), area: N(x.area), scale: S(x.scale), ownType: S(x.ownType), shareCnt: N(x.shareCnt),
+    ownChg: S(x.ownChg), ownChgDe: S(x.ownChgDe), lastMove: S(x.lastMove), lastMoveDe: S(x.lastMoveDe), jiga: S(x.jiga), jigaDe: S(x.jigaDe), x: N(x.x), y: N(x.y),
+    geom: typeof x.geom === 'string' && x.geom.length < 300000 ? x.geom : '',
+    moves: (Array.isArray(x.moves) ? x.moves : []).slice(0, 40).map(m => ({ de: S(m.de), why: S(m.why), jimok: S(m.jimok), area: N(m.area) })),
+    blds: (Array.isArray(x.blds) ? x.blds : []).slice(0, 20).map(b => ({ id: S(b.id), kind: S(b.kind), name: S(b.name), barea: N(b.barea), garea: N(b.garea), use: S(b.use), stru: S(b.stru), uflr: S(b.uflr), bflr: S(b.bflr), useApr: S(b.useApr), rep: S(b.rep), rel: S(b.rel), err: b.err ? S(b.err) : '' })) };
+}
+function wktToGeo(w){
+  const s = String(w || '').trim(), m = /^(MULTIPOLYGON|POLYGON)\s*(\(.*\))\s*$/is.exec(s); if(!m) return null;
+  const num = '(-?\\d+(?:\\.\\d+)?(?:[eE][-+]?\\d+)?)';
+  const body = m[2].replace(new RegExp(num + '\\s+' + num + '(?:\\s+-?[\\d.]+)?', 'g'), '[$1,$2]').replace(/\(/g, '[').replace(/\)/g, ']');
+  try{
+    const c = JSON.parse(body), g = m[1].toUpperCase() === 'POLYGON' ? { type: 'Polygon', coordinates: c } : { type: 'MultiPolygon', coordinates: c };
+    const f0 = g.type === 'Polygon' ? c[0][0] : c[0][0][0];
+    if(f0 && f0[0] < 90 && f0[1] > 90){ const sw = a => Array.isArray(a[0]) ? a.map(sw) : [a[1], a[0]]; g.coordinates = sw(g.coordinates); }
+    return g;
+  }catch(e){ return null; }
+}
+const kgGeoCache = new WeakMap();
+function kgGeoOf(k){
+  if(!k) return null;
+  let c = kgGeoCache.get(k);
+  if(c === undefined){ c = null; try{ const g = wktToGeo(k.geom); if(g){ const f = turf.feature(g); c = { f, area: turf.area(f), cen: turf.centroid(f).geometry.coordinates }; } }catch(e){} kgGeoCache.set(k, c); }
+  return c;
+}
+function kgDiff(r){
+  const c = kgGeoOf(kgOf(r)); if(!c || !r.feature) return null;
+  let off = null; try{ off = turf.distance(turf.point(c.cen), turf.centroid(r.feature), { units: 'meters' }); }catch(e){}
+  return { off, area: c.area, f: c.f };
+}
+/* KGEOP 소유구분이 있으면 브이월드 소유 미확인을 메움 */
+function ownCls(r){ if(r.ownerClass && r.ownerClass !== 'unknown') return r.ownerClass; const k = kgOf(r); return k && k.ownType ? ownerClass(k.ownType) : r.ownerClass || 'unknown'; }
+const vdPrivate = r => ['private', 'corp'].includes(ownCls(r));
+
+/* ---- 지적 밀림 신호: 강한 신호 하나라도 → 위험 높음(판정 보류), 약한 신호만 → 의심(참고) ---- */
+const DOHAE_RE = /1\s*:\s*(1200|2400|3000|6000)\b/;
+function shiftRisk(r){
+  if(!r) return { lvl: '', sig: [], ok: false };
+  const key = [KGV, vdV, results.length, r.bld ? r.bld.length : -1, (r.bOther || []).length, (r.bOwn || []).length, r.area, r.ownerClass].join('|');
+  if(r._sr && r._srK === key) return r._sr;
+  const sig = [], k = kgOf(r), la = Number((k && k.area) || r.area) || 0;
+  const S = (t, strong, src) => sig.push({ t, strong: !!strong, src: src || '' });
+  const jbs = list => [...new Set(list)].join(', ');
+  // 1) 건축면적 > 대지면적
+  let ba = 0, bsrc = '', multi = false;
+  if(k && (k.blds || []).some(b => b.barea > 0)){ const bs = k.blds.filter(b => b.barea > 0); ba = bs.reduce((a, b) => a + b.barea, 0); bsrc = 'KGEOP 건축물'; multi = bs.some(b => String(b.rel || '').trim()); }
+  else if((r.bld || []).some(b => b.archArea > 0)){ ba = r.bld.reduce((a, b) => a + (b.archArea || 0), 0); bsrc = '건축물대장'; }
+  if(la > 0 && ba > la + 0.5){ const t = `건축면적 ${fmtM2(ba)}㎡ > 대지 ${fmtM2(la)}㎡ (${bsrc})`; if(multi) S(t + ' — 여러 지번에 걸친 건물이라 합계 확인', false, bsrc); else S(t, true, bsrc); }
+  else if(!ba && la > 0){
+    const fa = (r.bOwn || []).filter(x => x.rel && (x.rel.inside || x.rel.ov >= 1)).reduce((a, x) => a + (x.area || 0), 0);
+    if(fa > la * 1.05 + 1) S(`지도상 건물 바닥 ${fmtM2(fa)}㎡ > 대지 ${fmtM2(la)}㎡`, false, '지도');
   }
-  if(r.ownerClass === 'unknown' || r.ownerFail) w.push('소유 미확인');
-  if(r.avoid) w.push('↪ ' + avoidText(r));
-  return w;
+  // 2) 국·공유지(군유지 등)에 다른 필지 건물이 걸침 = 건물 쪽으로 경계가 침범
+  const oth = (r.bOther || []).filter(x => x.bp);
+  if(oth.length && ownCls(r) === 'public') S(`국·공유지에 ${jbs(oth.map(x => pnuJibun(x.bp)))} 건물이 걸쳐 있음 — 건물 쪽 경계 침범`, true, '지도');
+  else if(oth.length) S(`다른 지번(${jbs(oth.map(x => pnuJibun(x.bp)))}) 건물이 걸쳐 있음`, false, '지도');
+  { const pubs = results.filter(p => p !== r && ownCls(p) === 'public' && (p.bOther || []).some(x => x.bp === r.pnu)); if(pubs.length) S(`이 필지 건물이 국·공유지(${pubs.map(p => jibunNo(p.jibun)).join(', ')})에 걸침`, false, '지도'); }
+  // 3) 이 지번 주소 건물이 필지 밖
+  if((r.buildings || []).some(b => b._away != null)) S('이 지번 주소의 건물이 필지 밖에 있음 (지적 어긋남)', false, '지도');
+  // 4) 대장 면적 vs 도면 면적
+  if(la > 0 && r.parcelArea > 0){
+    const d = r.parcelArea - la, p = Math.abs(d) / la * 100, t = `도면 면적 ${fmtM2(r.parcelArea)}㎡ vs 대장 ${fmtM2(la)}㎡ (${d > 0 ? '+' : ''}${p.toFixed(p >= 10 ? 0 : 1)}%)`;
+    if(p >= 20 && Math.abs(d) >= 10) S(t, true, '면적'); else if(p >= 5 && Math.abs(d) >= 3) S(t, false, '면적');
+  }
+  // 5) KGEOP: 도해 축척 · 경계 차이 · 최근 분할·합병
+  if(k){
+    if(DOHAE_RE.test(k.scale || '')) S(`도해 지적(${k.scale}) — 경계 오차가 큰 지역`, false, 'KGEOP');
+    const kd = kgDiff(r); if(kd && kd.off != null && kd.off >= 1) S(`KGEOP 경계와 지도 경계 ${kd.off.toFixed(1)}m 차이`, kd.off >= 3, 'KGEOP');
+    const yr = new Date().getFullYear(), mv = (k.moves || []).filter(m => /분할|합병/.test(m.why || '') && Number(String(m.de || '').replace(/\D/g, '').slice(0, 4)) >= yr - 10);
+    if(mv.length) S(`최근 토지이동: ${mv.map(m => `${String(m.de).replace(/\D/g, '').slice(0, 4)} ${m.why}`).join(', ')}`, false, 'KGEOP');
+  }
+  const ok = !!shiftOkMap[r.pnu];
+  r._sr = { lvl: ok ? '' : sig.some(s => s.strong) ? 'high' : sig.length ? 'sus' : '', sig, ok, ba, la }; r._srK = key;
+  return r._sr;
 }
-function pipeWhy(r){
-  const w = [];
-  if(!isLine() || !hasCorridor()) return w;
-  const fl = roadUseFlags(r).map(x => x[0]);
-  if(fl.includes('지적 밀림 의심') && !nearestReviewed('shift', r.rv || r.center || [0, 0])) w.push('지적 밀림 의심');
-  if(r.bldOnRoad) w.push('도로 면에 건물');
-  if(r.ownerClass === 'unknown' || r.ownerFail) w.push('소유 미확인');
-  if(isPrivate(r) && inUnreviewedZone(r)) w.push('도로 폭 점검 전');
-  if(r.tier === 'near') w.push(isPrivate(r) ? `경계 근접 사유지(선에서 ${r.dist.toFixed(1)}m)` : `경계 근접(선에서 ${r.dist.toFixed(1)}m)`);
-  if(r.tier === 'ref' && isPrivate(r)) w.push(`양옆 폭 안 사유지(선은 안 지남 · 폭 안 ${fmtM2(r.inW || r.inArea || 0)}㎡)`);
-  if(isPrivate(r)) w.push('사유지(' + ownerText(r) + ')');
-  { const b = bldRisk(r); if(b && isPrivate(r)) w.push(b === '건물 있음' ? '건물 있는 사유지' : '건축 가능 지목(' + jimokName(r) + ')'); }
-  if(r.avoid) w.push('↪ ' + avoidText(r));
-  return w;
+function shiftText(r, strongOnly){ const s = shiftRisk(r); return s.sig.filter(x => !strongOnly || x.strong).map(x => (x.strong ? '● ' : '○ ') + x.t).join(' / '); }
+
+/* ---- 선 위 구간: 선 시작에서 잰 거리(m)로 [시작, 끝] ---- */
+function planarLen(line){ const lc = (line.geometry || line).coordinates; if(!lc || lc.length < 2) return 0; const ky = 111194.93, kx = ky * Math.cos(lc[0][1] * Math.PI / 180); let s = 0; for(let i = 0; i < lc.length - 1; i++) s += Math.hypot((lc[i + 1][0] - lc[i][0]) * kx, (lc[i + 1][1] - lc[i][1]) * ky); return s; }
+function crossIv(line, poly){
+  const lc = (line.geometry || line).coordinates, g = poly && (poly.geometry || poly);
+  const PP = !g ? null : g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : null;
+  if(!lc || lc.length < 2 || !PP || !PP.length) return [];
+  const x0 = lc[0][0], y0 = lc[0][1], ky = 111194.93, kx = ky * Math.cos(y0 * Math.PI / 180);
+  const xy = c => [(c[0] - x0) * kx, (c[1] - y0) * ky];
+  const polys = PP.map(rs => rs.map(r => r.map(xy)));
+  let bx0 = 1e18, by0 = 1e18, bx1 = -1e18, by1 = -1e18;
+  polys.forEach(rs => rs.forEach(r => r.forEach(q => { if(q[0] < bx0) bx0 = q[0]; if(q[0] > bx1) bx1 = q[0]; if(q[1] < by0) by0 = q[1]; if(q[1] > by1) by1 = q[1]; })));
+  const inside = (x, y) => polys.some(rs => { let c = false; rs.forEach(r => { for(let j = 0, k = r.length - 1; j < r.length; k = j++){ const xi = r[j][0], yi = r[j][1], xk = r[k][0], yk = r[k][1]; if(((yi > y) !== (yk > y)) && (x < (xk - xi) * (y - yi) / (yk - yi) + xi)) c = !c; } }); return c; });
+  const Lp = lc.map(xy), out = []; let acc = 0;
+  for(let i = 0; i < Lp.length - 1; i++){
+    const ax = Lp[i][0], ay = Lp[i][1], dx = Lp[i + 1][0] - ax, dy = Lp[i + 1][1] - ay, len = Math.hypot(dx, dy);
+    if(len < 1e-6) continue;
+    if(!(Math.max(ax, ax + dx) < bx0 || Math.min(ax, ax + dx) > bx1 || Math.max(ay, ay + dy) < by0 || Math.min(ay, ay + dy) > by1)){
+      const ts = [0, 1];
+      polys.forEach(rs => rs.forEach(r => { for(let j = 0; j < r.length - 1; j++){ const cx = r[j][0], cy = r[j][1], fx = r[j + 1][0] - cx, fy = r[j + 1][1] - cy, den = dx * fy - dy * fx; if(Math.abs(den) < 1e-12) continue; const t = ((cx - ax) * fy - (cy - ay) * fx) / den, u = ((cx - ax) * dy - (cy - ay) * dx) / den; if(t > 0 && t < 1 && u >= 0 && u <= 1) ts.push(t); } }));
+      ts.sort((a, b) => a - b);
+      for(let k = 0; k < ts.length - 1; k++){
+        const t0 = ts[k], t1 = ts[k + 1]; if(t1 - t0 < 1e-9) continue; const tm = (t0 + t1) / 2;
+        if(inside(ax + dx * tm, ay + dy * tm)){ const s0 = acc + t0 * len, s1 = acc + t1 * len, last = out[out.length - 1]; if(last && s0 - last[1] < 1e-6) last[1] = s1; else out.push([s0, s1]); }
+      }
+    }
+    acc += len;
+  }
+  return out;
 }
-function pipeClass(r){
-  if(r.single || !isLine() || !hasCorridor() || !FULL) return '';
-  if(r.tier === 'ref' && !isPrivate(r)) return '';
-  const w = pipeWhy(r);
-  if(r.tier === 'ref') return '현장 확인';
-  if(w.some(x => /밀림|도로 면에 건물|미확인|확인 전|점검 전|근접 사유지/.test(x))) return '현장 확인';
-  if(isPrivate(r)) return '협의 필요';
-  return '배관 가능';
+function mergeIv(list){ const a = list.slice().sort((x, y) => x[0] - y[0]), out = []; a.forEach(([s, e]) => { const l = out[out.length - 1]; if(l && s <= l[1] + 1e-6) l[1] = Math.max(l[1], e); else out.push([s, e]); }); return out; }
+function splitIv(a, b, R){
+  const out = []; let cur = a;
+  for(const [s, e] of R){ if(e <= cur) continue; if(s >= b) break; if(s > cur) out.push({ a: cur, b: Math.min(s, b), inR: false }); const x1 = Math.min(e, b); if(x1 > Math.max(s, cur)) out.push({ a: Math.max(s, cur), b: x1, inR: true }); cur = x1; if(cur >= b) break; }
+  if(cur < b) out.push({ a: cur, b, inR: false });
+  return out.filter(x => x.b - x.a > 1e-6);
+}
+function ivCoords(line, a, b){
+  const lc = (line.geometry || line).coordinates; if(!lc || lc.length < 2) return [];
+  const ky = 111194.93, kx = ky * Math.cos(lc[0][1] * Math.PI / 180), out = []; let acc = 0;
+  for(let i = 0; i < lc.length - 1; i++){
+    const p = lc[i], q = lc[i + 1], len = Math.hypot((q[0] - p[0]) * kx, (q[1] - p[1]) * ky); if(len < 1e-9) continue;
+    const s0 = acc, s1 = acc + len;
+    if(s1 >= a && s0 <= b){ const t0 = Math.max(0, (a - s0) / len), t1 = Math.min(1, (b - s0) / len); const P0 = [p[0] + (q[0] - p[0]) * t0, p[1] + (q[1] - p[1]) * t0], P1 = [p[0] + (q[0] - p[0]) * t1, p[1] + (q[1] - p[1]) * t1]; if(!out.length) out.push(P0); out.push(P1); }
+    acc = s1; if(acc > b) break;
+  }
+  return out;
+}
+
+/* ---- 판정 ---- */
+function planTxt(r){ const e = roadEntries(r); return e.length ? [...new Set(e.map(x => x.cnflc || '포함'))].join('·') : ''; }
+function vdParcelBase(r){
+  const sr = shiftRisk(r), oc = ownCls(r);
+  if(sr.lvl === 'high') return { k: 'hold', why: ['지적 밀림 위험 — ' + sr.sig.filter(s => s.strong).map(s => s.t).join(' · ')] };
+  if(oc === 'unknown') return { k: 'hold', why: ['소유 미확인 — 토지이음·토지대장 확인'] };
+  if(oc === 'public') return { k: 'ok', why: [(ownerText(r) || (kgOf(r) || {}).ownType || '국·공유지') + (permitOf(r) ? ' · ' + permitOf(r).doc : '')] };
+  return { k: 'priv', why: [] };
+}
+function vdPriv(r, inR, geoOk){
+  const pt = planTxt(r);
+  if(geoOk){
+    if(inR) return { k: 'permit', why: ['사유지 · 도시계획도로 안' + (pt ? ` (토지이용계획 ${pt})` : '')] };
+    if(isRoadIn(r)) return { k: 'hold', why: [`사유지 · 토지이용계획은 도시계획도로 ${pt || '포함'}인데 배관 위치는 계획선 밖 — 계획선 위치 확인`] };
+    return { k: 'no', why: ['사유지 · 도시계획도로 밖'] };
+  }
+  const st = roadStatus(r);
+  if(st === '확인필요') return { k: 'hold', why: ['사유지 · 도시계획도로 여부 미확인(토지이용계획 조회 실패)'] };
+  if(isRoadIn(r)) return { k: 'permit', why: [`사유지 · 토지이용계획상 도시계획도로 ${pt || st}`] };
+  if(r.roadSpatial) return { k: 'permit', why: [`사유지 · 도면상 도시계획도로와 겹침(${fmtM2(r.roadArea)}㎡) — 계획도로 부분만 시 허가, 나머지는 불가`] };
+  return { k: 'no', why: ['사유지 · 도시계획도로 밖'] };
+}
+function vdWithOv(r, v){ const ov = vdOvOf(r.pnu); return ov && VD[ov.v] ? { k: ov.v, why: ['직접 판정' + (ov.why ? ': ' + ov.why : '') + ` (자동: ${VD[v.k].t})`], ov: true, auto: v.k } : v; }
+let vdMemo = { key: '', arr: null, v: null };
+const VD_EMPTY = { segs: [], by: new Map(), tot: null, runs: { no: [], hold: [], permit: [], ok: [] } };
+function vdAll(){
+  if(!results.length || drawing) return VD_EMPTY;
+  const line = isLine(), LN = line ? allLines() : [];
+  const key = [LN.map(o => o.k + ':' + o.line.geometry.coordinates.map(c => c[0].toFixed(7) + ',' + c[1].toFixed(7)).join(';')).join('|'), results.length,
+    results.map(r => r.pnu.slice(-7) + (r.ownerClass || 'u').charAt(0) + (r.ownerFail ? 'f' : '') + (r.landUsePlan ? r.landUsePlan.length : r.planFail ? 'x' : 'n') + (r.tier || '-').charAt(0) + (r.bld ? r.bld.length : '') + '.' + (r.bOther || []).length).join(''),
+    roadFeatures.length, roadInLen != null, KGV, vdV, activeId].join('#');
+  if(vdMemo.key === key && vdMemo.arr === results) return vdMemo.v;
+  const by = new Map(), segs = [], geoOk = line && roadInLen != null;
+  if(line){
+    LN.forEach(o => {
+      const R = mergeIv(roadFeatures.flatMap(f => { try{ return crossIv(o.line, f); }catch(e){ return []; } }));
+      const total = planarLen(o.line), cover = [];
+      results.forEach(r => {
+        if(r.tier && r.tier !== 'pass') return;
+        const iv = crossIv(o.line, r.feature).filter(x => x[1] - x[0] >= 0.05); if(!iv.length) return;
+        const base = vdParcelBase(r);
+        iv.forEach(([a, b]) => { cover.push([a, b]); splitIv(a, b, R).forEach(p => {
+          const v = vdWithOv(r, base.k === 'priv' ? vdPriv(r, p.inR, geoOk) : { k: base.k, why: base.why });
+          segs.push({ lk: o.k, ln: o.name, off: o.off, a: p.a, b: p.b, len: p.b - p.a, r, k: v.k, why: v.why, inR: p.inR, ov: !!v.ov, auto: v.auto });
+        }); });
+      });
+      let cur = 0; mergeIv(cover).concat([[total, total]]).forEach(([a, b]) => { if(a - cur >= 0.5) segs.push({ lk: o.k, ln: o.name, off: o.off, a: cur, b: a, len: a - cur, r: null, k: 'hold', why: ['필지 정보 없음 (지적도 빈 곳)'], inR: false }); cur = Math.max(cur, b); });
+    });
+    segs.sort((x, y) => x.lk - y.lk || x.a - y.a);
+    const out = []; segs.forEach(s => { const l = out[out.length - 1]; if(l && l.lk === s.lk && l.r === s.r && l.k === s.k && l.inR === s.inR && Math.abs(s.a - l.b) < 0.05){ l.b = s.b; l.len = l.b - l.a; } else out.push(Object.assign({}, s)); });
+    segs.length = 0; out.forEach(s => segs.push(s));
+    segs.forEach(s => {
+      if(!s.r) return;
+      const v = by.get(s.r.pnu) || { k: s.k, len: { ok: 0, permit: 0, no: 0, hold: 0 }, why: [], inLen: 0, outLen: 0, segs: [], ov: false };
+      v.len[s.k] += s.len; if(VD_RANK[s.k] > VD_RANK[v.k]) v.k = s.k; s.why.forEach(w => { if(!v.why.includes(w)) v.why.push(w); });
+      if(s.inR) v.inLen += s.len; else v.outLen += s.len; v.segs.push(s); if(s.ov) v.ov = true; by.set(s.r.pnu, v);
+    });
+  } else {
+    results.forEach(r => { const base = vdParcelBase(r); const v = vdWithOv(r, base.k === 'priv' ? vdPriv(r, false, false) : { k: base.k, why: base.why }); by.set(r.pnu, { k: v.k, why: v.why, len: null, segs: [], ov: !!v.ov }); });
+  }
+  const tot = { len: { ok: 0, permit: 0, no: 0, hold: 0 }, n: { ok: 0, permit: 0, no: 0, hold: 0 }, all: 0 };
+  segs.forEach(s => { tot.len[s.k] += s.len; tot.all += s.len; });
+  by.forEach(v => tot.n[v.k]++);
+  // 같은 판정이 이어지는 곳(여러 필지)을 한 '곳'으로
+  const runs = { no: [], hold: [], permit: [], ok: [] };
+  segs.forEach(s => { const L0 = runs[s.k], l = L0[L0.length - 1]; if(l && l.lk === s.lk && s.a - l.b < 1){ l.b = s.b; l.len = l.b - l.a; l.segs.push(s); } else L0.push({ lk: s.lk, ln: s.ln, a: s.a, b: s.b, len: s.len, segs: [s] }); });
+  tot.nearRisk = line ? results.filter(r => r.tier && r.tier !== 'pass' && vdPrivate(r) && shiftRisk(r).lvl === 'high') : [];
+  const v = { segs, by, tot, runs };
+  vdMemo = { key, arr: results, v };
+  return v;
+}
+function vdOf(r){ if(!r || r.single) return null; return vdAll().by.get(r.pnu) || null; }
+function vdHeadline(V){
+  const t = V.tot; if(!t) return { k: 'hold', i: '…', t: '조회 전', sub: '' };
+  const line = isLine(), L2 = k => line ? ` ${fmtLen(t.len[k])}` : '';
+  const others = VD_KS.filter(k => t.n[k] || (line && t.len[k] > 0.05));
+  const gaps = line ? V.segs.filter(s => !s.r).length : 0, cnt = k => k === 'no' && line ? V.runs.no.length + '곳' : k === 'hold' ? [t.n.hold ? t.n.hold + '필지' : '', gaps ? '필지 없는 곳 ' + gaps : ''].filter(Boolean).join(' · ') : t.n[k] + '필지';
+  const rest = ex => others.filter(k => k !== ex).map(k => `${VD[k].i} ${VD_SHORT[k]}${k === 'ok' ? '' : ' ' + cnt(k)}${L2(k)}`).join(' · ');
+  if(t.n.no || (line && t.len.no > 0.05)) return { k: 'no', i: '⛔', t: `통과 불가(판단 필요) ${line ? V.runs.no.length + '곳' : t.n.no + '필지'}${L2('no')}`, sub: '도시계획도로 밖 사유지 — 노선 조정·사용 승낙 등 판단 필요' + (rest('no') ? ' · 그 외 ' + rest('no') : '') };
+  if(t.n.hold || (line && t.len.hold > 0.05)) return { k: 'hold', i: '❓', t: `확인 후 판정 — 보류 ${cnt('hold')}${L2('hold')}`, sub: (t.n.hold ? '지적 밀림·소유 등을 확인하면 판정됨' : '지적도에 필지가 없는 구간 — 지도 확인') + (rest('hold') ? ' · 그 외 ' + rest('hold') : '') };
+  if(t.n.permit) return { k: 'permit', i: '🟠', t: `시 허가 받으면 배관 가능 — 사유지 ${t.n.permit}필지${L2('permit')}`, sub: '도시계획도로 안 사유지는 시 허가 필요' + (rest('permit') ? ' · 그 외 ' + rest('permit') : '') };
+  if(t.n.ok) return { k: 'ok', i: '✅', t: '전 구간 배관 가능', sub: '국·공유지만 지남 — 점용·횡단 허가로 진행' };
+  return { k: 'hold', i: '…', t: '판정할 필지 없음', sub: isLine() ? '배관이 지나는 필지가 없습니다' : '' };
+}
+function vdSumObj(){ const V = vdAll(); return V.tot ? { len: V.tot.len, n: V.tot.n, no: V.runs.no.length, line: isLine() } : null; }
+function vdSumHtml(s){ if(!s || !s.n) return ''; return VD_KS.filter(k => s.n[k] || (s.line && s.len && s.len[k] > 0.05)).map(k => `<span class="vd ${k}" title="${VD[k].t}">${VD[k].i} ${VD_SHORT[k]} ${s.line ? fmtLen(s.len[k]) : s.n[k] + '필지'}</span>`).join(' '); }
+
+/* ---- 지도: 판정 색 띠 (노선 선 아래) ---- */
+map.createPane('vdP'); map.getPane('vdP').style.zIndex = 451; map.getPane('vdP').style.pointerEvents = 'none';
+map.createPane('kgP'); map.getPane('kgP').style.zIndex = 453; map.getPane('kgP').style.pointerEvents = 'none';
+const vdLayer = L.layerGroup().addTo(map), kgLayer = L.layerGroup().addTo(map); let vdDrawKey = '', vdSoonT = null;
+function vdDraw(force){
+  const V = isLine() && !drawing ? vdAll() : VD_EMPTY;
+  const key = V.segs.length ? vdMemo.key + '|' + cfg.routeWeight : '';
+  if(!force && key === vdDrawKey) return; vdDrawKey = key; vdLayer.clearLayers();
+  if(!V.segs.length) return;
+  const LNm = new Map(allLines().map(o => [o.k, o.line])), w = Number(cfg.routeWeight) + 16;
+  V.segs.forEach(s => { const ln = LNm.get(s.lk); if(!ln) return; const c = ivCoords(ln, s.a, s.b); if(c.length < 2) return; L.polyline(c.map(q => [q[1], q[0]]), { pane: 'vdP', color: VD[s.k].c, weight: w, opacity: s.k === 'ok' ? .4 : .66, lineCap: 'butt', lineJoin: 'round', interactive: false }).addTo(vdLayer); });
+}
+function vdSoon(){ if(drawing){ vdLayer.clearLayers(); vdDrawKey = ''; return; } clearTimeout(vdSoonT); vdSoonT = setTimeout(() => vdDraw(), 450); }
+function drawKg(){
+  kgLayer.clearLayers(); if(LS.get('kgOv', '0') !== '1') return;
+  results.forEach(r => { const c = kgGeoOf(kgOf(r)); if(c) L.geoJSON(c.f, { pane: 'kgP', interactive: false, style: { color: '#ae3ec9', weight: 2, dashArray: '4,4', fill: false } }).addTo(kgLayer); });
+}
+
+/* ---- 판정 카드 (필지 목록 위) ---- */
+function renderVdCard(){
+  const el = byId('vdCard'); if(!el) return;
+  if(!results.length){ el.classList.remove('on'); el.innerHTML = ''; return; }
+  const V = vdAll(), t = V.tot, line = isLine(); if(!t){ el.classList.remove('on'); return; }
+  const hd = vdHeadline(V), kgN = results.filter(r => kgOf(r)).length;
+  const shH = results.filter(r => shiftRisk(r).lvl === 'high').length, shS = results.filter(r => shiftRisk(r).lvl === 'sus').length;
+  const on = k => chipFilter && chipFilter.split('|')[0] === k ? ' on' : '';
+  const bar = line && t.all > 0 ? `<div class="vd-bar">${['ok', 'permit', 'hold', 'no'].map(k => t.len[k] > 0.05 ? `<i style="width:${(t.len[k] / t.all * 100).toFixed(2)}%;background:${VD[k].c}" title="${VD[k].t} ${fmtLen(t.len[k])} (${Math.round(t.len[k] / t.all * 100)}%)"></i>` : '').join('')}</div>` : '';
+  el.className = 'on vk-' + hd.k;
+  el.innerHTML = `<div class="vd-h"><span class="vd-head">${hd.i} ${esc(hd.t)}</span><button id="vdKg" class="mini" title="KGEOP 자료(건축물 면적·축척·토지이동·경계)를 가져와 지적 밀림 판단에 씀">🔗 KGEOP ${kgN}/${results.length}</button><button id="vdHelp" class="mini" title="판정 기준">?</button></div>
+    <div class="small vd-sub">${esc(hd.sub)}</div>${bar}
+    <div class="vd-ch">${VD_KS.filter(k => t.n[k] || (line && t.len[k] > 0.05)).map(k => `<button class="vdc ${k}${on('vd_' + k)}" data-vk="vd_${k}" title="${esc(VD[k].d)} — 눌러서 이것만 보기">${VD[k].i} ${VD[k].t} ${line ? `<b>${fmtLen(t.len[k])}</b> · ` : ''}${k === 'hold' ? (t.n.hold ? t.n.hold + '필지' : '') + (line && V.segs.some(s => !s.r) ? `${t.n.hold ? ' · ' : ''}필지 없는 곳 ${V.segs.filter(s => !s.r).length}` : '') : t.n[k] + '필지'}${k === 'no' && line ? ` · ${V.runs.no.length}곳` : ''}</button>`).join('')}${shH ? `<button class="vdc sh${on('shHi')}" data-vk="shHi" title="강한 밀림 신호(건축면적>대지, 국·공유지에 건물 걸침, 큰 면적·경계 차이)">⚠ 밀림 위험 ${shH}</button>` : ''}${shS ? `<button class="vdc shs${on('shSus')}" data-vk="shSus" title="약한 신호(도해 축척, 면적 차이, 최근 분할 등) — 판정은 그대로, 참고">밀림 의심 ${shS}</button>` : ''}${t.nearRisk.length ? `<span class="small" style="color:#c92a2a" title="${esc(t.nearRisk.map(r => jibunNo(r.jibun)).join(', '))}">· 선 밖 사유지 중 밀림 위험 ${t.nearRisk.length}</span>` : ''}</div>`;
+  el.querySelectorAll('[data-vk]').forEach(b => b.onclick = () => { const k = b.dataset.vk; chipFilter = chipFilter && chipFilter.split('|')[0] === k ? null : k + '|' + b.textContent.trim(); renderTable(); drawParcels(); });
+  el.querySelector('#vdKg').onclick = openKgPanel;
+  el.querySelector('#vdHelp').onclick = () => toast('판정 순서: ① 지적 밀림 위험 높음 → ❓ 판정 보류  ② 국·공유지 → ✅ 가능(점용·횡단 허가)  ③ 사유지 + 도시계획도로 안 → 🟠 시 허가 필요  ④ 사유지 + 도시계획도로 밖 → ⛔ 통과 불가(판단 필요). 양옆 폭은 필지를 찾는 범위로만 씁니다. 지도에는 배관 선 아래 색 띠로 표시됩니다.', 16000);
+}
+function vdCell(r){
+  const v = vdOf(r), sr = shiftRisk(r); let h = '';
+  if(v){
+    h = `<span class="vd ${v.k}" title="${esc(v.why.join(' / '))}">${VD[v.k].i} ${VD_SHORT[v.k]}</span>${v.ov ? '<div class="small" title="직접 정한 판정">✎ 직접</div>' : ''}`;
+    if(v.len && v.len.permit > 0.05 && v.len.no > 0.05) h += `<div class="small">안 ${v.inLen.toFixed(1)} · 밖 ${v.outLen.toFixed(1)}m</div>`;
+  } else if(isLine() && r.tier && r.tier !== 'pass') h = '<span class="vd ref" title="배관이 지나지 않는 필지 — 판정 없음">선 밖</span>';
+  if(sr.lvl) h += `<div><span class="sr-b ${sr.lvl}" title="${esc(shiftText(r))}">${sr.lvl === 'high' ? '⚠ 밀림 위험' : '밀림 의심'}</span></div>`;
+  else if(sr.ok && sr.sig.length) h += '<div><span class="sr-b okd" title="밀림 확인함 — 이상 없음">밀림 확인</span></div>';
+  if(kgOf(r)) h += '<div class="kg-dot" title="KGEOP 자료 반영">K</div>';
+  return h;
+}
+function vdBoxHtml(r){
+  const v = vdOf(r), sr = shiftRisk(r), ov = vdOvOf(r.pnu); let h = '';
+  if(v){
+    h += `<div class="vdbox ${v.k}"><b>${VD[v.k].i} ${VD[v.k].t}</b> <span class="small">${esc(v.why.join(' · '))}</span>`;
+    if(isLine() && v.segs.length) h += `<div class="small vd-segs">${v.segs.map(s => `${brOk().length ? esc(s.ln) + ' ' : ''}${Math.round(s.a)}~${Math.round(s.b)}m ${VD[s.k].i}${s.inR ? ' 계획도로 안' : ''}`).join(' · ')}</div>`;
+    h += `<div class="vd-ov small">판정 직접 정하기 <select data-vov><option value="">자동</option>${['ok', 'permit', 'no', 'hold'].map(k => `<option value="${k}"${ov && ov.v === k ? ' selected' : ''}>${VD[k].i} ${VD[k].t}</option>`).join('')}</select> <input data-vovw placeholder="사유 (예: 사용승낙 받음)" value="${esc(ov ? ov.why : '')}"></div></div>`;
+  } else if(isLine() && !r.single && r.tier && r.tier !== 'pass') h += `<div class="vdbox ref"><b>선 밖 필지</b> <span class="small">배관이 지나지 않아 판정 없음 (${TIER_LBL[r.tier]})</span>${sr.lvl === 'high' && vdPrivate(r) ? '<div class="small" style="color:#c92a2a">지적 밀림 위험이 있어 실제로는 배관이 이 필지를 지날 수 있음</div>' : ''}</div>`;
+  if(sr.sig.length) h += `<div class="srbox ${sr.ok ? 'okd' : sr.lvl}"><b>지적 밀림 ${sr.ok ? '— 확인함(이상 없음)' : sr.lvl === 'high' ? '위험 높음 → 판정 보류' : '의심 (참고)'}</b><ul>${sr.sig.map(s => `<li class="${s.strong ? 'st' : ''}">${s.strong ? '●' : '○'} ${esc(s.t)}</li>`).join('')}</ul><label class="small"><input type="checkbox" data-shok${sr.ok ? ' checked' : ''}> 현장·도면으로 확인함 — 밀림 없음${sr.sig.some(s => s.strong) ? ' (보류 풀기)' : ''}</label></div>`;
+  const k = kgOf(r);
+  if(k){ const kd = kgDiff(r), ba = (k.blds || []).reduce((a, b) => a + (b.barea || 0), 0); h += `<div class="kgline small"><b>KGEOP</b> ${esc([k.jimok, k.area ? fmtM2(k.area) + '㎡' : '', k.scale, k.ownType, (k.blds || []).length ? `건물 ${k.blds.length}동${ba ? ' · 건축면적 ' + fmtM2(ba) + '㎡' : ''}` : '건물 없음', kd && kd.off != null ? `경계 차이 ${kd.off.toFixed(1)}m` : '', k.lastMove ? `최근 ${k.lastMove} ${String(k.lastMoveDe || '').slice(0, 10)}` : ''].filter(Boolean).join(' · '))} <span style="color:#868e96">(${esc(String(k.at || '').slice(0, 10))} 수집)</span></div>`; }
+  else if(!r.single) h += '<div class="kgline small" style="color:#868e96">KGEOP 자료 없음 — 필지 목록 위 [🔗 KGEOP]에서 가져오기</div>';
+  return h;
+}
+function bindVdBox(d, r){
+  const s = d.querySelector('[data-vov]'), w = d.querySelector('[data-vovw]');
+  if(s){ const save = () => { vdOvSet(r.pnu, s.value, w.value.trim()); renderTable(); showDetail(r); }; s.onchange = save; w.onchange = () => { if(s.value) save(); }; }
+  const c = d.querySelector('[data-shok]'); if(c) c.onchange = () => { shiftOkSet(r.pnu, c.checked); renderTable(); showDetail(r); };
+}
+
+/* ---- KGEOP 패널: PNU 목록을 넣은 콘솔 스크립트 복사 → KGEOP 탭 콘솔에서 실행 → 결과 붙여넣기 ---- */
+async function kgCollect(PRE){
+  /* KGEOP(kgeop.go.kr) 페이지의 개발자도구 Console에서 실행. 소유자 성명·주소는 가져오지 않음 */
+  if(!/(^|\.)kgeop\.go\.kr$/.test(location.hostname)){ alert('KGEOP(kgeop.go.kr) 페이지의 콘솔(F12 → Console)에서 실행해 주세요.'); return; }
+  let qs = Array.isArray(PRE) && PRE.length ? PRE : null;
+  if(!qs){ const t = prompt('PNU(19자리) 또는 지번을 쉼표·줄바꿈으로 구분해 넣으세요', ''); if(!t) return; qs = t.split(/[\n,;\t]+/).map(s => s.trim()).filter(Boolean); }
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const get = async u => { const r = await fetch(u, { credentials: 'same-origin' }); if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
+  const first = a => Array.isArray(a) && a.length ? a[0] : {}, num = v => v == null || v === '' ? null : +v, out = [];
+  const pg = document.createElement('div'); pg.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:999999;background:#1971c2;color:#fff;padding:10px 14px;border-radius:8px;font:14px sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.3)'; document.body.appendChild(pg);
+  const t0 = Date.now(); let i = 0;
+  for(const q of qs){
+    i++; const left = i > 1 ? Math.round((Date.now() - t0) / (i - 1) * (qs.length - i + 1) / 1000) : null;
+    pg.textContent = `KGEOP 모으는 중 ${i}/${qs.length}` + (left != null ? ` · 약 ${left}초 남음` : ''); document.title = `KGEOP ${i}/${qs.length}`;
+    try{
+      let cands = [];
+      if(/^\d{19}$/.test(q)) cands = [{ pnu: q }];
+      else { const j = await get('/geopass/api/getJusoList.do?currentPage=1&countPerPage=5&type=0&keyword=' + encodeURIComponent(q)); cands = ((j.jusoResult || {}).jusoList || []).map(x => ({ pnu: x.addrPnu, addr: x.jibunAddr, geom: x.geom, x: num(x.parcelX), y: num(x.parcelY) })); await sleep(300); }
+      if(!cands.length){ out.push({ q, err: '검색 결과 없음' }); continue; }
+      for(const c of cands){
+        const d = await get('/geopass/api/selectOneParcelInfo.do?pnu=' + c.pnu); await sleep(300);
+        const L0 = first(d.landLedgRst), J = first(d.jigaRst), A = first((((d.addrResultFromPnuMap || {}).jusoResult) || {}).jusoList);
+        const it = { q, pnu: c.pnu, addr: c.addr || A.jibunAddr || '', roadAddr: A.roadAddr || '', geom: c.geom || A.geom || '', x: c.x || num(A.parcelX), y: c.y || num(A.parcelY),
+          jimok: L0.lndcgrNm || '', area: num(L0.lndpclAr), scale: L0.scNm || '', ownType: L0.posesnTyNm || '', shareCnt: num(L0.pblonsipNmprCo), ownChg: L0.ownshipChgcsNm || '', ownChgDe: L0.ownshipChangeDe || '',
+          lastMove: L0.ladMvmnResnNm || '', lastMoveDe: L0.ladMvmnDe || '', jiga: J.indvdlzPblntfPclnd || '', jigaDe: J.stdrDe || '',
+          moves: (d.moveHistList || []).map(m => ({ de: m.ladMvmnDe, why: m.ladMvmnResnNm, jimok: m.lndcgrNm, area: num(m.lndpclAr) })), blds: [] };
+        for(const b of (d.bldgInfoRstList || []).slice(0, 8)){
+          const bi = { id: b.buldIdno, kind: b.buldKndNm || '', name: b.buldNm || '' };
+          try{ const r = await get(`/geopass/api/estateOne-bldg-info.do?buldKndCode=${encodeURIComponent(b.buldKndCode || '')}&pnu=${c.pnu}&buldIdno=${encodeURIComponent(b.buldIdno || '')}`); const v = r.resultVo || {};
+            Object.assign(bi, { barea: num(v.barea), garea: num(v.garea), use: v.mainUseNm || '', stru: v.struNm || '', uflr: v.uflr || '', bflr: v.bflr || '', useApr: v.useAprvYmd || '', rep: v.repJibun || '', rel: v.relJibun || '' }); }catch(e){ bi.err = String(e); }
+          it.blds.push(bi); await sleep(300);
+        }
+        out.push(it);
+      }
+    }catch(e){ out.push({ q, err: String(e) }); }
+  }
+  pg.remove(); document.title = 'KGEOP 모으기 끝';
+  const s = JSON.stringify({ kind: 'kgeop-parcels', v: 3, at: new Date().toISOString(), items: out });
+  const box = document.createElement('div'); box.style.cssText = 'position:fixed;inset:40px;z-index:999999;background:#fff;border:2px solid #1971c2;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;font:14px sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4)';
+  box.innerHTML = `<b style="font-size:16px">KGEOP ${out.length}건 모음 (오류 ${out.filter(x => x.err).length}건)</b><div>아래 [📋 복사하고 닫기]를 누른 뒤, 노선 필지 조회기의 KGEOP 칸에 붙여넣고 [반영]을 누르세요. 소유자 이름·주소는 넣지 않았습니다.</div><textarea style="flex:1;font:12px monospace"></textarea><div><button style="font-size:15px;padding:6px 14px">📋 복사하고 닫기</button> <button>닫기</button></div>`;
+  const ta = box.querySelector('textarea'); ta.value = s; document.body.appendChild(box); const [bc, bx] = box.querySelectorAll('button');
+  bc.onclick = async () => { try{ await navigator.clipboard.writeText(s); }catch(e){ ta.select(); document.execCommand('copy'); } bc.textContent = '✅ 복사됨'; setTimeout(() => box.remove(), 700); };
+  bx.onclick = () => box.remove();
+}
+function kgTargets(all){ return results.filter(r => all || !isLine() || !r.tier || r.tier === 'pass' || r.tier === 'near' || (r.tier === 'ref' && isPrivate(r))); }
+function kgScript(list){ return '(' + kgCollect.toString() + ')(' + JSON.stringify(list) + ');'; }
+async function kgApply(txt){
+  let o; try{ const s = String(txt || ''); o = JSON.parse(s.slice(s.indexOf('{'), s.lastIndexOf('}') + 1)); }catch(e){ return { err: 'JSON 형식이 아닙니다 — KGEOP 창의 [📋 복사하고 닫기]로 복사한 내용을 그대로 붙여넣으세요.' }; }
+  if(!o || o.kind !== 'kgeop-parcels' || !Array.isArray(o.items)) return { err: 'KGEOP 자료(kgeop-parcels)가 아닙니다.' };
+  const at = o.at || new Date().toISOString(), here = new Set(results.map(r => r.pnu)); let n = 0, bad = 0, hit = 0;
+  for(const it of o.items){
+    if(!it || it.err || !/^\d{19}$/.test(String(it.pnu || ''))){ bad++; continue; }
+    const c = kgClean(it, at); KG.set(c.pnu, c); try{ await KGDB.set(c.pnu, c); }catch(e){} n++; if(here.has(c.pnu)) hit++;
+  }
+  KGV++; renderTable(); drawParcels(); drawKg(); if(edOpen) renderEditor();
+  { const r = selected && results.find(x => x.pnu === selected); if(r) showDetail(r); }
+  return { n, bad, hit };
+}
+function openKgPanel(){
+  const el = fpanel('kgPanel', '🔗 KGEOP 자료 가져오기', 470, [Math.max(20, window.innerWidth - 560), 90]);
+  const draw = () => {
+    const all = LS.get('kgAll', '0') === '1', tg = kgTargets(all), have = tg.filter(r => kgOf(r)).length, need = tg.filter(r => !kgOf(r));
+    const only = LS.get('kgNeed', '1') === '1', list = (only && need.length ? need : tg).map(r => r.pnu);
+    el.querySelector('.fb').innerHTML = `<div class="kgp">
+      <div class="kg-st">이 노선 필지 <b>${tg.length}</b>곳 중 KGEOP 자료 <b>${have}</b>곳 반영 <span class="small">(이 브라우저에 ${KG.size}필지 저장)</span></div>
+      <div class="small" style="margin:4px 0 8px;color:#495057">KGEOP 정보(건축물 건축면적·축척·토지이동·경계)는 보안상 이 프로그램에서 바로 못 가져와서, KGEOP 화면에서 한 번 실행해 모아 옵니다. 소유자 이름·주소는 가져오지 않습니다.</div>
+      <label class="small"><input type="checkbox" data-kg="all"${all ? ' checked' : ''}> 선 밖(양옆 폭 안) 국·공유지까지 전부</label> <label class="small"><input type="checkbox" data-kg="need"${only ? ' checked' : ''}> 아직 없는 필지만 (${need.length}곳)</label>
+      <ol class="kg-steps">
+        <li><button data-kg="open">KGEOP 열기</button> <span class="small">로그인 없이 지도 화면이 뜨면 됩니다</span></li>
+        <li><button data-kg="script" class="primary">📋 스크립트 복사 (${list.length}필지)</button> <span class="small">약 ${Math.max(1, Math.round(list.length * 0.8 / 60))}분</span></li>
+        <li class="small">KGEOP 탭에서 <b>F12</b> → <b>Console</b> 탭 → 붙여넣기(Ctrl+V) → <b>Enter</b><br><span style="color:#868e96">처음 붙여넣을 때 경고가 나오면 <code>allow pasting</code>을 입력하고 Enter 후 다시 붙여넣기</span></li>
+        <li class="small">끝나면 뜨는 창에서 <b>[📋 복사하고 닫기]</b> → 아래 칸에 붙여넣기 → <b>[반영]</b></li>
+      </ol>
+      <textarea data-kg="txt" placeholder='여기에 붙여넣기 ({"kind":"kgeop-parcels", ...})'></textarea>
+      <div class="kg-row"><button data-kg="apply" class="primary">반영</button><button data-kg="paste" title="클립보드에서 바로 붙여넣고 반영">📋 클립보드에서 반영</button><span class="sp"></span><label class="small"><input type="checkbox" data-kg="ov"${LS.get('kgOv', '0') === '1' ? ' checked' : ''}> KGEOP 경계 겹쳐 보기</label></div>
+      <div class="kg-msg small"></div>
+      <div class="kg-row small" style="margin-top:6px"><button data-kg="pnu" title="PNU 목록만 복사 (직접 실행할 때)">PNU만 복사</button><button data-kg="clear" title="이 브라우저에 저장한 KGEOP 자료 모두 지우기">저장 자료 지우기</button></div></div>`;
+    const q = s => el.querySelector(`[data-kg="${s}"]`), msg = t => { el.querySelector('.kg-msg').textContent = t; };
+    q('all').onchange = e => { LS.set('kgAll', e.target.checked ? '1' : '0'); draw(); };
+    q('need').onchange = e => { LS.set('kgNeed', e.target.checked ? '1' : '0'); draw(); };
+    q('open').onclick = () => window.open('https://kgeop.go.kr/info/infoMap.do?initMode=L', 'kgeopSite');
+    q('script').onclick = async () => { if(!list.length){ msg('조회한 필지가 없습니다.'); return; } const ok = await copyText(kgScript(list)); msg(ok ? `✅ 스크립트를 복사했습니다 (${list.length}필지). KGEOP 탭의 Console에 붙여넣고 Enter.` : '복사하지 못했습니다 — 브라우저가 클립보드를 막았습니다.'); };
+    q('pnu').onclick = async () => { const ok = await copyText(list.join('\n')); msg(ok ? `PNU ${list.length}개를 복사했습니다.` : '복사하지 못했습니다.'); };
+    const apply = async t => { const res = await kgApply(t); if(res.err){ msg('⚠ ' + res.err); return; } msg(`✅ ${res.n}필지 반영 (이 노선 필지 ${res.hit}곳${res.bad ? ` · 오류·검색 실패 ${res.bad}건 건너뜀` : ''})`); q('txt').value = ''; setTimeout(draw, 1500); };
+    q('apply').onclick = () => apply(q('txt').value);
+    q('paste').onclick = async () => { try{ apply(await navigator.clipboard.readText()); }catch(e){ msg('클립보드를 읽지 못했습니다 — 칸에 직접 붙여넣고 [반영]을 누르세요.'); } };
+    q('ov').onchange = e => { LS.set('kgOv', e.target.checked ? '1' : '0'); drawKg(); };
+    q('clear').onclick = async () => { if(!confirm('이 브라우저에 저장한 KGEOP 자료를 모두 지울까요?')) return; KG.clear(); try{ await KGDB.clear(); }catch(e){} KGV++; renderTable(); drawKg(); draw(); };
+  };
+  draw();
 }
 
 function drawCorridor(){
@@ -2436,6 +2828,7 @@ function redrawRoute(){
     if(shapeLayer){ map.removeLayer(shapeLayer); shapeLayer = null; }
     if(shapeGeom) shapeLayer = L.geoJSON(shapeGeom, { style: shapeStyle(), interactive: false }).addTo(map);
   }
+  if(typeof vdSoon === 'function') vdSoon();
   if(!drawing && shapeKind === 'line') scheduleCorridor(); else if(corridorLayer && shapeKind !== 'line'){ map.removeLayer(corridorLayer); corridorLayer = null; }
   const multi = drawMode === 'line' || drawMode === 'poly';
   $('#btnUndo').disabled = drawing ? (!multi || pts.length === 0) : !undoStack.length; if(typeof updUndoBtn === 'function' && !drawing) updUndoBtn();
@@ -4757,7 +5150,7 @@ async function fetchBld(r){
     r.bld = items.map(x => ({
       name: [x.bldNm, x.dongNm].map(v => String(v || '').trim()).filter(Boolean).join(' '),
       main: x.mainAtchGbCdNm || '', purps: x.mainPurpsCdNm || x.etcPurps || '', strct: x.strctCdNm || x.etcStrct || '',
-      grnd: Number(x.grndFlrCnt) || 0, ugrnd: Number(x.ugrndFlrCnt) || 0, totArea: Number(x.totArea) || 0,
+      grnd: Number(x.grndFlrCnt) || 0, ugrnd: Number(x.ugrndFlrCnt) || 0, totArea: Number(x.totArea) || 0, archArea: Number(x.archArea) || 0, platArea: Number(x.platArea) || 0,
       useApr: String(x.useAprDay || '').trim(), hhld: Number(x.hhldCnt) || 0, fmly: Number(x.fmlyCnt) || 0, ho: Number(x.hoCnt) || 0,
       kind: x.regstrKindCdNm || '', quake: x.rserthqkDsgnApplyYn === '1' ? '적용' : x.rserthqkDsgnApplyYn === '0' ? '미적용' : ''
     }));
@@ -4774,7 +5167,6 @@ function roadUseFlags(r){
   if(!isLine() || !hasCorridor() || !r.inArea) return [];
   const f = [], j = String(r.jimok || '').trim(), ratio = r.parcelArea ? r.inArea / r.parcelArea : 0;
   if(!ROAD_JIMOK.test(j) && r.inArea >= 1) f.push(['현황도로 점유', 'warn']);
-  if(ROAD_JIMOK.test(j) && ratio < .2) f.push(['지적 밀림 의심', 'red']);
   return f;
 }
 function bldMain(r){ return (r.bld || []).filter(b => !/부속/.test(b.main)); }
@@ -4927,7 +5319,7 @@ function drawParcels(){
     lyr.bindTooltip(`${r.no}. ${esc(r.jibun)} · ${esc(ownerText(r) || '…')}`, { sticky: true });
     r.layer = lyr; lyr.addTo(parcelLayer);
   });
-  frontRoute();
+  frontRoute(); drawKg();
   if(selected){ const s = results.find(x => x.pnu === selected); if(s && s.layer) s.layer.setStyle(styleFor(s, true)); }
 }
 function styleFor(r, sel){
@@ -4985,13 +5377,17 @@ function permitSum(){ const o = {}; permitList().forEach(r => { const q = permit
 PERMIT.forEach(q => { CHIP_PRED['perm_' + q.k] = r => permitOf(r) === q && (!isLine() || r.tier === 'pass' || !r.tier); });
 CHIP_PRED.memo = r => memoHas(r.pnu);
 CHIP_PRED.perm = r => !!permitOf(r) && (!isLine() || r.tier === 'pass' || !r.tier);
+['ok', 'permit', 'no', 'hold'].forEach(k => { CHIP_PRED['vd_' + k] = r => { const v = vdOf(r); return !!v && v.k === k; }; });
+CHIP_PRED.shHi = r => shiftRisk(r).lvl === 'high'; CHIP_PRED.shSus = r => shiftRisk(r).lvl === 'sus'; CHIP_PRED.shift = CHIP_PRED.shHi;
+CHIP_PRED.pOk = CHIP_PRED.vd_ok; CHIP_PRED.pNeg = CHIP_PRED.vd_permit; CHIP_PRED.pChk = CHIP_PRED.vd_hold;
 function renderTable(){
   if(ptrDown){ rtPending = true; return; }
   const tb = $('#tbl tbody');
   $('#thMetric').textContent = isLine() ? '배관 통과' : '포함㎡';
   const sortBy = $('#sortSel') ? $('#sortSel').value : 'route';
   const rows = results.filter(passFilter).slice().sort((a, b) =>
-    sortBy === 'priv' ? (isPrivate(b) - isPrivate(a)) || (isRoadIn(a) - isRoadIn(b)) || (a.no - b.no)
+    sortBy === 'vd' ? (((vdOf(b) ? VD_RANK[vdOf(b).k] : 0) - (vdOf(a) ? VD_RANK[vdOf(a).k] : 0)) || ((shiftRisk(b).lvl === 'high') - (shiftRisk(a).lvl === 'high')) || (a.no - b.no))
+    : sortBy === 'priv' ? (isPrivate(b) - isPrivate(a)) || (isRoadIn(a) - isRoadIn(b)) || (a.no - b.no)
     : sortBy === 'area' ? (b.inArea || 0) - (a.inArea || 0) || (a.no - b.no)
     : sortBy === 'owner' ? (OWN_ORDER.indexOf(a.ownerClass) - OWN_ORDER.indexOf(b.ownerClass)) || String(a.owner || '').localeCompare(String(b.owner || ''), 'ko') || String(a.org || '').localeCompare(String(b.org || ''), 'ko') || (a.no - b.no)
     : sortBy === 'org' ? ((!a.org) - (!b.org)) || String(a.org || '').localeCompare(String(b.org || ''), 'ko') || String(a.owner || '').localeCompare(String(b.owner || ''), 'ko') || (a.no - b.no)
@@ -5002,6 +5398,7 @@ function renderTable(){
   tb.innerHTML = rows.map(r => `
     <tr data-pnu="${esc(r.pnu)}" class="${r.pnu === selected ? 'sel' : ''}">
       <td>${r.no}${r.isNew ? '<span class="badge-new">신규</span>' : ''}${memoHas(r.pnu) ? '<div class="memo-dot" title="현장 메모 있음">📝</div>' : ''}</td>
+      <td class="vdtd">${vdCell(r)}</td>
       <td style="white-space:nowrap"><div class="small jb-loc">${esc(shortAddr(r.addr))}</div><b class="jb-no">${esc(jibunNo(r.jibun))}</b></td>
       <td>${esc(r.jimok)}${permitOf(r) ? `<div class="perm-tag" title="점용·횡단 허가 검토 대상">${esc(permitOf(r).doc)}</div>` : ''}</td>
       <td class="num">${r.area ? fmtM2(r.area) : ''}</td>
@@ -5051,6 +5448,7 @@ function renderTable(){
       s.appendChild(c);
     });
   }
+  renderVdCard(); vdDraw();
 }
 function tierBadge(r){ return isLine() && r.tier ? `<span class="tier t-${r.tier}">${TIER_LBL[r.tier]}</span>` : ''; }
 function viaTag(r){ return r.via && r.via.length && !(r.via.length === 1 && r.via[0] === '본선') ? `<div class="small via-tag">${esc(r.via.join(' · '))}</div>` : ''; }
@@ -5196,7 +5594,7 @@ function showDetail(r){
       <div class="small jb-loc">${r.single ? '선택한 필지 · ' : r.no + '. '}${esc(shortAddr(r.addr))}</div>
       <div class="dtitle"><b>${esc(jibunNo(r.jibun))}</b> <span class="dchip">${esc(r.jimok || '-')}</span> <span class="dchip own ${r.ownerClass}">${esc(ownerText(r) || '…')}</span>${r.loading ? ' <span class="small" style="color:#1f6feb">불러오는 중…</span>' : ''}</div>
       <div class="dsub">${metric}${metric ? ' · ' : ''}<span class="small">PNU ${esc(r.pnu)}</span></div>
-      ${notes.length ? `<div class="dnote">확인할 점: ${esc(notes.join(' · '))}</div>` : ''}${r.avoid ? `<div class="avoid">↪ ${esc(avoidText(r))}</div>` : ''}
+      ${vdBoxHtml(r)}${notes.length ? `<div class="dnote">확인할 점: ${esc(notes.join(' · '))}</div>` : ''}${r.avoid ? `<div class="avoid">↪ ${esc(avoidText(r))}</div>` : ''}
       <div class="dlinks"><button data-d="kakao">🎥 로드뷰</button><button data-d="eum" style="color:#0b7285;border-color:#99e9f2">토지이음</button><button data-d="kgeop">KGEOP</button><button data-d="naver" title="네이버 지도 (로드뷰는 지도에서 직접 켜기)">네이버 지도</button></div>
     </div>
     <div class="dwin">
@@ -5208,6 +5606,7 @@ function showDetail(r){
   d.querySelector('.dclose').onclick = closeDetail;
   d.querySelector('.dpop').onclick = () => { if(d.classList.contains('float')){ setDetailFloat(false); showDetail(r); return; } if(LS.get('winMode', 'new') !== 'new'){ setDetailFloat(true); showDetail(r); return; } LS.set('detailWin', '1'); winUndock('detail'); if(!detailWin(d, true)){ setDetailFloat(true); } showDetail(r); };
   if(tab === 'memo') bindMemoPane(d, r);
+  bindVdBox(d, r);
   d.querySelectorAll('.dtabs [data-t]').forEach(b => b.onclick = () => { LS.set('dtab', b.dataset.t); showDetail(r); });
   d.style.display = 'flex';
   d.querySelector('[data-d=naver]').onclick = () => openRoadview(r.rv[1], r.rv[0], 'naver');
@@ -5450,6 +5849,14 @@ function drawOverlays(ctx, P, W, H, z, centerLat, kindLabel, o){
     ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = cfg.routeColor; ctx.beginPath(); tracePath(ctx, corridorCache, P); ctx.fill();
     ctx.globalAlpha = .9; ctx.setLineDash([6, 4]); ctx.strokeStyle = cfg.routeColor; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
   }
+  // 배관 판정 색 띠 (노선 선 아래)
+  if(o.route && isLine() && visParts.vd !== false){ const VV = vdAll(); if(VV.segs.length){ const LNm = new Map(allLines().map(x => [x.k, x.line])); ctx.save(); ctx.lineCap = 'butt'; ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2, Number(cfg.routeWeight) + 1) + 20;
+    VV.segs.forEach(sg => { const ln = LNm.get(sg.lk); if(!ln) return; const c = ivCoords(ln, sg.a, sg.b); if(c.length < 2) return; ctx.globalAlpha = sg.k === 'ok' ? .45 : .72; ctx.strokeStyle = VD[sg.k].c; ctx.beginPath(); c.forEach((q, i) => { const [x, y] = P(q); if(i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }); ctx.stroke(); });
+    ctx.restore();
+    const ks = VD_KS.filter(k => VV.tot.len[k] > 0.05); ctx.save(); ctx.font = 'bold 13px "Malgun Gothic", sans-serif'; ctx.textBaseline = 'middle'; const lw = 190, lh = 20 * ks.length + 12, lx = W - lw - 12, ly = 12;
+    ctx.globalAlpha = .9; ctx.fillStyle = '#fff'; ctx.fillRect(lx, ly, lw, lh); ctx.globalAlpha = 1; ctx.strokeStyle = '#868e96'; ctx.lineWidth = 1; ctx.strokeRect(lx, ly, lw, lh);
+    ks.forEach((k, i) => { const y = ly + 16 + i * 20; ctx.fillStyle = VD[k].c; ctx.fillRect(lx + 10, y - 5, 26, 10); ctx.fillStyle = '#212529'; ctx.textAlign = 'left'; ctx.fillText(`${VD[k].t} ${fmtLen(VV.tot.len[k])}`, lx + 44, y); });
+    ctx.restore(); } }
   // 선/도형
   if(o.route){
   const rw = Math.max(2, Number(cfg.routeWeight) + 1);
@@ -5702,8 +6109,151 @@ async function exportExcel(){
     const privIn = priv.filter(isRoadIn), privOut = priv.filter(r => !isRoadIn(r));
     const privCheck = priv.filter(r => roadStatus(r) === '확인필요');
 
-    /* 1) 요약 */
-    const s1 = wb.addWorksheet('요약', { views: [{ showGridLines: false }] });
+    /* v32: 결론 먼저 — 검토 결론 → 구간 판정표 → 시 허가 대상 → 통과 불가 → 지적 밀림 점검 → (상세 시트) */
+    const V = vdAll(), VT = V.tot || { len: { ok: 0, permit: 0, no: 0, hold: 0 }, n: { ok: 0, permit: 0, no: 0, hold: 0 }, all: 0, nearRisk: [] }, aR = activeRoute();
+    const vFill = k => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: VD[k].bg } });
+    const vFont = (k, size) => ({ bold: true, color: { argb: VD[k].x }, size: size || 11 });
+    const LNK = name => ({ text: '→ ' + name, hyperlink: `#'${name}'!A1` });
+    const m1 = v => Math.round((v || 0) * 10) / 10;
+    const jbOf = r => r ? riJibun(r.addr, r.jibun) : '-';
+    const lnName = s => brOk().length ? s.ln + ' ' : '';
+    const cellAll = (row, fn) => row.eachCell({ includeEmpty: true }, fn);
+    const grid = row => cellAll(row, c => { c.border = border; c.alignment = Object.assign({ vertical: 'middle', wrapText: true }, c.alignment || {}); });
+    const memoT = r => r ? ((memoOf(r.pnu) || {}).text || '') : '';
+    const hasSheet = { permit: false, no: false, shift: false, kg: false };
+    const sumRows = [];
+    {
+      const sc = wb.addWorksheet('검토 결론', { views: [{ showGridLines: false }], properties: { tabColor: { argb: 'FF1971C2' } } });
+      sc.columns = [{ width: 26 }, { width: 13 }, { width: 9 }, { width: 9 }, { width: 78 }];
+      const hd = vdHeadline(V);
+      sc.mergeCells('A1:E1'); sc.getCell('A1').value = `${aR ? aR.name : (areaName || (line ? '노선' : '조회 영역'))} — 도시가스 배관 검토 결론`; sc.getCell('A1').font = { bold: true, size: 16 }; sc.getRow(1).height = 28;
+      sc.mergeCells('A3:E3'); sc.getCell('A3').value = `${hd.i} ${hd.t}`; sc.getCell('A3').font = vFont(hd.k in VD ? hd.k : 'hold', 15); sc.getCell('A3').fill = vFill(hd.k in VD ? hd.k : 'hold'); sc.getRow(3).height = 30; sc.getCell('A3').alignment = { vertical: 'middle', indent: 1 };
+      sc.mergeCells('A4:E4'); sc.getCell('A4').value = hd.sub; sc.getCell('A4').alignment = { vertical: 'top', wrapText: true, indent: 1 }; sc.getRow(4).height = 20;
+      sc.addRow([]);
+      const h = sc.addRow(['판정', line ? '연장(m)' : '', line ? '비율' : '', line ? '필지 수\n(그 구간 있는)' : '필지 수', line ? '해당 지번 (노선 순서 · 통과 m)' : '해당 지번']); styleHead(h);
+      VD_KS.forEach(k => {
+        const list = [...V.by.entries()].filter(([, v]) => line && v.len ? v.len[k] > 0.05 : v.k === k).map(([p]) => results.find(r => r.pnu === p)).filter(Boolean).sort((a, b) => a.no - b.no);
+        const txt = k === 'no' && line ? V.runs.no.map((u, i) => `${i + 1}) ${lnName(u)}${Math.round(u.a)}~${Math.round(u.b)}m: ` + [...new Set(u.segs.map(s => jbOf(s.r)))].join(', ')).join('\n')
+          : list.map(r => jbOf(r) + (line && V.by.get(r.pnu).len ? ` (${m1(V.by.get(r.pnu).len[k])}m)` : '')).join(', ') + (k === 'hold' && V.segs.some(s => !s.r) ? (list.length ? '\n' : '') + '필지 정보 없는 곳: ' + V.segs.filter(s => !s.r).map(s => `${lnName(s)}${Math.round(s.a)}~${Math.round(s.b)}m`).join(', ') : '');
+        const row = sc.addRow([`${VD[k].i} ${VD[k].t}`, line ? m1(VT.len[k]) : '', line && VT.all ? VT.len[k] / VT.all : '', list.length, txt || '-']);
+        grid(row); row.getCell(1).fill = vFill(k); row.getCell(1).font = vFont(k); row.getCell(2).numFmt = '#,##0.0'; row.getCell(3).numFmt = '0%';
+        row.getCell(5).alignment = { vertical: 'top', wrapText: true }; row.height = Math.min(300, 18 + 15 * Math.ceil(String(txt).length / 60) + 15 * (String(txt).split('\n').length - 1));
+      });
+      if(line){ const row = sc.addRow(['합계 (배관이 지나는 길이)', m1(VT.all), 1, V.by.size, `노선 연장 ${m1(totalLength())}m`]); grid(row); row.getCell(1).font = { bold: true }; row.getCell(2).numFmt = '#,##0.0'; row.getCell(3).numFmt = '0%'; }
+      sc.addRow([]);
+      const todo = sc.addRow(['먼저 할 일']); sc.mergeCells(`A${todo.number}:E${todo.number}`); styleHead(todo); todo.getCell(1).alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
+      const item = (k, t) => { const row = sc.addRow([`${VD[k].i} ${VD_SHORT[k]}`, t]); sc.mergeCells(`B${row.number}:E${row.number}`); grid(row); row.getCell(1).fill = vFill(k); row.getCell(1).font = vFont(k); row.getCell(2).alignment = { vertical: 'top', wrapText: true }; row.height = Math.min(200, 18 + 15 * Math.ceil(t.length / 95)); };
+      if(line) V.runs.no.forEach((u, i) => { const rs = [...new Set(u.segs.map(s => s.r).filter(Boolean))]; item('no', `${i + 1}) ${lnName(u)}${Math.round(u.a)}~${Math.round(u.b)}m (${m1(u.len)}m) — ${rs.map(r => `${jbOf(r)} ${jimokName(r)} ${ownerText(r)}`).join(', ')}` + (rs.some(r => r.avoid) ? ' · ↪ ' + rs.filter(r => r.avoid).map(r => jbOf(r) + ' ' + avoidText(r)).join(', ') : '') + ' → 노선 조정 또는 사용 승낙 등 판단'); });
+      else results.filter(r => (V.by.get(r.pnu) || {}).k === 'no').forEach(r => item('no', `${jbOf(r)} ${jimokName(r)} ${ownerText(r)} — 도시계획도로 밖 사유지`));
+      results.filter(r => (V.by.get(r.pnu) || {}).k === 'hold').forEach(r => item('hold', `${jbOf(r)} — ${V.by.get(r.pnu).why.join(' · ')}`));
+      if(line) V.segs.filter(s => !s.r).forEach(s => item('hold', `${lnName(s)}${Math.round(s.a)}~${Math.round(s.b)}m — 필지 정보 없음 (지적도 빈 곳) → 지도 확인`));
+      (VT.nearRisk || []).forEach(r => item('hold', `${jbOf(r)} — 선 밖 사유지지만 지적 밀림 위험: ${shiftText(r, true)} → 실제로 배관이 지나는지 확인`));
+      if(VT.n.permit){ const pr = results.filter(r => (V.by.get(r.pnu) || {}).len ? V.by.get(r.pnu).len.permit > 0.05 : (V.by.get(r.pnu) || {}).k === 'permit'); item('permit', `시 허가 신청: 사유지 ${pr.length}필지` + (line ? ` · 계획도로 안 통과 ${m1(pr.reduce((a, r) => a + V.by.get(r.pnu).len.permit, 0))}m` : '') + ' — 시 허가 대상 시트'); }
+      if(!VT.n.no && !VT.n.hold && !VT.n.permit && !(VT.nearRisk || []).length) item('ok', '추가로 판단할 곳 없음 — 국·공유지 점용·횡단 허가만 진행');
+      { const pl = permitList(); if(pl.length){ const ps = permitSum(); item('ok', '점용·횡단 허가: ' + PERMIT.filter(q => ps[q.k]).map(q => `${q.t} ${ps[q.k].n}곳` + (line ? ` (${Math.round(ps[q.k].len)}m)` : '')).join(', ')); } }
+      sc.addRow([]);
+      const kv = (a, b) => { const row = sc.addRow([a, b]); sc.mergeCells(`B${row.number}:E${row.number}`); grid(row); row.getCell(1).font = { bold: true }; row.getCell(1).fill = headFill; row.getCell(2).alignment = { vertical: 'top', wrapText: true }; row.height = Math.min(260, 18 + 15 * (Math.ceil(String(b).length / 95) + String(b).split('\n').length - 1)); return row; };
+      const ih = sc.addRow(['노선 정보']); sc.mergeCells(`A${ih.number}:E${ih.number}`); styleHead(ih); ih.getCell(1).alignment = { horizontal: 'left', indent: 1 };
+      if(line){
+        kv('노선 연장', `${m1(totalLength())}m` + (brOk().length ? ` (본선 ${m1(routeLength())}m + ` + brOk().map(b => `${brName(brs.indexOf(b))} ${m1(brLen(b))}m`).join(' + ') + ')' : ''));
+        kv('시점 · 종점', `${startInfo && startInfo.host ? startInfo.host.label : '-'}  →  ${endInfo && endInfo.host ? endInfo.host.label : '-'}`);
+        try{ syncSegPipe(); const cb = pipeCombos(); kv('배관 구성', cb.filter(([t]) => t !== '미입력').length ? pipeAggText() : '미입력'); }catch(e){}
+      } else kv('영역 면적', `${fmtM2(turf.area(shapeGeom))}㎡`);
+      if(aR) kv('검토 상태', aR.done ? '완료 (' + new Date(aR.done).toLocaleDateString('ko-KR') + ')' : '수정 중');
+      { const t = aR && aR.rmemo ? (aR.rmemo.text || '').trim() : ''; if(t) kv('검토 의견(노선 메모)', t); }
+      { const ov = results.filter(r => vdOvOf(r.pnu)); if(ov.length) kv('직접 정한 판정', ov.map(r => `${jbOf(r)}: ${VD[vdOvOf(r.pnu).v].t}${vdOvOf(r.pnu).why ? ' (' + vdOvOf(r.pnu).why + ')' : ''}`).join('\n')); }
+      sc.addRow([]);
+      const bh = sc.addRow(['판정 기준 · 자료']); sc.mergeCells(`A${bh.number}:E${bh.number}`); styleHead(bh); bh.getCell(1).alignment = { horizontal: 'left', indent: 1 };
+      kv('판정 순서', '① 지적 밀림 위험 높음 → ❓ 판정 보류\n② 국·공유지 → ✅ 가능 (점용·횡단 허가)\n③ 사유지 + 도시계획도로 안 → 🟠 시 허가 필요\n④ 사유지 + 도시계획도로 밖 → ⛔ 통과 불가(판단 필요) — 보통 허가 불가\n배관 선이 실제로 지나는 구간을 필지 경계·도시계획도로(결정) 경계로 잘라 판정합니다. 양옆 폭은 필지를 찾는 범위로만 씁니다(굴착 폭은 아직 반영 안 함).');
+      kv('지적 밀림 신호', '강한 신호(→ 보류): 건축면적 > 대지면적 · 국·공유지(군유지 등)에 다른 필지 건물이 걸침 · 도면/대장 면적 20% 이상 차이 · KGEOP와 지도 경계 3m 이상 차이\n약한 신호(참고): 도해 축척(1:1200 등) · 면적 5% 이상 차이 · 최근 10년 분할·합병 · 이웃 건물 걸침 · 주소 건물이 필지 밖');
+      { const kn = results.filter(r => kgOf(r)), ds = kn.map(r => String(kgOf(r).at || '').slice(0, 10)).filter(Boolean).sort();
+        kv('자료 기준', `브이월드(필지·소유·토지이용계획·도시계획도로) ${lastQueryMeta ? lastQueryMeta.time.toLocaleString('ko-KR') : new Date().toLocaleString('ko-KR')} 조회\nKGEOP ${kn.length}/${results.length}필지 반영` + (ds.length ? ` (${ds[0]}${ds[ds.length - 1] !== ds[0] ? ' ~ ' + ds[ds.length - 1] : ''} 수집)` : ' — 반영 안 함: 밀림 판단은 브이월드·건축물대장 자료만 사용') + '\n도시계획도로는 토지이음과 같은 토지이용계획 자료지만 갱신 시점이 다를 수 있어 최종 확인은 토지이음으로 하세요.'); }
+      sc.addRow([]);
+      const gh = sc.addRow(['시트 안내']); sc.mergeCells(`A${gh.number}:E${gh.number}`); styleHead(gh); gh.getCell(1).alignment = { horizontal: 'left', indent: 1 };
+      sumRows.push(sc);
+      sc._guide = [];
+      // 지도 (판정 색 띠 포함)
+      sc._img = imgs.Base || imgs.Satellite || null;
+    }
+    if(line){
+      const sv = wb.addWorksheet('구간 판정표', { views: [{ state: 'frozen', ySplit: 1 }] });
+      sv.columns = [['순번', 6], ['노선', 8], ['시작(m)', 9], ['끝(m)', 9], ['길이(m)', 9], ['판정', 18], ['지번', 18], ['지목', 8], ['소유', 18], ['도시계획도로', 15], ['지적 밀림', 12], ['근거', 56], ['토지이음', 9], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
+      styleHead(sv.getRow(1)); sv.getRow(1).height = 24;
+      V.segs.forEach((s, i) => {
+        const r = s.r, sr = r ? shiftRisk(r) : null;
+        const row = sv.addRow([i + 1, s.ln, m1(s.a), m1(s.b), m1(s.len), `${VD[s.k].i} ${VD[s.k].t}`, r ? jbOf(r) : '(필지 없음)', r ? jimokName(r) : '', r ? ownerText(r) || ownCls(r) : '', r ? (s.inR ? '안' : '밖') + (roadStatus(r) !== '외' ? ` · 이용계획 ${roadStatus(r)}` : '') : '', sr ? (sr.ok ? '확인함' : sr.lvl === 'high' ? '위험' : sr.lvl === 'sus' ? '의심' : '') : '', s.why.join(' · ') + (sr && sr.sig.length && !sr.ok ? ' | 밀림: ' + shiftText(r) : ''), r ? { text: '열기', hyperlink: eumUrl(r.pnu) } : '', r ? r.pnu : '']);
+        grid(row); row.getCell(6).fill = vFill(s.k); row.getCell(6).font = vFont(s.k); [3, 4, 5].forEach(c => row.getCell(c).numFmt = '#,##0.0');
+        if(r) row.getCell(13).font = { color: { argb: 'FF0563C1' }, underline: true };
+        if(s.inR) row.getCell(10).font = { bold: true, color: { argb: 'FF7048E8' } };
+      });
+      if(!V.segs.length) sv.addRow(['', '', '', '', '', '배관이 지나는 필지가 없습니다']);
+      sv.autoFilter = { from: 'A1', to: 'N1' };
+    }
+    {
+      const pr = results.filter(r => { const v = V.by.get(r.pnu); return v && (v.len ? v.len.permit > 0.05 : v.k === 'permit'); });
+      if(pr.length){
+        hasSheet.permit = true;
+        const sp2 = wb.addWorksheet('시 허가 대상', { views: [{ state: 'frozen', ySplit: 1 }], properties: { tabColor: { argb: 'FFF76707' } } });
+        sp2.columns = [['순번', 6], ['지번', 20], ['지목', 8], ['대장면적(㎡)', 11], ['소유', 18], ['공유인수', 8], ['도시계획도로(토지이용계획)', 34], ['저촉', 9], ['계획도로 편입면적(㎡)', 12], [line ? '계획도로 안 통과(m)' : '', 12], [line ? '위치(m)' : '', 20], ['현장 메모', 30], ['토지이음', 9], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
+        styleHead(sp2.getRow(1)); sp2.getRow(1).height = 30;
+        let sl = 0;
+        pr.forEach(r => { const v = V.by.get(r.pnu), re = roadEntries(r); sl += v.len ? v.len.permit : 0;
+          const row = sp2.addRow([r.no, jbOf(r), jimokName(r), r.area ? Number(r.area) : null, ownerText(r), r.share || '', re.length ? re.map(x => x.name).join(' / ') : (r.roadSpatial ? '(도면상 겹침)' : '-'), re.length ? [...new Set(re.map(x => x.cnflc).filter(Boolean))].join(', ') : '', r.roadArea > 0.05 ? m1(r.roadArea) : null, v.len ? m1(v.len.permit) : '', v.segs.filter(s => s.k === 'permit').map(s => `${lnName(s)}${Math.round(s.a)}~${Math.round(s.b)}`).join(', '), memoT(r), { text: '열기', hyperlink: eumUrl(r.pnu) }, r.pnu]);
+          grid(row); row.getCell(4).numFmt = '#,##0.0'; row.getCell(9).numFmt = '#,##0.0'; row.getCell(10).numFmt = '#,##0.0'; row.getCell(13).font = { color: { argb: 'FF0563C1' }, underline: true }; row.getCell(2).font = { bold: true };
+        });
+        const tr = sp2.addRow(['', `합계 ${pr.length}필지`, '', '', '', '', '', '', m1(pr.reduce((a, r) => a + (r.roadArea || 0), 0)), line ? m1(sl) : '']); grid(tr); tr.font = { bold: true }; tr.getCell(9).numFmt = '#,##0.0'; tr.getCell(10).numFmt = '#,##0.0';
+        sp2.autoFilter = { from: 'A1', to: 'N1' };
+      }
+    }
+    {
+      const nl = line ? V.runs.no : results.filter(r => (V.by.get(r.pnu) || {}).k === 'no').map(r => ({ ln: '', a: 0, b: 0, len: 0, segs: [{ r, a: 0, b: 0, len: 0 }] }));
+      if(nl.length){
+        hasSheet.no = true;
+        const sn = wb.addWorksheet('통과 불가(판단 필요)', { views: [{ state: 'frozen', ySplit: 1 }], properties: { tabColor: { argb: 'FFE03131' } } });
+        sn.columns = [['곳', 5], ['노선', 8], ['시작(m)', 9], ['끝(m)', 9], ['길이(m)', 9], ['지번', 20], ['지목', 8], ['소유', 18], ['건물', 22], ['지적 밀림', 16], ['회피 방법', 34], ['판단 · 메모', 36], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
+        styleHead(sn.getRow(1)); sn.getRow(1).height = 24;
+        nl.forEach((u, i) => u.segs.forEach(s => { const r = s.r;
+          const row = sn.addRow([i + 1, line ? s.ln : '', line ? m1(s.a) : '', line ? m1(s.b) : '', line ? m1(s.len) : '', jbOf(r), r ? jimokName(r) : '', r ? ownerText(r) : '', r ? bldText(r) : '', r ? shiftText(r) : '', r && r.avoid ? avoidText(r) : '', memoT(r), r ? r.pnu : '']);
+          grid(row); row.getCell(1).fill = vFill('no'); row.getCell(1).font = vFont('no'); [3, 4, 5].forEach(c => row.getCell(c).numFmt = '#,##0.0'); row.getCell(6).font = { bold: true };
+        }));
+        sn.autoFilter = { from: 'A1', to: 'M1' };
+      }
+    }
+    {
+      const sl = results.filter(r => shiftRisk(r).sig.length).sort((a, b) => ({ high: 0, sus: 1, '': 2 })[shiftRisk(a).lvl] - ({ high: 0, sus: 1, '': 2 })[shiftRisk(b).lvl] || a.no - b.no);
+      if(sl.length){
+        hasSheet.shift = true;
+        const ss = wb.addWorksheet('지적 밀림 점검', { views: [{ state: 'frozen', ySplit: 1 }], properties: { tabColor: { argb: 'FF7048E8' } } });
+        ss.columns = [['순번', 6], ['지번', 20], ['배관', 10], ['판정', 16], ['밀림', 10], ['강한 신호', 44], ['약한 신호', 44], ['대장면적(㎡)', 11], ['도면면적(㎡)', 11], ['차이', 8], ['건축면적 합(㎡)', 12], ['축척', 9], ['KGEOP 경계 차이(m)', 11], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
+        styleHead(ss.getRow(1)); ss.getRow(1).height = 30;
+        sl.forEach(r => { const s = shiftRisk(r), v = V.by.get(r.pnu), k = kgOf(r), kd = kgDiff(r);
+          const row = ss.addRow([r.no, jbOf(r), isLine() ? TIER_LBL[r.tier] || '' : '', v ? `${VD[v.k].i} ${VD[v.k].t}` : '-', s.ok ? '확인함' : s.lvl === 'high' ? '위험' : '의심', s.sig.filter(x => x.strong).map(x => x.t).join('\n'), s.sig.filter(x => !x.strong).map(x => x.t).join('\n'), s.la || null, r.parcelArea ? m1(r.parcelArea) : null, s.la && r.parcelArea ? (r.parcelArea - s.la) / s.la : null, s.ba ? m1(s.ba) : null, k ? k.scale : '', kd && kd.off != null ? m1(kd.off) : null, r.pnu]);
+          grid(row); [8, 9, 11, 13].forEach(c => row.getCell(c).numFmt = '#,##0.0'); row.getCell(10).numFmt = '0.0%';
+          if(v) { row.getCell(4).fill = vFill(v.k); row.getCell(4).font = vFont(v.k); }
+          if(s.lvl === 'high') row.getCell(5).font = { bold: true, color: { argb: 'FFC92A2A' } };
+          row.height = Math.min(200, 18 + 15 * Math.max(String(row.getCell(6).value).split('\n').length, String(row.getCell(7).value).split('\n').length) - 15);
+        });
+        ss.autoFilter = { from: 'A1', to: 'N1' };
+      }
+    }
+    {
+      const kl = results.filter(r => kgOf(r));
+      if(kl.length){
+        hasSheet.kg = true;
+        const sk = wb.addWorksheet('KGEOP 대조', { views: [{ state: 'frozen', ySplit: 1 }] });
+        sk.columns = [['순번', 6], ['지번', 20], ['지목 KGEOP', 9], ['지목 브이월드', 9], ['면적 KGEOP', 10], ['면적 브이월드', 10], ['도면면적', 10], ['축척', 9], ['소유구분 KGEOP', 12], ['소유구분 브이월드', 14], ['공시지가(원/㎡)', 12], ['최근 토지이동', 22], ['건물', 8], ['건축면적 합', 10], ['건물 용도', 28], ['경계 차이(m)', 10], ['수집일', 11], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
+        styleHead(sk.getRow(1)); sk.getRow(1).height = 30;
+        kl.forEach(r => { const k = kgOf(r), kd = kgDiff(r), ba = (k.blds || []).reduce((a, b) => a + (b.barea || 0), 0);
+          const row = sk.addRow([r.no, jbOf(r), k.jimok, jimokName(r), k.area, r.area ? Number(r.area) : null, r.parcelArea ? m1(r.parcelArea) : null, k.scale, k.ownType, ownerText(r), k.jiga ? Number(k.jiga) : null, [k.lastMove, String(k.lastMoveDe || '').slice(0, 10)].filter(Boolean).join(' '), (k.blds || []).length, ba ? m1(ba) : null, [...new Set((k.blds || []).map(b => b.use).filter(Boolean))].join(', '), kd && kd.off != null ? m1(kd.off) : null, String(k.at || '').slice(0, 10), r.pnu]);
+          grid(row); [5, 6, 7, 14, 16].forEach(c => row.getCell(c).numFmt = '#,##0.0'); row.getCell(11).numFmt = '#,##0';
+          if(k.jimok && JIMOK_FULL[String(r.jimok || '').trim()] !== k.jimok && jimokName(r) !== k.jimok) row.getCell(3).font = { bold: true, color: { argb: 'FFC92A2A' } };
+        });
+        sk.autoFilter = { from: 'A1', to: 'R1' };
+      }
+    }
+
+    /* 1) 상세 요약 (예전 '요약') */
+    const s1 = wb.addWorksheet('상세 요약', { views: [{ showGridLines: false }] });
     s1.columns = [{ width: 30 }, { width: 30 }, { width: 90 }];
     s1.mergeCells('A1:C1'); s1.getCell('A1').value = (areaName ? areaName + ' — ' : '') + (line ? '노선 필지 조사 결과' : '영역 필지 조사 결과');
     s1.getCell('A1').font = { bold: true, size: 16 }; s1.getRow(1).height = 28;
@@ -5786,6 +6336,7 @@ async function exportExcel(){
       { header: '사유지', key: 'priv', width: 7 }, { header: '도시계획도로\n내/외', key: 'road', width: 11 }, { header: '저촉여부', key: 'cnflc', width: 10 },
       { header: '도시계획도로 상세내용', key: 'roadDetail', width: 34 }, { header: '계획도로\n편입면적(㎡)', key: 'roadArea', width: 11 }, { header: metricH, key: 'metric', width: 11 },
       { header: '현황도로\n편입면적(㎡)', key: 'inA', width: 11 }, { header: '현황도로 판정', key: 'use', width: 14 },
+      { header: '판정', key: 'vd', width: 16 }, { header: '판정 근거', key: 'vdw', width: 34 }, { header: '지적 밀림', key: 'sr', width: 30 },
       { header: '구분', key: 'pc', width: 11 }, { header: '확인할 점', key: 'pw', width: 30 },
       { header: '건축물', key: 'bld', width: 18 }, { header: '토지이음', key: 'eum', width: 9 }, { header: 'PNU', key: 'pnu', width: 21 }
     ].concat(line && brOk().length ? [{ header: '지나는 구간', key: 'via', width: 14 }] : []).concat([{ header: '현장 메모', key: 'memo', width: 36 }]);
@@ -5803,6 +6354,7 @@ async function exportExcel(){
         inA: line && hasCorridor() && r.inArea ? Math.round(r.inArea * 10) / 10 : null,
         use: roadUseFlags(r).map(x => x[0]).join(', '),
         pc: TIER_LBL[r.tier] || '', pw: pipeNotes(r).join(', '),
+        vd: vdOf(r) ? `${VD[vdOf(r).k].i} ${VD[vdOf(r).k].t}` : (isLine() && r.tier && r.tier !== 'pass' ? '선 밖' : ''), vdw: vdOf(r) ? vdOf(r).why.join(' · ') : '', sr: (shiftRisk(r).ok ? '(확인함) ' : '') + shiftText(r),
         metric: line ? (r.cross ? Math.round(r.cross * 10) / 10 : null) : (r.inArea ? Math.round(r.inArea * 10) / 10 : null),
         bld: bldText(r), eum: { text: '열기', hyperlink: eumUrl(r.pnu) }, pnu: r.pnu, via: (r.via || []).join(', '), memo: (memoOf(r.pnu) || {}).text || ''
       });
@@ -5812,6 +6364,7 @@ async function exportExcel(){
       ['no', 'jimok', 'share', 'priv', 'road', 'cnflc'].forEach(k => row.getCell(k).alignment = { horizontal: 'center', vertical: 'middle', wrapText: true });
       if(isPrivate(r)) row.getCell('owner').font = { bold: true, color: { argb: 'FFC92A2A' } };
       if(isRoadIn(r)) row.getCell('road').font = { bold: true, color: { argb: 'FF7048E8' } };
+      { const v = vdOf(r); if(v){ row.getCell('vd').fill = vFill(v.k); row.getCell('vd').font = vFont(v.k); } }
     });
     s2.autoFilter = { from: 'A1', to: s2.getColumn(s2.columnCount).letter + '1' };
 
@@ -6000,7 +6553,14 @@ async function exportExcel(){
           row.getCell(7).value = ph.map((x, j) => `${j + 1}) ${x.cap || '사진'}`).join('\n') + (ph.length > 4 ? '\n(사진 ' + ph.length + '장 중 4장 표시)' : '');
         }
       } }
-    { const ORDER = ['요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', '현장 메모', '건축물대장', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
+    { const sc = wb.getWorksheet('검토 결론'); if(sc){
+        const G = [['구간 판정표', '배관이 지나는 구간마다 판정 — 시작~끝(m)·지번·근거'], ['시 허가 대상', '도시계획도로 안 사유지 — 시 허가 신청용 목록'], ['통과 불가(판단 필요)', '도시계획도로 밖 사유지 구간 · 회피 방법 · 판단 메모'], ['지적 밀림 점검', '밀림 신호가 있는 필지와 근거'],
+          ['현장 메모', '필지별 현장 메모·사진'], ['상세 요약', '조회 범위·소유·허가 등 숫자 요약'], ['구간별 배관', '구간별 재질·관경·압력'], ['사유지(협의대상)', '사유지 전체 목록'], ['점용·횡단허가', '도로·하천·구거 등 점용 허가 대상'], ['건축물대장', '건축물대장 내용'], ['KGEOP 대조', 'KGEOP 자료와 브이월드 자료 비교'], ['지도', '일반·위성 지도'], ['세부내용', '전체 필지 상세 (필터로 골라 보기)'], ['도로면확인', '도로 폭 점검 기록']].filter(([n]) => wb.getWorksheet(n));
+        G.forEach(([n, d]) => { const row = sc.addRow([LNK(n), d]); sc.mergeCells(`B${row.number}:E${row.number}`); row.getCell(1).font = { color: { argb: 'FF0563C1' }, underline: true }; });
+        if(sc._img){ sc.addRow([]); const t = sc.addRow(['판정 지도 — 배관 선 아래 색: 초록 가능 · 주황 시 허가 필요 · 빨강 통과 불가 · 보라 판정 보류']); sc.mergeCells(`A${t.number}:E${t.number}`); t.getCell(1).font = { bold: true, size: 12 };
+          const id = wb.addImage({ base64: sc._img.dataUrl, extension: 'png' }), w = 900, h = Math.round(sc._img.h * w / sc._img.w); sc.addImage(id, { tl: { col: 0, row: t.number }, ext: { width: w, height: h } }); }
+      } }
+    { const ORDER = ['검토 결론', '구간 판정표', '시 허가 대상', '통과 불가(판단 필요)', '지적 밀림 점검', '현장 메모', '상세 요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', '건축물대장', 'KGEOP 대조', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
       wb.worksheets.forEach(ws => { const i = ORDER.indexOf(ws.name); ws.orderNo = i < 0 ? 50 + ws.id : i + 1; }); }
     const buf = await wb.xlsx.writeBuffer();
     const d = new Date(); const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
@@ -6188,7 +6748,7 @@ function routeSum(){
   return { kind: shapeKind, len: isLine() ? totalLength() : null, area: !isLine() && shapeGeom ? turf.area(shapeGeom) : null, nV: isLine() ? pts.length : null,
     start: startInfo && startInfo.host ? startInfo.host.label : '', end: endInfo && endInfo.host ? endInfo.host.label : '',
     n: lastQueryMeta ? results.length : null, priv: priv.length, privCross: priv.reduce((a, r) => a + (r.cross || 0), 0),
-    pass: results.filter(r => r.tier === 'pass').length, near: results.filter(r => r.tier === 'near').length, roadIn: roadInLen,
+    pass: results.filter(r => r.tier === 'pass').length, near: results.filter(r => r.tier === 'near').length, roadIn: roadInLen, vd: lastQueryMeta ? vdSumObj() : null,
     todo: stations ? reviewTodo().length : null, total: stations ? issues.length : null, queried: lastQueryMeta ? +lastQueryMeta.time : null, perm: lastQueryMeta ? permitSum() : null, pnus: lastQueryMeta ? results.map(r => r.pnu) : null, privPnus: lastQueryMeta ? priv.map(r => r.pnu) : null };
 }
 let undoStack = [], redoStack = [], undoBusy = false, undoRid = null, undoLast = null, undoT = 0;
@@ -6232,7 +6792,7 @@ function syncActive(withCache){
   const it = activeRoute(); if(!it || !hasTarget()) return;
   const prev = it.sum;
   it.gj = routeGJ(); it.gj.properties.name = it.name; it.sum = routeSum(); it.updated = Date.now(); undoTrack(it);
-  if(!lastQueryMeta && prev && prev.n != null){ ['start', 'end', 'n', 'priv', 'privCross', 'pass', 'near', 'roadIn', 'queried', 'perm', 'pnus', 'privPnus'].forEach(k => it.sum[k] = prev[k]); it.sum.old = true; }
+  if(!lastQueryMeta && prev && prev.n != null){ ['start', 'end', 'n', 'priv', 'privCross', 'pass', 'near', 'roadIn', 'queried', 'perm', 'pnus', 'privPnus', 'vd'].forEach(k => it.sum[k] = prev[k]); it.sum.old = true; }
   if(withCache && lastQueryMeta) it.cache = { allResults, startInfo, endInfo, roadFeatures, roadInLen, roadInArea, lastQueryMeta, lastFetchR, draftBlds };
   if(it.gj && it.gj.geometry.type === 'LineString') routes.filter(c => c.parentId === it.id && c.gj && c.gj.geometry.type === 'LineString').forEach(c => {
     const c0 = c.gj.geometry.coordinates[0], np = turf.nearestPointOnLine(it.gj, turf.point(c0), { units: 'meters' });
@@ -6398,6 +6958,7 @@ function activeCard(it){
   else rows.push(['영역', esc(targetLabel())]);
   if(lastQueryMeta){
     rows.push(['조회 필지', `<b>${sm.n}개</b>` + (line ? ` <span class="small">(배관 통과 ${sm.pass}${sm.near ? ' · 경계 근접 ' + sm.near : ''})</span>` : '')]);
+    if(sm.vd) rows.push(['배관 판정', vdSumHtml(sm.vd)]);
     rows.push(['사유지', `<b style="color:#c92a2a">${sm.priv}개</b>` + (line ? ` · 통과 ${fmtLen(sm.privCross)}` : '') + (line && results.some(r => r.tier === 'ref' && isPrivate(r)) ? ` <span class="small">(양옆 폭 안 ${results.filter(r => r.tier === 'ref' && isPrivate(r)).length})</span>` : '')]);
     { const bl = results.filter(r => bldRisk(r)); if(line && bl.length) rows.push(['🏠 건물·건축 가능', `<a href="javascript:void 0" class="brisk-lnk" title="필지 목록에서 이것만 보기 — 건물이 있거나, 지목상 건물이 설 수 있는 필지(도로·하천·구거 등 제외)">${bl.length}곳</a> <span class="small">(사유지 ${bl.filter(isPrivate).length} · 건물 있음 ${bl.filter(hasBldg).length})</span>`]); }
     if(line && sm.roadIn != null) rows.push(['계획도로 내', fmtLen(sm.roadIn)]);
@@ -6407,6 +6968,7 @@ function activeCard(it){
     rows.push(['마지막 조회', fmtTime(sm.queried) + (stale ? ' <span class="rc-badge stale">수정됨 — 다시 조회 필요</span>' : '')]);
   } else if(it.sum && it.sum.n != null){
     rows.push(['지난 조회', `필지 ${it.sum.n}개 · 사유지 <b style="color:#c92a2a">${it.sum.priv}개</b>` + (line ? ` · 사유지 통과 ${fmtLen(it.sum.privCross || 0)}` : '') + ` <span class="small">(${fmtTime(it.sum.queried)})</span>`]);
+    if(it.sum.vd) rows.push(['배관 판정', vdSumHtml(it.sum.vd)]);
     rows.push(['', '<span class="small">[필지 조회]를 누르면 필지 목록이 다시 채워집니다.</span>']);
   } else rows.push(['조회', '<span class="small">아직 조회하지 않았습니다</span>']);
   if(line){
@@ -7762,7 +8324,7 @@ $('#dlgHelp').addEventListener('close', () => { LS.set('helpSeen', '1'); if(!cfg
 document.addEventListener('keydown', e => { if(e.key === 'F1'){ e.preventDefault(); openHelp(); } });
 if(LS.get('helpSeen', '') !== '1') setTimeout(openHelp, 300);
 else if(!cfg.key) setTimeout(openSettings, 300);
-window.__app = { get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
+window.__app = { vdAll, shiftRisk, kgApply, KG, crossIv, kgScript, vdOvSet, shiftOkSet, get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
 })();
 </script>
 </body>
