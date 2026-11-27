@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v36</title>
+<title>노선 필지 조회기 v38</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -799,6 +799,17 @@ body.popped aside #routePane{display:block!important}
 .rc-eye{border:none;background:none;cursor:pointer;padding:0 3px;font-size:13px;opacity:.65} .rc-eye:hover{opacity:1} .rc-eye.off{opacity:1;background:#fff3bf;border-radius:4px}
 .srct{border-collapse:collapse;width:100%;font-size:12.5px;margin-bottom:6px} .srct th,.srct td{border:1px solid #e9ecef;padding:3px 6px;text-align:left;vertical-align:top} .srct thead th{background:#f1f3f5;font-weight:600} .srct th.v{background:#e7f5ff} .srct th.k{background:#f8f0fc} .srct td.use{background:#fffbe6} .srct td.dif{color:#e8590c;font-weight:600} .srct .na{color:#adb5bd} .srct tbody th{background:#f8f9fa;font-weight:500;color:#495057;white-space:nowrap;width:84px}
 .kgget{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.bcard{border:1px solid #dee2e6;border-left:4px solid #ae3ec9;border-radius:8px;padding:7px 10px;margin:6px 0;background:#fff} .bcard.reg,.bcard.atch{border-left-color:#1c7ed6}
+.bc-h{display:flex;align-items:baseline;gap:6px;font-size:13.5px} .bc-h .bc-src{margin-left:auto;font-size:10.5px;padding:0 6px;border-radius:8px;background:#f3d9fa;color:#862e9c;white-space:nowrap} .bc-src.reg,.bc-src.atch{background:#d0ebff;color:#1864ab}
+.bc-sub{color:#495057;font-size:12px;margin:2px 0 5px}
+.bc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:4px 10px} .bc-grid div{display:flex;flex-direction:column;background:#f8f9fa;border-radius:5px;padding:3px 7px} .bc-grid span{font-size:10.5px;color:#868e96} .bc-grid b{font-size:13px;font-weight:600}
+.bc-flr{margin-top:6px} .bc-flr summary{cursor:pointer;font-size:12px;color:#495057} .bc-ft{border-collapse:collapse;width:100%;font-size:12px;margin-top:4px} .bc-ft th,.bc-ft td{border-bottom:1px solid #f1f3f5;padding:3px 5px;text-align:left} .bc-ft th{background:#f8f9fa;font-weight:600;color:#495057} .bc-ft .num{text-align:right}
+.bc-none{font-size:12px;color:#868e96;margin:6px 0} .bc-warn{font-size:12px;color:#d9480f;background:#fff4e6;border-radius:6px;padding:5px 8px;margin:6px 0}
+.dcmp{margin-top:8px;border-top:1px dashed #dee2e6;padding-top:4px} .dcmp>summary{cursor:pointer;font-size:12px;color:#868e96}
+.lc th{width:84px} .src-k{font-size:9.5px;font-weight:700;color:#fff;background:#ae3ec9;border-radius:3px;padding:0 3px} .src-o{font-size:9.5px;color:#1864ab;background:#e7f5ff;border-radius:3px;padding:0 3px}
+.vd-ovd summary,.srbox summary{cursor:pointer} .vd-ovd{margin-top:3px} .vd-ovd summary{font-size:11.5px;color:#868e96} .kgline.warn{color:#e8590c}
+.vd-kgmiss{font-size:11px;color:#e8590c;background:#fff4e6;border-radius:8px;padding:0 6px;white-space:nowrap} #vdKg.on{border-color:#2f9e44;color:#2b8a3e}
+.kg-link{background:#f4fce3;border:1px solid #c0eb75;border-radius:8px;padding:6px 8px;margin:6px 0} .kg-bm{display:inline-block;background:#2f9e44;color:#fff!important;padding:1px 8px;border-radius:5px;text-decoration:none;cursor:grab}
 .rk-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.25)} .rk-sel{font-size:12px} .ov-lnk{text-decoration:none}
 .lg-k{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px} .rk-t{border-collapse:collapse;width:100%} .rk-t td,.rk-t th{padding:3px 4px;font-size:12px} .rk-t input[data-f=name]{width:130px} .rk-t input[type=color]{width:34px;height:24px;padding:0;border:none}
 .qs-row input{width:52px;font-size:12px} .qs-row .qsSwap{padding:0 6px;font-size:12px}
@@ -1204,7 +1215,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v36</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v38</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -2472,6 +2483,81 @@ const KGDB = (() => {
   return { set: (k, v) => tx('readwrite', st => st.put(v, k)), clear: () => tx('readwrite', st => st.clear()), all: () => tx('readonly', st => st.getAll()) };
 })();
 setTimeout(() => { KGDB.all().then(a => { (a || []).forEach(v => { if(v && v.pnu) KG.set(v.pnu, v); }); if(a && a.length){ KGV++; try{ renderTable(); }catch(e){} } }).catch(() => {}); }, 0);
+/* ===== v37: KGEOP 없이 공식 API로 보강 — 축척·토지이동(브이월드 NED), 부속지번 건물(건축물대장) =====
+   기능 이름(경로)은 후보를 차례로 시도하고 되는 것을 기억(LS offOps). 안 되면 이번 세션 동안 건너뜀 */
+const OFF_OPS = {
+  ladfrl: { t: '토지임야정보(축척·대장 구분)', c: ['/ned/data/ladfrlList', '/ned/data/getLadfrlList', '/ned/data/ladfrlAttr'] },
+  move: { t: '토지이동이력', c: ['/ned/data/getLandMoveAttr', '/ned/data/landMoveAttr', '/ned/data/getLandMovHist'] }
+};
+let offOk = (() => { try{ return JSON.parse(LS.get('offOps', '{}') || '{}') || {}; }catch(e){ return {}; } })();
+const offNone = new Set(), offErr = {};
+function nedRows(res){
+  let out = null; const seen = new Set();
+  const walk = (o, d) => { if(out || !o || typeof o !== 'object' || d > 6 || seen.has(o)) return; seen.add(o);
+    if(Array.isArray(o)){ if(o.length && o.every(x => x && typeof x === 'object' && !Array.isArray(x)) && o.some(x => 'pnu' in x)){ out = o; return; } o.forEach(v => walk(v, d + 1)); return; }
+    if(o.field && typeof o.field === 'object'){ const f = Array.isArray(o.field) ? o.field : [o.field]; if(f.length && typeof f[0] === 'object'){ out = f; return; } }
+    Object.values(o).forEach(v => walk(v, d + 1)); };
+  walk(res, 0); return out || [];
+}
+function nedLooksOk(res){
+  if(!res || typeof res !== 'object') return false;
+  const sx = JSON.stringify(res).slice(0, 600);
+  if(/"(status|resultCode)"\s*:\s*"(ERROR|INVALID|FAIL)/i.test(sx) || /INVALID_|존재하지 않|등록되지 않|권한|not\s*found|SERVICE_ERROR/i.test(sx)) return false;
+  return nedRows(res).length > 0 || /totalCount|numOfRows|field/.test(sx);
+}
+async function offCall(k, params){
+  if(offNone.has(k)) return null;
+  const cands = offOk[k] ? [offOk[k]].concat(OFF_OPS[k].c.filter(x => x !== offOk[k])) : OFF_OPS[k].c;
+  for(const path of cands){
+    try{ const pr = Object.assign({ format: 'json', numOfRows: '100', pageNo: '1' }, params); const res = offOk[k] === path ? await vworld(path, pr, 2) : await vworldOnce(path, pr, 6000);
+      if(nedLooksOk(res)){ if(offOk[k] !== path){ offOk[k] = path; LS.set('offOps', JSON.stringify(offOk)); } return nedRows(res); }
+      offErr[k] = path + ': ' + JSON.stringify(res).slice(0, 120);
+    }catch(e){ offErr[k] = path + ': ' + e.message; }
+  }
+  offNone.add(k); log(`공식 자료 '${OFF_OPS[k].t}' 기능을 찾지 못함 — ${offErr[k] || ''}`); return null;
+}
+function offScale(rows){
+  for(const x of rows) for(const [k, v] of Object.entries(x)){ const t = String(v == null ? '' : v).trim(); if(/^1\s*[:/]\s*\d{3,5}$/.test(t)) return t.replace(/\s*[:/]\s*/, ':'); if(/(ScNm|Scale|축척)$/i.test(k) && t) return /^\d{3,5}$/.test(t) ? '1:' + t : t.replace(/\s*[/]\s*/, ':'); }
+  return '';
+}
+function offMoves(rows){
+  return rows.map(x => { let de = '', why = '';
+    for(const [k, v] of Object.entries(x)){ const t = String(v == null ? '' : v).trim(); if(!de && /De$/.test(k) && !/Ersr|Updt|Regist|Crtn/i.test(k) && /^\d{4}-?\d{2}-?\d{2}/.test(t)) de = t; if(!why && /(Prvonsh|Resn|Rsn|Cause)\w*Nm$/i.test(k) && t) why = t; }
+    return { de, why, jimok: x.lndcgrCodeNm || '', area: Number(x.lndpclAr) || null }; }).filter(m => m.de || m.why).sort((a, b) => String(b.de).localeCompare(String(a.de)));
+}
+async function fetchOfficial(r){
+  if(r.offDone) return; r.offDone = true;
+  try{ const rows = await offCall('ladfrl', { pnu: r.pnu }); if(rows){ r.scaleV = offScale(rows); r.regV = ((rows[0] || {}).regstrSeCodeNm) || ''; } }catch(e){}
+  try{ const rows = await offCall('move', { pnu: r.pnu }); if(rows) r.movesV = offMoves(rows); }catch(e){}
+}
+/* 부속지번: 건물 대표 지번(대장이 있는 필지)의 부속지번 목록에 이 필지가 있으면, 그 건물은 이 필지에도 걸친 건물 */
+const atchCache = new Map(), titleCache = new Map();
+function atchPnu(x){ const sg = String(x.atchSigunguCd || ''), bj = String(x.atchBjdongCd || ''), b = String(x.atchBun || '').replace(/\D/g, ''), j = String(x.atchJi || '').replace(/\D/g, ''); const p = sg + bj + (String(x.atchPlatGbCd) === '1' ? '2' : '1') + b.padStart(4, '0') + j.padStart(4, '0'); return /^\d{19}$/.test(p) ? p : ''; }
+async function atchOf(mp){
+  if(atchCache.has(mp)) return atchCache.get(mp);
+  let list = null; try{ const { items } = await bldApi('getBrAtchJibunInfo', pnuParams(mp), 15000); list = items.map(x => ({ pnu: atchPnu(x), pk: x.mgmBldrgstPk || '', nm: [x.bldNm, x.dongNm].map(v => String(v || '').trim()).filter(Boolean).join(' ') })).filter(a => a.pnu && a.pnu !== mp); }catch(e){ list = null; }
+  atchCache.set(mp, list); return list;
+}
+function bldRow(x){ return { name: [x.bldNm, x.dongNm].map(v => String(v || '').trim()).filter(Boolean).join(' '), main: x.mainAtchGbCdNm || '', purps: x.mainPurpsCdNm || x.etcPurps || '', strct: x.strctCdNm || x.etcStrct || '', grnd: Number(x.grndFlrCnt) || 0, ugrnd: Number(x.ugrndFlrCnt) || 0, totArea: Number(x.totArea) || 0, archArea: Number(x.archArea) || 0, platArea: Number(x.platArea) || 0, useApr: String(x.useAprDay || '').trim(), kind: x.regstrKindCdNm || '', pk: x.mgmBldrgstPk || '', bcRat: Number(x.bcRat) || 0, vlRat: Number(x.vlRat) || 0, vlRatEstmTotArea: Number(x.vlRatEstmTotArea) || 0, hhld: Number(x.hhldCnt) || 0, ho: Number(x.hoCnt) || 0, fmly: Number(x.fmlyCnt) || 0, pkng: ['indrMechUtcnt', 'indrAutoUtcnt', 'oudrMechUtcnt', 'oudrAutoUtcnt'].reduce((a, k) => a + (Number(x[k]) || 0), 0) }; }
+async function titleOf(mp, byP){
+  const r0 = byP && byP.get(mp); if(r0 && r0.bld && r0.bld.length) return r0.bld;
+  if(titleCache.has(mp)) return titleCache.get(mp);
+  let v = []; try{ v = (await bldApi('getBrTitleInfo', pnuParams(mp), 15000)).items.map(bldRow); }catch(e){} titleCache.set(mp, v); return v;
+}
+async function fetchAtch(list){
+  if(!cfg.bldKey || !list.length) return 0;
+  const byP = new Map(list.map(r => [r.pnu, r])), mains = new Set();
+  list.forEach(r => { if(r.bld && r.bld.length) mains.add(r.pnu); (r.bOther || []).forEach(x => { if(x.bp && x.bp !== r.pnu) mains.add(x.bp); }); });
+  let n = 0;
+  await pool([...mains].slice(0, 120), 4, async mp => {
+    const at = await atchOf(mp); if(!at || !at.length) return;
+    for(const a of at){ const r = byP.get(a.pnu); if(!r) continue;
+      let blds = (await titleOf(mp, byP)).filter(b => !a.pk || !b.pk || b.pk === a.pk); if(!blds.length) blds = [{ name: a.nm || '', purps: '', pk: a.pk }];
+      r.bldAtch = (r.bldAtch || []).filter(x => x.main !== mp).concat([{ main: mp, jibun: pnuJibun(mp), blds }]); n++; }
+  });
+  return n;
+}
+function offSummary(){ return Object.keys(OFF_OPS).map(k => `${OFF_OPS[k].t}: ${offNone.has(k) ? '안 됨' : offOk[k] ? '됨' : '-'}`).join(' · '); }
 function kgOf(r){ const k = r && r.pnu ? KG.get(r.pnu) : null; return k && !k.err ? k : null; }
 function kgErrOf(r){ const k = r && r.pnu ? KG.get(r.pnu) : null; return k && k.err ? k : null; }
 /* v33: 브이월드 값은 r._vw에 보관(비교용), 화면·판정·엑셀은 KGEOP 값으로 */
@@ -2501,8 +2587,113 @@ function kgDiffs(r){
 }
 function kgDiffN(){ return results.filter(r => kgDiffs(r).length).length; }
 function kgDiffTag(r, what){ const d = kgDiffs(r).filter(x => !what || x[0] === what); return d.length ? `<div class="small kgdiff" title="브이월드 자료는 다름 — KGEOP 값으로 표시·판정">브이월드: ${esc(d.map(x => what ? x[1] : x[0] + ' ' + x[1]).join(' · '))}</div>` : ''; }
+/* ===== v38: 건물 정보 카드 — KGEOP '건물 정보' 화면과 같은 항목 (기본정보 + 층별현황) ===== */
+const BK = { plat: ['platArea', 'parea', 'plotArea', 'landArea', 'larea', 'dsArea'], arch: ['archArea', 'barea'], tot: ['totArea', 'garea'], vl: ['vlRatEstmTotArea', 'vlrtEstmTotArea', 'vlRatArea', 'farArea', 'varea'],
+  bc: ['bcRat', 'bcrat', 'bcRt', 'btlRt', 'bldCvrgRat'], fr: ['vlRat', 'vlrat', 'vlRt', 'farRat', 'flrAreaRat'], hh: ['hhld', 'hhldCnt'], ho: ['ho', 'hoCnt'], fm: ['fmly', 'fmlyCnt'], pk: ['pkng', 'totPkngCnt', 'pkngCnt', 'parkCnt', 'prkngCnt'],
+  use: ['use', 'purps', 'mainUseNm', 'mainPurpsCdNm', 'mainPurpsNm'], st: ['stru', 'strct', 'struNm', 'strctCdNm', 'strctNm'], uf: ['uflr', 'grnd', 'grndFlrCnt'], bf: ['bflr', 'ugrnd', 'ugrndFlrCnt'], apr: ['useApr', 'useAprvYmd', 'useAprDay'] };
+const bkPick = (o, ks) => { for(const k of ks) if(o && o[k] != null && o[k] !== '' && o[k] !== 0) return o[k]; return null; };
+const bkFuzzy = (o, re) => { if(!o) return null; for(const [k, v] of Object.entries(o)) if(re.test(k) && v != null && v !== '' && v !== 0) return v; return null; };
+function flrNorm(rows){
+  const GB = { 10: '지하', 20: '지상', 30: '옥탑', 21: '지상' };
+  return (rows || []).map(x => { if(!x) return null;
+    let gb = bkPick(x, ['flrGbCdNm', 'flrGbNm', 'flrSeNm', 'flrSe', 'flrGb', 'flrGbCd']) || bkFuzzy(x, /flrGb|flrSe/i) || ''; if(GB[gb]) gb = GB[gb];
+    const no = bkPick(x, ['flrNoNm', 'flrNm', 'flrNo']) || bkFuzzy(x, /flrNo|flrNm/i) || '';
+    const st = bkPick(x, ['strctCdNm', 'strctNm', 'struNm', 'etcStrct']) || '';
+    const mu = bkPick(x, ['mainPurpsCdNm', 'mainPurpsNm', 'mainUseNm', 'useNm', 'purpsNm']) || '', eu = bkPick(x, ['etcPurps', 'etcUse', 'etcPurpsNm']) || '';
+    const ar = Number(bkPick(x, ['area', 'flrArea', 'totArea', 'ar']) || bkFuzzy(x, /area/i)) || null;
+    return { gb: String(gb), no: String(no), st: String(st), use: mu && eu && !String(mu).includes(eu) ? `${mu}(${eu})` : String(mu || eu), ar };
+  }).filter(f => f && (f.no || f.use || f.ar));
+}
+function bldNorm(b, src){
+  const o = Object.assign({}, b.raw || {}, b), g = k => bkPick(o, BK[k]), g0 = k => { for(const x of BK[k]) if(o[x] != null && o[x] !== '') return o[x]; return null; };
+  let pkng = g('pk'); if(pkng == null && b.raw){ const ks = ['indrMechUtcnt', 'indrAutoUtcnt', 'oudrMechUtcnt', 'oudrAutoUtcnt'].filter(k => b.raw[k] != null); if(ks.length) pkng = ks.reduce((a, k) => a + (Number(b.raw[k]) || 0), 0); }
+  const n = v => v == null || v === '' || isNaN(+v) ? null : +v;
+  const plat = n(g('plat') ?? bkFuzzy(b.raw, /^(plat|plot|land).*Ar/i)), arch = n(g('arch')), tot = n(g('tot')), vl = n(g('vl') ?? bkFuzzy(b.raw, /vlr.*Ar|far.*Ar/i)), bc = n(g('bc') ?? bkFuzzy(b.raw, /^bc|cvrg/i)), fr = n(g('fr') ?? bkFuzzy(b.raw, /^vl.*(Rat|Rt)$|farRat/i));
+  const hh = n(g0('hh')), ho = n(g0('ho')), fm = n(g0('fm')); if(pkng == null && g0('pk') != null) pkng = n(g0('pk'));
+  const uf = g('uf'), bf = g('bf'), apr = String(g('apr') || '').replace(/\D/g, '');
+  const m2 = v => v ? Number(v).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '㎡' : '', pc = v => v ? (Math.round(v * 100) / 100) + '%' : '';
+  const metrics = [['대지면적', m2(plat)], ['건축면적', m2(arch)], ['연면적', m2(tot)], ['용적률 산정 연면적', m2(vl)], ['건폐율', pc(bc)], ['용적률', pc(fr)],
+    ['세대·호·가구', hh != null || ho != null || fm != null ? `${hh || 0}세대 / ${ho || 0}호 / ${fm || 0}가구` : ''], ['주차', pkng != null ? pkng + '대' : '']].filter(x => x[1]);
+  return { src, title: [b.name, b.dong].filter(Boolean).join(' ') || b.kind || b.main || '건물', kind: b.kind || b.main || '', use: g('use') || '', stru: g('st') || '', uf, bf, apr: apr.length === 8 ? fmtDate(apr) : '', arch, tot, plat, bc, fr,
+    metrics, floors: flrNorm(b.flr), err: b.err || '' };
+}
+function bldCardHtml(nb, opt = {}){
+  const fl = [nb.uf ? '지상 ' + nb.uf + '층' : '', Number(nb.bf) ? '지하 ' + nb.bf + '층' : ''].filter(Boolean).join(' · ');
+  const sub = [nb.use, nb.stru, fl, nb.apr ? '사용승인 ' + nb.apr : ''].filter(Boolean).map(esc).join(' · ');
+  const srcLbl = { kg: 'KGEOP', reg: '건축물대장', atch: '부속지번 · 건축물대장' }[nb.src] || nb.src;
+  return `<div class="bcard ${nb.src}"><div class="bc-h"><b>${esc(nb.title)}</b>${nb.kind && nb.kind !== nb.title ? ` <span class="small">${esc(nb.kind)}</span>` : ''}<span class="bc-src ${nb.src}">${esc(srcLbl)}${opt.note ? ' · ' + esc(opt.note) : ''}</span></div>`
+    + (sub ? `<div class="bc-sub">${sub}</div>` : '')
+    + (nb.metrics.length ? `<div class="bc-grid">${nb.metrics.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>` : `<div class="small" style="color:#adb5bd">${nb.err ? '상세를 못 받음 (' + esc(nb.err) + ') — 다시 가져오기' : '면적 정보 없음'}</div>`)
+    + (nb.floors.length ? `<details class="bc-flr"${opt.open ? ' open' : ''}><summary>층별현황 ${nb.floors.length}개</summary><table class="bc-ft"><thead><tr><th>구분</th><th>층</th><th>구조</th><th>용도</th><th class="num">면적㎡</th></tr></thead><tbody>${nb.floors.map(f => `<tr><td>${esc(f.gb)}</td><td>${esc(f.no)}</td><td>${esc(f.st)}</td><td>${esc(f.use)}</td><td class="num">${f.ar ? Number(f.ar).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) : ''}</td></tr>`).join('')}</tbody></table></details>` : (nb.src === 'kg' ? '<div class="small" style="color:#adb5bd">층별현황 없음 — 예전 스크립트 자료면 다시 가져오기</div>' : ''))
+    + '</div>';
+}
+/* 건물 탭 위쪽: 판정에 쓰는 건물 (KGEOP 우선) */
+function bldPrimaryHtml(r){
+  const kb = kgBlds(r), k = kgOf(r);
+  if(kb && kb.length) return kb.map((b, i) => bldCardHtml(bldNorm(b, 'kg'), { open: kb.length === 1 && i === 0 })).join('');
+  let h = '';
+  if(k) h += '<div class="bc-none">KGEOP: 이 필지에 등록된 건물 없음</div>';
+  else h += `<div class="bc-warn">${kgErrOf(r) ? `KGEOP 조회 실패(${esc(kgErrOf(r).err)})` : 'KGEOP 미확인'} — 아래는 건축물대장 자료입니다. ${kgLink ? '<b>자동 조회 중…</b>' : ''}<div class="kgget"><button data-kgone="script">🔗 KGEOP에서 가져오기</button><button data-kgone="paste">📋 결과 반영</button></div></div>`;
+  if(!k){
+    (r.bld || []).forEach(b => { h += bldCardHtml(bldNorm(b, 'reg')); });
+    (r.bldAtch || []).forEach(x => (x.blds || []).forEach(b => { h += bldCardHtml(bldNorm(b, 'atch'), { note: '대표 지번 ' + x.jibun }); }));
+  }
+  return h;
+}
+/* 토지 탭: 쓰는 값만 한 줄씩 (출처 표시), 자료 비교는 접어 둠 */
+function landCompact(r, roadHtml){
+  const k = kgOf(r), K = '<span class="src-k" title="KGEOP 값">K</span>', O = '<span class="src-o" title="공식 자료(브이월드·건축물대장)">공식</span>';
+  const kv = (t, v, src, extra) => v == null || v === '' ? '' : `<tr><th>${t}</th><td>${v}${src ? ' ' + src : ''}${extra || ''}</td></tr>`;
+  const use = r._kgSet ? K : O;
+  const mv = k ? [k.lastMove, String(k.lastMoveDe || '').slice(0, 10)].filter(Boolean).join(' ') : (r.movesV || []).length ? [r.movesV[0].why, String(r.movesV[0].de || '').slice(0, 10)].filter(Boolean).join(' ') : '';
+  return `<table class="dkv lc"><tbody>`
+    + kv('지목', esc(r.jimok || '-'), use, kgDiffTag(r, '지목'))
+    + kv('면적', r.area ? fmtM2(r.area) + '㎡' : '-', use, kgDiffTag(r, '면적'))
+    + kv('소유구분', esc(ownerText(r) || '-') + (r.share > 1 ? ` <span class="small">공유 ${esc(r.share)}명</span>` : ''), use, kgDiffTag(r, '소유'))
+    + kv('소유권 변동', esc([fmtDate(r.ownChangeDate), r.ownChange].filter(Boolean).join(' ')), O)
+    + kv('공시지가', k && k.jiga ? Number(k.jiga).toLocaleString() + '원/㎡' : r.jiga ? Number(r.jiga).toLocaleString() + '원/㎡' : '', k && k.jiga ? K : O)
+    + kv('축척', esc(k && k.scale ? k.scale : r.scaleV || ''), k && k.scale ? K : O, DOHAE_RE.test((k && k.scale) || r.scaleV || '') ? ' <span class="small" style="color:#a61e4d">도해</span>' : '')
+    + kv('최근 토지이동', esc(mv), k ? K : O)
+    + kv('용도지역', esc(r.useZone || ''), '') + kv('이용상황', esc(r.landUse || ''), '')
+    + `<tr><th>도시계획도로</th><td>${roadHtml}</td></tr>`
+    + kv('소재지', esc(r.addr || r.jibun), '')
+    + `</tbody></table>`
+    + (k ? '' : `<div class="bc-warn">${kgErrOf(r) ? `KGEOP 조회 실패(${esc(kgErrOf(r).err)}) — 다시 가져오세요.` : 'KGEOP 미확인 — 지목·면적·소유·건물은 KGEOP 값이 기준입니다.'} ${kgLink ? '<b>자동 조회 중…</b>' : ''}${kgGetHtml()}</div>`)
+    + `<details class="dcmp"><summary>자료 비교 (공식 ↔ KGEOP)</summary>${srcTable(r, true)}</details>`;
+}
+
+/* ===== v38: KGEOP 연결 모드 — KGEOP 탭이 대신 조회해 돌려줌 (탭은 이 프로그램에서 열어야 함) ===== */
+const KG_ORIG = /^https:\/\/(www\.)?kgeop\.go\.kr$/;
+let kgWin = null, kgLink = false, kgQ = [], kgBusy = null, kgReqN = 0;
+function kgRelayScript(){ return '(' + kgCollect.toString() + ')(null,' + JSON.stringify({ origin: location.origin }) + ');'; }
+function kgBookmarklet(){ return 'javascript:' + encodeURIComponent(kgRelayScript()); }
+function kgConnect(){
+  kgWin = window.open('https://kgeop.go.kr/info/infoMap.do?initMode=L', 'kgeopSite'); kgLink = false;
+  toast('KGEOP 탭이 열리면 그 탭에서 북마크 [KGEOP 연결]을 누르세요 (북마크가 없으면 🔗 KGEOP 창에서 만들기).', 14000); renderVdCard();
+}
+window.addEventListener('message', e => {
+  if(!KG_ORIG.test(e.origin)) return; const m = e.data || {};
+  if(m.kind === 'kg-ready'){ kgWin = e.source; kgLink = true; toast('✅ KGEOP 연결됨 — 조회한 필지와 누르는 필지의 KGEOP 정보를 자동으로 가져옵니다. KGEOP 탭은 열어 두세요.', 8000); kgEnqueue(kgTargets(false).map(r => r.pnu)); { const r = selected && results.find(x => x.pnu === selected); if(r) kgEnqueue([r.pnu], true); } if(lastSingle && !lastSingle.dq) kgEnqueue([lastSingle.pnu], true); renderVdCard(); }
+  else if(m.kind === 'kg-prog'){ status(`KGEOP 자동 조회 ${m.done}/${m.n}… (남은 필지 ${kgQ.length})`); }
+  else if(m.kind === 'kg-res' && kgBusy && m.id === kgBusy.id){ clearTimeout(kgBusy.t); kgBusy = null; kgApply(JSON.stringify(m.data)).then(res => { status(`KGEOP 자동 조회: ${res.n || 0}필지 반영` + (res.fail ? ` · 실패 ${res.fail}` : '') + (kgQ.length ? ` · 남은 ${kgQ.length}` : '')); { const r = lastSingle && !results.includes(lastSingle) ? lastSingle : null; if(r && (KG.has(r.pnu))){ kgSync([r]); if(singlePnu === r.pnu) showDetail(r); } } kgPump(); }); }
+});
+function kgPump(){
+  if(!kgLink || kgBusy) return;
+  if(!kgWin || kgWin.closed){ kgLink = false; renderVdCard(); toast('KGEOP 탭이 닫혀 연결이 끊겼습니다 — 다시 [KGEOP 연결].', 8000); return; }
+  const L = []; while(kgQ.length && L.length < 8){ const p = kgQ.shift(); if(!L.includes(p) && !kgOf({ pnu: p })) L.push(p); }
+  if(!L.length){ renderVdCard(); return; }
+  const id = ++kgReqN; kgBusy = { id, t: setTimeout(() => { kgBusy = null; kgPump(); }, 180000) };
+  try{ kgWin.postMessage({ kind: 'kg-req', id, pnus: L }, '*'); }catch(e){ clearTimeout(kgBusy.t); kgBusy = null; kgLink = false; renderVdCard(); }
+}
+function kgEnqueue(pnus, front){
+  const L = (pnus || []).filter(p => /^\d{19}$/.test(String(p)) && !kgOf({ pnu: p }));
+  if(!L.length) return;
+  kgQ = front ? L.concat(kgQ.filter(p => !L.includes(p))) : kgQ.concat(L.filter(p => !kgQ.includes(p)));
+  kgPump();
+}
+const kgRequired = () => LS.get('kgReq', '1') === '1';
 /* 필지 상세 '토지' 탭 — 같은 항목을 자료별로 나란히. 판정·표에 쓰는 값은 노랗게 */
-function srcTable(r){
+function srcTable(r, noGet){
   if(!r) return '';
   const k = kgOf(r), v = r._kgSet && r._vw ? Object.assign({}, r, r._vw) : r, kd = k ? kgDiff(r) : null, kb = k ? (k.blds || []) : null;
   const na = '<span class="na">—</span>', E = x => x == null || x === '' ? na : esc(String(x));
@@ -2516,29 +2707,51 @@ function srcTable(r){
     ['공유인수', E(r.share), k ? E(k.shareCnt) : null, false],
     ['소유권 변동', E([fmtDate(r.ownChangeDate), r.ownChange].filter(Boolean).join(' ')), k ? E([String(k.ownChgDe || '').slice(0, 10), k.ownChg].filter(Boolean).join(' ')) : null, false],
     ['공시지가', r.jiga ? Number(r.jiga).toLocaleString() + '원/㎡' : na, k ? (k.jiga ? Number(k.jiga).toLocaleString() + '원/㎡' + (k.jigaDe ? ` <span class="small">(${esc(String(k.jigaDe).slice(0, 10))})</span>` : '') : na) : null, false],
-    ['축척', na, k ? E(k.scale) : null, false],
-    ['최근 토지이동', na, k ? E([k.lastMove, String(k.lastMoveDe || '').slice(0, 10)].filter(Boolean).join(' ')) : null, false],
-    ['건물', (r.bld ? `대장 ${r.bld.length}동` : r.bldFail ? '대장 조회 실패' : cfg.bldKey ? '대장 조회 전' : '대장 키 없음') + ` · 지도 ${(r.bOwn || []).length}동`, k ? (kgBlds(r) == null ? '<span class="na">응답에 건물 목록 없음</span>' : `${kb.length}동` + (kb.some(b => b.err) ? ` <span class="small">(상세 못 받음 ${kb.filter(b => b.err).length})</span>` : '')) : null, true],
+    ['축척', r.scaleV ? E(r.scaleV) + (r.regV ? ` <span class="small">(${esc(r.regV)})</span>` : '') : r.offDone ? (offNone.has('ladfrl') ? '<span class="na">기능 못 씀</span>' : na) : '<span class="na">조회 전</span>', k ? E(k.scale) : null, false],
+    ['최근 토지이동', (r.movesV || []).length ? E([r.movesV[0].why, String(r.movesV[0].de || '').slice(0, 10)].filter(Boolean).join(' ')) + (r.movesV.length > 1 ? ` <span class="small">외 ${r.movesV.length - 1}건</span>` : '') : r.offDone ? (offNone.has('move') ? '<span class="na">기능 못 씀</span>' : na) : '<span class="na">조회 전</span>', k ? E([k.lastMove, String(k.lastMoveDe || '').slice(0, 10)].filter(Boolean).join(' ')) : null, false],
+    ['건물', (r.bld ? `대장 ${r.bld.length}동` : r.bldFail ? '대장 조회 실패' : cfg.bldKey ? '대장 조회 전' : '대장 키 없음') + ((r.bldAtch || []).length ? ` · 부속지번 ${r.bldAtch.map(x => `${x.jibun} 건물 ${(x.blds || []).length || 1}동`).join(', ')}` : '') + ` · 지도 ${(r.bOwn || []).length}동`, k ? (kgBlds(r) == null ? '<span class="na">응답에 건물 목록 없음</span>' : `${kb.length}동` + (kb.some(b => b.err) ? ` <span class="small">(상세 못 받음 ${kb.filter(b => b.err).length})</span>` : '')) : null, true],
     ['건축면적 합', bA ? fmtM2(bA) + '㎡' : na, k ? (kA ? fmtM2(kA) + '㎡' : na) : null, false],
     ['경계 차이', na, kd && kd.off != null ? kd.off.toFixed(1) + 'm <span class="small na">지도와</span>' : (k ? na : null), false]
   ];
   const strip = h => String(h).replace(/<[^>]+>/g, '').trim();
   const body = rows.map(([t, a, b, used]) => { const dif = b != null && strip(a) !== '—' && strip(b) !== '—' && strip(a).replace(/\s/g, '') !== strip(b).replace(/\s/g, '') && !/도면|건물|소유권|공시|경계/.test(t);
     return `<tr><th>${t}</th><td class="${!k && used ? 'use' : ''}">${a}</td><td class="${k && used ? 'use' : ''}${dif ? ' dif' : ''}">${b == null ? '' : b}</td></tr>`; }).join('');
-  return `<table class="srct"><thead><tr><th></th><th class="v">브이월드 · 건축물대장(국토부)</th><th class="k">KGEOP${k ? ` <span class="small">${esc(String(k.at || '').slice(0, 10))} 수집</span>` : ''}</th></tr></thead><tbody>${body}</tbody></table>`
+  return `<table class="srct"><thead><tr><th></th><th class="v">공식 자료 (브이월드 · 건축물대장)</th><th class="k">KGEOP${k ? ` <span class="small">${esc(String(k.at || '').slice(0, 10))} 수집</span>` : ''}</th></tr></thead><tbody>${body}</tbody></table>`
     + (k ? '<div class="small" style="color:#868e96;margin:-2px 0 6px">노란 칸 = 판정·목록·엑셀에 쓰는 값 (KGEOP가 있으면 KGEOP) · 주황 글씨 = 두 자료가 다름</div>'
-         : `<div class="small" style="color:${kgErrOf(r) ? '#e8590c' : '#868e96'};margin:-2px 0 4px">${kgErrOf(r) ? `KGEOP 조회 실패(${esc(kgErrOf(r).err)}) — 다시 가져오세요.` : 'KGEOP 칸이 비어 있음 = 아직 안 가져옴 (KGEOP에 없다는 뜻이 아님)'} — 아래 버튼으로 채우면 지목·면적·소유·건물을 KGEOP 값으로 씁니다.</div>${kgGetHtml()}`)
+         : noGet ? '' : `<div class="small" style="color:${kgErrOf(r) ? '#e8590c' : '#868e96'};margin:-2px 0 4px">${kgErrOf(r) ? `KGEOP 조회 실패(${esc(kgErrOf(r).err)}) — 다시 가져오세요.` : 'KGEOP 칸이 비어 있음 = 아직 안 가져옴 (KGEOP에 없다는 뜻이 아님)'} — 아래 버튼으로 채우면 지목·면적·소유·건물을 KGEOP 값으로 씁니다.</div>${kgGetHtml()}`)
     + (k && k.diag && k.diag.ledger && k.diag.ledger !== 'ok' ? '<div class="small" style="color:#e8590c">KGEOP 응답에 토지대장 칸이 비어 있어 일부 항목을 요약 정보에서 채웠습니다.</div>' : '')
-    + (k && !(k.v >= 4) ? '<div class="small" style="color:#e8590c">예전 스크립트로 모은 자료입니다 — 건물이 빠졌을 수 있으니 다시 가져오세요. ' + kgGetHtml() + '</div>' : '');
+    + (k && !(k.v >= 5) && !noGet ? '<div class="small" style="color:#e8590c">예전 스크립트로 모은 자료입니다 — 건물 기본정보·층별현황이 빠져 있으니 다시 가져오세요. ' + kgGetHtml() + '</div>' : '');
 }
 function kgGetHtml(){ return '<div class="kgget"><button data-kgone="script" title="이 필지 하나만 모으는 스크립트를 복사 → KGEOP 탭 F12 Console에 붙여넣고 Enter">🔗 KGEOP에서 이 필지 가져오기</button><button data-kgone="paste" title="KGEOP 창에서 [복사하고 닫기]를 누른 뒤">📋 복사한 결과 반영</button></div>'; }
+/* v36-1: 상세가 새 창이면 그 창의 클립보드·화면에서 처리 (원래 창은 포커스가 없어 클립보드를 못 읽고, 알림도 뒤 창에 떠서 '아무 반응 없음'처럼 보였음) */
+let kgOneMsg = null;
+function kgClipErr(t){ const x = String(t || '').trim(); if(!x) return '클립보드가 비어 있습니다 — KGEOP 결과 창에서 [📋 복사하고 닫기]를 먼저 누르세요.'; if(/kgCollect|geopass\/api/.test(x.slice(0, 400))) return '지금 클립보드에는 결과가 아니라 스크립트가 들어 있습니다 — KGEOP 탭 Console에서 실행한 뒤, 끝나고 뜨는 창의 [📋 복사하고 닫기]를 누르고 다시 반영하세요.'; return ''; }
 function bindKgOne(d, r){
   d.querySelectorAll('[data-kgone]').forEach(b => b.onclick = async () => {
-    if(b.dataset.kgone === 'script'){ const ok = await copyText(kgScript([r.pnu])); toast(ok ? `스크립트를 복사했습니다 (${jibunNo(r.jibun)}). KGEOP 탭에서 F12 → Console → 붙여넣기 → Enter. 끝나면 [복사하고 닫기] 후 여기 [📋 복사한 결과 반영].` : '복사하지 못했습니다.', 14000, { label: 'KGEOP 열기', fn: () => window.open('https://kgeop.go.kr/info/infoMap.do?initMode=L', 'kgeopSite') }); }
-    else { let t = ''; try{ t = await navigator.clipboard.readText(); }catch(e){ toast('클립보드를 읽지 못했습니다 — 필지 목록 위 [🔗 KGEOP] 창의 칸에 붙여넣어 주세요.', 8000); return; }
-      const res = await kgApply(t); if(res.err){ toast('⚠ ' + res.err, 9000); return; }
-      toast(res.hit || KG.has(r.pnu) ? `✅ KGEOP 자료 반영 (${res.n}필지)` : `반영했지만 이 필지(${r.pnu})는 결과에 없었습니다 — KGEOP 창의 오류 수를 확인하세요.`, 8000); kgSync([r]); showDetail(r); }
+    const doc = b.ownerDocument, W = doc.defaultView || window, box = b.closest('.kgget') || b.parentNode;
+    const say = (t, warn) => { kgOneMsg = { pnu: r.pnu, t, warn }; let m = box.nextElementSibling; if(!m || !m.classList.contains('kgmsg')){ m = doc.createElement('div'); m.className = 'kgmsg small'; box.after(m); } m.textContent = t; m.style.color = warn ? '#e8590c' : '#1971c2'; };
+    const apply = async t => {
+      const ce = kgClipErr(t); if(ce){ say('⚠ ' + ce, true); return; }
+      say('반영 중…');
+      const res = await kgApply(t); if(res.err){ say('⚠ ' + res.err, true); return; }
+      const e = KG.get(r.pnu);
+      say(kgOf(r) ? `✅ KGEOP 자료를 반영했습니다 (${res.n}필지). 토지·건물 탭에 KGEOP 칸이 채워졌습니다.` : e && e.err ? `⚠ KGEOP에서 이 필지를 못 받았습니다: ${e.err} — KGEOP 탭이 로그인·지도 화면인지 확인하고 다시 가져오세요.` : `⚠ 붙여넣은 결과에 이 필지(${jibunNo(r.jibun)})가 없습니다 — 이 필지에서 [KGEOP에서 이 필지 가져오기]로 복사한 스크립트를 실행했는지 확인하세요.`, !kgOf(r));
+      kgSync([r]); showDetail(r);
+    };
+    if(b.dataset.kgone === 'script'){
+      let ok = false; const txt = kgScript([r.pnu]);
+      try{ await W.navigator.clipboard.writeText(txt); ok = true; }catch(e){ ok = await copyText(txt); }
+      say(ok ? `① 스크립트를 복사했습니다 (${jibunNo(r.jibun)}). ② KGEOP 탭에서 F12 → Console → 붙여넣기 → Enter. ③ 끝나고 뜨는 창에서 [📋 복사하고 닫기]. ④ 여기 [📋 복사한 결과 반영].` : '⚠ 복사하지 못했습니다 — 이 창을 한 번 누른 뒤 다시 눌러 주세요.', !ok);
+    } else if(b.dataset.kgone === 'paste'){
+      let t = null; try{ W.focus(); t = await W.navigator.clipboard.readText(); }catch(e){ t = null; }
+      if(t != null){ await apply(t); return; }
+      /* 클립보드를 못 읽으면 직접 붙여넣는 칸 */
+      say('브라우저가 클립보드 읽기를 막았습니다 — 아래 칸을 누르고 Ctrl+V 하면 바로 반영합니다.', true);
+      let ta = box.parentNode.querySelector('textarea.kgpaste'); if(!ta){ ta = doc.createElement('textarea'); ta.className = 'kgpaste'; ta.placeholder = '여기를 누르고 Ctrl+V'; ta.style.cssText = 'width:100%;height:46px;font:11px monospace;margin-top:4px;box-sizing:border-box'; (box.nextElementSibling || box).after(ta); }
+      ta.focus(); ta.oninput = () => { const v = ta.value; if(v.trim().length > 10) apply(v); };
+    }
   });
+  if(kgOneMsg && kgOneMsg.pnu === r.pnu){ const box = d.querySelector('.kgget') || d.querySelector('.srct'); if(box){ const m = box.ownerDocument.createElement('div'); m.className = 'kgmsg small'; m.textContent = kgOneMsg.t; m.style.color = kgOneMsg.warn ? '#e8590c' : '#1971c2'; box.after(m); } }
 }
 /* KGEOP 건물: 상세(면적 등)를 못 받은 건물도 '있음'으로 셈. 응답에 건물 목록 자체가 없으면(bk false) 건물은 판단하지 않음(null) */
 function kgBlds(r){ const k = kgOf(r); if(!k) return null; if(!(k.blds || []).length && k.bk === false) return null; return k.blds || []; }
@@ -2548,9 +2761,11 @@ function kgClean(x, at){
     ownChg: S(x.ownChg), ownChgDe: S(x.ownChgDe), lastMove: S(x.lastMove), lastMoveDe: S(x.lastMoveDe), jiga: S(x.jiga), jigaDe: S(x.jigaDe), x: N(x.x), y: N(x.y),
     geom: typeof x.geom === 'string' && x.geom.length < 300000 ? x.geom : '',
     moves: (Array.isArray(x.moves) ? x.moves : []).slice(0, 40).map(m => ({ de: S(m.de), why: S(m.why), jimok: S(m.jimok), area: N(m.area) })),
-    blds: (Array.isArray(x.blds) ? x.blds : []).slice(0, 20).map(b => ({ id: S(b.id), kind: S(b.kind), name: S(b.name), barea: N(b.barea), garea: N(b.garea), use: S(b.use), stru: S(b.stru), uflr: S(b.uflr), bflr: S(b.bflr), useApr: S(b.useApr), rep: S(b.rep), rel: S(b.rel), err: b.err ? S(b.err) : '' })),
+    blds: (Array.isArray(x.blds) ? x.blds : []).slice(0, 20).map(b => ({ id: S(b.id), kind: S(b.kind), name: S(b.name), dong: S(b.dong), barea: N(b.barea), garea: N(b.garea), use: S(b.use), stru: S(b.stru), uflr: S(b.uflr), bflr: S(b.bflr), useApr: S(b.useApr), rep: S(b.rep), rel: S(b.rel), err: b.err ? S(b.err) : '', raw: kgPrim(b.raw), flr: Array.isArray(b.flr) ? b.flr.slice(0, 60).map(kgPrim) : undefined })),
     bk: x.bk === undefined ? undefined : !!x.bk, v: N(x.v), diag: kgDiagClean(x.diag) };
 }
+/* 건물 원자료: 숫자·짧은 글만, 소유자·주소·연락처 같은 칸은 버림 */
+function kgPrim(o){ const r = {}; if(o && typeof o === 'object' && !Array.isArray(o)) Object.entries(o).forEach(([k, v]) => { if(Object.keys(r).length >= 90 || /own|ownr|adres|addr|tel|phone|mail|rrn|jumin|birth|psn|nmpr/i.test(k) || v == null || typeof v === 'object') return; r[String(k).slice(0, 40)] = typeof v === 'number' ? v : String(v).slice(0, 80); }); return Object.keys(r).length ? r : undefined; }
 /* 진단: 응답의 키 이름·개수·상태만 (값은 버림) */
 function kgDiagClean(d){
   if(!d || typeof d !== 'object') return undefined;
@@ -2590,16 +2805,16 @@ CHIP_PRED_LATE.push(() => { CHIP_PRED.kgDiff = r => kgDiffs(r).length > 0; });
 const DOHAE_RE = /1\s*:\s*(1200|2400|3000|6000)\b/;
 function shiftRisk(r){
   if(!r) return { lvl: '', sig: [], ok: false };
-  const key = [KGV, vdV, results.length, r.bld ? r.bld.length : -1, (r.bOther || []).length, (r.bOwn || []).length, r.area, r.ownerClass].join('|');
+  const key = [KGV, vdV, r.scaleV || '', (r.movesV || []).length, (r.bldAtch || []).length, results.length, r.bld ? r.bld.length : -1, (r.bOther || []).length, (r.bOwn || []).length, r.area, r.ownerClass].join('|');
   if(r._sr && r._srK === key) return r._sr;
   const sig = [], k = kgOf(r), la = Number((k && k.area) || r.area) || 0;
   const S = (t, strong, src) => sig.push({ t, strong: !!strong, src: src || '' });
   const jbs = list => [...new Set(list)].join(', ');
   // 1) 건축면적 > 대지면적
   let ba = 0, bsrc = '', multi = false;
-  if(k && (k.blds || []).some(b => b.barea > 0)){ const bs = k.blds.filter(b => b.barea > 0); ba = bs.reduce((a, b) => a + b.barea, 0); bsrc = 'KGEOP 건축물'; multi = bs.some(b => String(b.rel || '').trim()); }
-  else if((r.bld || []).some(b => b.archArea > 0)){ ba = r.bld.reduce((a, b) => a + (b.archArea || 0), 0); bsrc = '건축물대장'; }
-  if(la > 0 && ba > la + 0.5){ const t = `건축면적 ${fmtM2(ba)}㎡ > 대지 ${fmtM2(la)}㎡ (${bsrc})`; if(multi) S(t + ' — 여러 지번에 걸친 건물이라 합계 확인', false, bsrc); else S(t, true, bsrc); }
+  if(k && (k.blds || []).some(b => b.barea > 0)){ const bs = k.blds.filter(b => b.barea > 0); ba = bs.reduce((a, b) => a + b.barea, 0); bsrc = 'KGEOP 건축물'; multi = bs.some(b => String(b.rel || '').trim() || (la > 0 && (bldNorm(b, 'kg').plat || 0) > la * 1.02)); }
+  else if((r.bld || []).some(b => b.archArea > 0)){ ba = r.bld.reduce((a, b) => a + (b.archArea || 0), 0); bsrc = '건축물대장'; multi = !!(atchCache.get(r.pnu) || []).length || r.bld.some(b => la > 0 && (b.platArea || 0) > la * 1.02); }
+  if(la > 0 && ba > la + 0.5){ const t = `건축면적 ${fmtM2(ba)}㎡ > 대지 ${fmtM2(la)}㎡ (${bsrc})`; if(multi) S(t + ' — 대지가 여러 필지(건물 대지면적이 이 필지보다 큼)라 합계로 확인', false, bsrc); else S(t, true, bsrc); }
   else if(!ba && la > 0){
     const fa = (r.bOwn || []).filter(x => x.rel && (x.rel.inside || x.rel.ov >= 1)).reduce((a, x) => a + (x.area || 0), 0);
     if(fa > la * 1.05 + 1) S(`지도상 건물 바닥 ${fmtM2(fa)}㎡ > 대지 ${fmtM2(la)}㎡`, false, '지도');
@@ -2622,6 +2837,11 @@ function shiftRisk(r){
     const kd = kgDiff(r); if(kd && kd.off != null && kd.off >= 1) S(`KGEOP 경계와 지도 경계 ${kd.off.toFixed(1)}m 차이`, kd.off >= 3, 'KGEOP');
     const yr = new Date().getFullYear(), mv = (k.moves || []).filter(m => /분할|합병/.test(m.why || '') && Number(String(m.de || '').replace(/\D/g, '').slice(0, 4)) >= yr - 10);
     if(mv.length) S(`최근 토지이동: ${mv.map(m => `${String(m.de).replace(/\D/g, '').slice(0, 4)} ${m.why}`).join(', ')}`, false, 'KGEOP');
+  }
+  if(!k){
+    if(DOHAE_RE.test(r.scaleV || '')) S(`도해 지적(${r.scaleV}) — 경계 오차가 큰 지역`, false, '브이월드');
+    const yr = new Date().getFullYear(), mv = (r.movesV || []).filter(m => /분할|합병/.test(m.why || '') && Number(String(m.de || '').replace(/\D/g, '').slice(0, 4)) >= yr - 10);
+    if(mv.length) S(`최근 토지이동: ${mv.slice(0, 4).map(m => `${String(m.de).replace(/\D/g, '').slice(0, 4)} ${m.why}`).join(', ')}`, false, '브이월드');
   }
   const ok = !!shiftOkMap[r.pnu];
   r._sr = { lvl: ok ? '' : sig.some(s => s.strong) ? 'high' : sig.length ? 'sus' : '', sig, ok, ba, la }; r._srK = key;
@@ -2680,6 +2900,7 @@ function ivCoords(line, a, b){
 /* ---- 판정 ---- */
 function planTxt(r){ const e = roadEntries(r); return e.length ? [...new Set(e.map(x => x.cnflc || '포함'))].join('·') : ''; }
 function vdParcelBase(r){
+  if(kgRequired() && !r.single && !kgOf(r)) return { k: 'hold', why: [kgErrOf(r) ? 'KGEOP 조회 실패 — 다시 가져오기' : 'KGEOP 미확인 — KGEOP 정보로 확인 후 판정'] };
   const sr = shiftRisk(r), oc = ownCls(r);
   if(sr.lvl === 'high') return { k: 'hold', why: ['지적 밀림 위험 — ' + sr.sig.filter(s => s.strong).map(s => s.t).join(' · ')] };
   if(oc === 'unknown') return { k: 'hold', why: ['소유 미확인 — 토지이음·토지대장 확인'] };
@@ -2707,7 +2928,7 @@ function vdAll(){
   const line = isLine(), LN = line ? allLines() : [];
   const key = [LN.map(o => o.k + ':' + o.line.geometry.coordinates.map(c => c[0].toFixed(7) + ',' + c[1].toFixed(7)).join(';')).join('|'), results.length,
     results.map(r => r.pnu.slice(-7) + (r.ownerClass || 'u').charAt(0) + (r.ownerFail ? 'f' : '') + (r.landUsePlan ? r.landUsePlan.length : r.planFail ? 'x' : 'n') + (r.tier || '-').charAt(0) + (r.bld ? r.bld.length : '') + '.' + (r.bOther || []).length).join(''),
-    roadFeatures.length, roadInLen != null, KGV, vdV, activeId].join('#');
+    roadFeatures.length, roadInLen != null, KGV, vdV, activeId, kgRequired()].join('#');
   if(vdMemo.key === key && vdMemo.arr === results) return vdMemo.v;
   const by = new Map(), segs = [], geoOk = line && roadInLen != null;
   if(line){
@@ -2793,7 +3014,7 @@ function renderVdCard(){
   const bar = line && t.all > 0 ? `<div class="vd-bar">${['ok', 'permit', 'hold', 'no'].map(k => t.len[k] > 0.05 ? `<i style="width:${(t.len[k] / t.all * 100).toFixed(2)}%;background:${VD[k].c}" title="${VD[k].t} ${fmtLen(t.len[k])} (${Math.round(t.len[k] / t.all * 100)}%)"></i>` : '').join('')}</div>` : '';
   const open = LS.get('vdOpen', '0') === '1';
   el.className = 'on vk-' + hd.k + (open ? ' open' : '');
-  el.innerHTML = `<div class="vd-h"><button id="vdTog" class="vd-tog" title="판정 자세히 보기/접기">${open ? '▾' : '▸'}</button><span class="vd-lbl">배관 판정</span><span class="vd-head" title="${esc(hd.sub)}">${hd.i} ${esc(hd.t)}</span><button id="vdKg" class="mini" title="KGEOP 자료(건축물 면적·축척·토지이동·경계)를 가져와 지적 밀림 판단에 씀">🔗 KGEOP ${kgN}/${results.length}</button><button id="vdHelp" class="mini" title="판정 기준">?</button></div>
+  el.innerHTML = `<div class="vd-h"><button id="vdTog" class="vd-tog" title="판정 자세히 보기/접기">${open ? '▾' : '▸'}</button><span class="vd-lbl">배관 판정</span><span class="vd-head" title="${esc(hd.sub)}">${hd.i} ${esc(hd.t)}</span>${kgN < results.length ? `<span class="vd-kgmiss" title="KGEOP 정보가 없는 필지 — ${kgRequired() ? '판정 보류로 둠' : '참고'}">K 미확인 ${results.length - kgN}</span>` : ''}<button id="vdKg" class="mini${kgLink ? ' on' : ''}" title="KGEOP 자료(건물·축척·토지이동·소유) — 연결하면 자동">${kgLink ? '🟢' : '🔗'} KGEOP ${kgN}/${results.length}${kgLink && (kgQ.length || kgBusy) ? ' · 조회 중' : ''}</button><button id="vdHelp" class="mini" title="판정 기준">?</button></div>
     <div class="vd-more"><div class="small vd-sub">${esc(hd.sub)}</div>${bar}
     <div class="vd-ch">${VD_KS.filter(k => t.n[k] || (line && t.len[k] > 0.05)).map(k => `<button class="vdc ${k}${on('vd_' + k)}" data-vk="vd_${k}" title="${esc(VD[k].d)} — 눌러서 이것만 보기">${VD[k].i} ${VD[k].t} ${line ? `<b>${fmtLen(t.len[k])}</b> · ` : ''}${k === 'hold' ? (t.n.hold ? t.n.hold + '필지' : '') + (line && V.segs.some(s => !s.r) ? `${t.n.hold ? ' · ' : ''}필지 없는 곳 ${V.segs.filter(s => !s.r).length}` : '') : t.n[k] + '필지'}${k === 'no' && line ? ` · ${V.runs.no.length}곳` : ''}</button>`).join('')}${shH ? `<button class="vdc sh${on('shHi')}" data-vk="shHi" title="강한 밀림 신호(건축면적>대지, 국·공유지에 건물 걸침, 큰 면적·경계 차이)">⚠ 밀림 위험 ${shH}</button>` : ''}${shS ? `<button class="vdc shs${on('shSus')}" data-vk="shSus" title="약한 신호(도해 축척, 면적 차이, 최근 분할 등) — 판정은 그대로, 참고">밀림 의심 ${shS}</button>` : ''}${t.nearRisk.length ? `<span class="small" style="color:#c92a2a" title="${esc(t.nearRisk.map(r => jibunNo(r.jibun)).join(', '))}">· 선 밖 사유지 중 밀림 위험 ${t.nearRisk.length}</span>` : ''}${kgDiffN() ? `<button class="vdc shs${on('kgDiff')}" data-vk="kgDiff" title="KGEOP와 브이월드의 소유구분·지목·면적이 다른 필지">KGEOP≠브이월드 ${kgDiffN()}</button>` : ''}</div>
     <label class="small vd-band"><input type="checkbox" id="vdBand"${visParts.vdb ? ' checked' : ''}> 지도에 판정 색 띠 보이기</label></div>`;
@@ -2818,14 +3039,13 @@ function vdBoxHtml(r){
   const v = vdOf(r), sr = shiftRisk(r), ov = vdOvOf(r.pnu); let h = '';
   if(v){
     h += `<div class="vdbox ${v.k}"><b>${VD[v.k].i} ${VD[v.k].t}</b> <span class="small">${esc(v.why.join(' · '))}</span>`;
-    if(isLine() && v.segs.length) h += `<div class="small vd-segs">${v.segs.map(s => `${brOk().length ? esc(s.ln) + ' ' : ''}${Math.round(s.a)}~${Math.round(s.b)}m ${VD[s.k].i}${s.inR ? ' 계획도로 안' : ''}`).join(' · ')}</div>`;
-    h += `<div class="vd-ov small">판정 직접 정하기 <select data-vov><option value="">자동</option>${['ok', 'permit', 'no', 'hold'].map(k => `<option value="${k}"${ov && ov.v === k ? ' selected' : ''}>${VD[k].i} ${VD[k].t}</option>`).join('')}</select> <input data-vovw placeholder="사유 (예: 사용승낙 받음)" value="${esc(ov ? ov.why : '')}"></div></div>`;
+    if(isLine() && v.segs.length > 1) h += `<div class="small vd-segs">${v.segs.map(s => `${brOk().length ? esc(s.ln) + ' ' : ''}${Math.round(s.a)}~${Math.round(s.b)}m ${VD[s.k].i}${s.inR ? ' 계획도로 안' : ''}`).join(' · ')}</div>`;
+    h += `<details class="vd-ovd"><summary>✎ 직접 정하기${ov ? ': ' + VD[ov.v].t : ''}</summary><div class="vd-ov small"><select data-vov><option value="">자동</option>${['ok', 'permit', 'no', 'hold'].map(k => `<option value="${k}"${ov && ov.v === k ? ' selected' : ''}>${VD[k].i} ${VD[k].t}</option>`).join('')}</select> <input data-vovw placeholder="사유 (예: 사용승낙 받음)" value="${esc(ov ? ov.why : '')}"></div></details></div>`;
   } else if(isLine() && !r.single && r.tier && r.tier !== 'pass') h += `<div class="vdbox ref"><b>선 밖 필지</b> <span class="small">배관이 지나지 않아 판정 없음 (${TIER_LBL[r.tier]})</span>${sr.lvl === 'high' && vdPrivate(r) ? '<div class="small" style="color:#c92a2a">지적 밀림 위험이 있어 실제로는 배관이 이 필지를 지날 수 있음</div>' : ''}</div>`;
-  if(sr.sig.length) h += `<div class="srbox ${sr.ok ? 'okd' : sr.lvl}"><b>지적 밀림 ${sr.ok ? '— 확인함(이상 없음)' : sr.lvl === 'high' ? '위험 높음 → 판정 보류' : '의심 (참고)'}</b><ul>${sr.sig.map(s => `<li class="${s.strong ? 'st' : ''}">${s.strong ? '●' : '○'} ${esc(s.t)}</li>`).join('')}</ul><label class="small"><input type="checkbox" data-shok${sr.ok ? ' checked' : ''}> 현장·도면으로 확인함 — 밀림 없음${sr.sig.some(s => s.strong) ? ' (보류 풀기)' : ''}</label></div>`;
+  if(sr.sig.length) h += `<details class="srbox ${sr.ok ? 'okd' : sr.lvl}"${sr.lvl === 'high' ? ' open' : ''}><summary><b>지적 밀림 ${sr.ok ? '— 확인함(이상 없음)' : sr.lvl === 'high' ? '위험 높음 → 판정 보류' : '의심 (참고)'}</b> <span class="small">${sr.sig.length}가지</span></summary><ul>${sr.sig.map(s => `<li class="${s.strong ? 'st' : ''}">${s.strong ? '●' : '○'} ${esc(s.t)}</li>`).join('')}</ul><label class="small"><input type="checkbox" data-shok${sr.ok ? ' checked' : ''}> 현장·도면으로 확인함 — 밀림 없음${sr.sig.some(s => s.strong) ? ' (보류 풀기)' : ''}</label></details>`;
   const k = kgOf(r);
-  if(k){ const kd = kgDiff(r), ba = (k.blds || []).reduce((a, b) => a + (b.barea || 0), 0); h += `<div class="kgline small"><b>KGEOP</b> ${esc([k.jimok, k.area ? fmtM2(k.area) + '㎡' : '', k.scale, k.ownType, (k.blds || []).length ? `건물 ${k.blds.length}동${ba ? ' · 건축면적 ' + fmtM2(ba) + '㎡' : ''}` : '건물 없음', kd && kd.off != null ? `경계 차이 ${kd.off.toFixed(1)}m` : '', k.lastMove ? `최근 ${k.lastMove} ${String(k.lastMoveDe || '').slice(0, 10)}` : ''].filter(Boolean).join(' · '))} <span style="color:#868e96">(${esc(String(k.at || '').slice(0, 10))} 수집)</span></div>`; }
-  else if(kgErrOf(r)) h += `<div class="kgline small" style="color:#e8590c">KGEOP 조회 실패(${esc(kgErrOf(r).err)}) — 자료가 없는 게 아니라 못 받은 것입니다. 토지 탭에서 다시 가져오기</div>`;
-  else h += '<div class="kgline small" style="color:#868e96">KGEOP 자료 아직 안 가져옴 — 토지 탭의 [KGEOP에서 이 필지 가져오기] 또는 필지 목록 위 [🔗 KGEOP]</div>';
+  h += k ? `<div class="kgline small">KGEOP ✓ <span style="color:#868e96">${esc(String(k.at || '').slice(0, 10))} 수집${(k.v >= 5) ? '' : ' · 예전 자료(건물 상세 없음)'}</span></div>`
+    : `<div class="kgline small warn">${kgErrOf(r) ? `KGEOP 조회 실패(${esc(kgErrOf(r).err)})` : 'KGEOP 미확인'}${kgLink ? ' — 자동 조회 중…' : ' — 토지·건물 탭에서 가져오기'}</div>`;
   return h;
 }
 function bindVdBox(d, r){
@@ -2835,12 +3055,11 @@ function bindVdBox(d, r){
 }
 
 /* ---- KGEOP 패널: PNU 목록을 넣은 콘솔 스크립트 복사 → KGEOP 탭 콘솔에서 실행 → 결과 붙여넣기 ---- */
-async function kgCollect(PRE){
-  /* KGEOP(kgeop.go.kr) 페이지의 개발자도구 Console에서 실행. 소유자 성명·주소는 가져오지 않음.
-     v4: 실패하면 3번까지 다시 시도 · 건물 목록은 응답 어디에 있든 찾아 모음 · 토지대장이 비면 요약 정보에서 보충 · 진단(키 이름·개수만) */
-  if(!/(^|\.)kgeop\.go\.kr$/.test(location.hostname)){ alert('KGEOP(kgeop.go.kr) 페이지의 콘솔(F12 → Console)에서 실행해 주세요.'); return; }
-  let qs = Array.isArray(PRE) && PRE.length ? PRE : null;
-  if(!qs){ const t = prompt('PNU(19자리) 또는 지번을 쉼표·줄바꿈으로 구분해 넣으세요', ''); if(!t) return; qs = t.split(/[\n,;\t]+/).map(s => s.trim()).filter(Boolean); }
+async function kgCollect(PRE, RELAY){
+  /* KGEOP(kgeop.go.kr) 페이지에서 실행. 소유자 성명·주소는 가져오지 않음.
+     v5: 건물 기본정보 전체(대지·건축·연면적, 건폐율·용적률, 세대·주차 …)와 층별현황도 담음.
+     RELAY가 있으면 '연결 모드' — 노선 필지 조회기가 보내는 PNU를 그때그때 조회해 돌려줌 */
+  if(!/(^|\.)kgeop\.go\.kr$/.test(location.hostname)){ alert('KGEOP(kgeop.go.kr) 페이지에서 실행해 주세요.'); return; }
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const get = async u => {
     let last = null;
@@ -2852,58 +3071,90 @@ async function kgCollect(PRE){
     }
     throw last;
   };
-  const first = a => Array.isArray(a) && a.length ? a[0] : (a && typeof a === 'object' && !Array.isArray(a) ? a : {}), num = v => v == null || v === '' || isNaN(+v) ? null : +v, out = [];
-  /* 응답 안에서 key를 가진 첫 값 / 건물 항목(buldIdno 등) 배열 모두 */
+  const first = a => Array.isArray(a) && a.length ? a[0] : (a && typeof a === 'object' && !Array.isArray(a) ? a : {}), num = v => v == null || v === '' || isNaN(+v) ? null : +v;
+  const BAD = /own|ownr|adres|addr|tel|phone|mail|rrn|jumin|birth|psn|nmpr/i;
+  const prim = o => { const r = {}; if(o && typeof o === 'object' && !Array.isArray(o)) Object.entries(o).forEach(([k, v]) => { if(Object.keys(r).length >= 90 || BAD.test(k) || v == null || typeof v === 'object') return; r[String(k).slice(0, 40)] = typeof v === 'number' ? v : String(v).slice(0, 80); }); return r; };
   const findKey = (o, k, d = 0) => { if(!o || typeof o !== 'object' || d > 6) return undefined; if(!Array.isArray(o) && o[k] != null && o[k] !== '') return o[k]; for(const v of Array.isArray(o) ? o : Object.values(o)){ const x = findKey(v, k, d + 1); if(x !== undefined) return x; } return undefined; };
-  const findBlds = (o, path, acc, d = 0) => { if(!o || typeof o !== 'object' || d > 6) return acc; if(Array.isArray(o)){ if(o.some(x => x && typeof x === 'object' && (x.buldIdno || x.bldgIdno || x.buldKndCode))){ acc.keys.push(path); o.forEach(x => { if(x && (x.buldIdno || x.bldgIdno)) acc.list.push(x); }); } else o.forEach((v, i) => findBlds(v, path, acc, d + 1)); return acc; } Object.entries(o).forEach(([k, v]) => { if(/^(bldg|buld|bld)/i.test(k)) acc.seen.push(k); findBlds(v, path ? path + '.' + k : k, acc, d + 1); }); return acc; };
+  const findArr = (o, test, d = 0) => { if(!o || typeof o !== 'object' || d > 6) return null; if(Array.isArray(o)){ if(o.some(x => x && typeof x === 'object' && test(x))) return o; for(const v of o){ const a = findArr(v, test, d + 1); if(a) return a; } return null; } for(const v of Object.values(o)){ const a = findArr(v, test, d + 1); if(a) return a; } return null; };
+  const findBlds = (o, path, acc, d = 0) => { if(!o || typeof o !== 'object' || d > 6) return acc; if(Array.isArray(o)){ if(o.some(x => x && typeof x === 'object' && (x.buldIdno || x.bldgIdno || x.buldKndCode))){ acc.keys.push(path); o.forEach(x => { if(x && (x.buldIdno || x.bldgIdno)) acc.list.push(x); }); } else o.forEach(v => findBlds(v, path, acc, d + 1)); return acc; } Object.entries(o).forEach(([k, v]) => { if(/^(bldg|buld|bld)/i.test(k)) acc.seen.push(k); findBlds(v, path ? path + '.' + k : k, acc, d + 1); }); return acc; };
   const shape = o => { const s = {}; if(o && typeof o === 'object') Object.entries(o).forEach(([k, v]) => { s[k] = Array.isArray(v) ? v.length : v && typeof v === 'object' ? 'obj' : v == null || v === '' ? 0 : 1; }); return s; };
+  async function one(q){
+    const out = [];
+    let cands = [];
+    if(/^\d{19}$/.test(q)) cands = [{ pnu: q }];
+    else { const j = await get('/geopass/api/getJusoList.do?currentPage=1&countPerPage=5&type=0&keyword=' + encodeURIComponent(q)); cands = ((j.jusoResult || {}).jusoList || []).map(x => ({ pnu: x.addrPnu, addr: x.jibunAddr, geom: x.geom, x: num(x.parcelX), y: num(x.parcelY) })); await sleep(300); }
+    if(!cands.length) return [{ q, err: '검색 결과 없음' }];
+    for(const c of cands){
+      const diag = { st: {} }; let d = null, sm = null;
+      try{ d = await get('/geopass/api/selectOneParcelInfo.do?pnu=' + c.pnu); diag.st.parcel = 'ok'; diag.parcel = shape(d); }catch(e){ diag.st.parcel = String(e.message || e); }
+      await sleep(250);
+      try{ sm = await get('/geopass/api/estateSummary.do?pnu=' + c.pnu); diag.st.summary = 'ok'; diag.summary = shape(sm); }catch(e){ diag.st.summary = String(e.message || e); }
+      await sleep(250);
+      if(!d && !sm){ out.push({ q, pnu: c.pnu, err: '조회 실패: ' + diag.st.parcel, diag }); continue; }
+      d = d || {};
+      const L0 = first(d.landLedgRst), J = first(d.jigaRst), A = first((((d.addrResultFromPnuMap || {}).jusoResult) || {}).jusoList);
+      const pick = k => (L0 && L0[k] != null && L0[k] !== '') ? L0[k] : findKey(sm, k) !== undefined ? findKey(sm, k) : findKey(d, k);
+      const it = { q, pnu: c.pnu, addr: c.addr || A.jibunAddr || '', roadAddr: A.roadAddr || '', geom: c.geom || A.geom || findKey(d, 'geom') || '', x: c.x || num(A.parcelX), y: c.y || num(A.parcelY),
+        jimok: pick('lndcgrNm') || pick('lndcgrCodeNm') || '', area: num(pick('lndpclAr')), scale: pick('scNm') || '', ownType: pick('posesnTyNm') || pick('posesnSeCodeNm') || '', shareCnt: num(pick('pblonsipNmprCo')),
+        ownChg: pick('ownshipChgcsNm') || '', ownChgDe: pick('ownshipChangeDe') || '', lastMove: pick('ladMvmnResnNm') || '', lastMoveDe: pick('ladMvmnDe') || '',
+        jiga: J.indvdlzPblntfPclnd || findKey(sm, 'indvdlzPblntfPclnd') || '', jigaDe: J.stdrDe || '',
+        moves: (d.moveHistList || []).map(m => ({ de: m.ladMvmnDe, why: m.ladMvmnResnNm, jimok: m.lndcgrNm, area: num(m.lndpclAr) })), blds: [] };
+      const bacc = findBlds({ parcel: d, summary: sm || {} }, '', { keys: [], list: [], seen: [] });
+      diag.bldKeys = bacc.keys; diag.bldSeen = [...new Set(bacc.seen)]; it.bk = bacc.keys.length > 0 || bacc.seen.length > 0;
+      diag.ledger = L0 && Object.keys(L0).length ? 'ok' : '비어 있음';
+      const seen = new Set();
+      for(const b of bacc.list){
+        const id = b.buldIdno || b.bldgIdno; if(seen.has(id)) continue; seen.add(id); if(seen.size > 12) break;
+        const bi = { id, kind: b.buldKndNm || '', name: b.buldNm || '', barea: num(b.barea), garea: num(b.garea), use: b.mainUseNm || b.mainPurpsNm || '', dong: b.dongNm || '' };
+        try{ const r = await get(`/geopass/api/estateOne-bldg-info.do?buldKndCode=${encodeURIComponent(b.buldKndCode || '')}&pnu=${c.pnu}&buldIdno=${encodeURIComponent(id || '')}`); const v = r.resultVo || first(r) || {};
+          Object.assign(bi, { barea: num(v.barea) != null ? num(v.barea) : bi.barea, garea: num(v.garea) != null ? num(v.garea) : bi.garea, use: v.mainUseNm || bi.use, stru: v.struNm || '', uflr: v.uflr || '', bflr: v.bflr || '', useApr: v.useAprvYmd || '', rep: v.repJibun || '', rel: v.relJibun || '' });
+          bi.raw = prim(v);
+          const fl = r.flrList || findArr(r, x => Object.keys(x).some(k => /flr|floor/i.test(k)) && Object.keys(x).some(k => /area|ar$/i.test(k)));
+          if(Array.isArray(fl)) bi.flr = fl.slice(0, 60).map(prim);
+          diag.bldResp = diag.bldResp || shape(r); }
+        catch(e){ bi.err = String(e.message || e); }
+        it.blds.push(bi); await sleep(250);
+      }
+      it.diag = diag;
+      if(!it.jimok && it.area == null && !it.blds.length && diag.st.parcel !== 'ok'){ out.push({ q, pnu: c.pnu, err: '토지 정보 못 받음: ' + diag.st.parcel, diag }); continue; }
+      out.push(it);
+    }
+    return out;
+  }
+  /* ---- 연결 모드 ---- */
+  if(RELAY){
+    const tgt = RELAY.origin && RELAY.origin !== 'null' ? RELAY.origin : '*';
+    const badge = document.getElementById('kgRelayBadge') || document.createElement('div'); badge.id = 'kgRelayBadge';
+    badge.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:999999;background:#2b8a3e;color:#fff;padding:8px 12px;border-radius:8px;font:13px sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3)'; document.body.appendChild(badge);
+    const say = t => { badge.textContent = '🔗 노선 필지 조회기 연결 — ' + t; };
+    if(!window.opener){ badge.style.background = '#c92a2a'; say('연결 못 함: 이 탭을 조회기의 [KGEOP 연결]로 열어야 합니다 (또는 이 사이트가 연결을 막음)'); return; }
+    if(!window.__kgRelayOn){
+      window.__kgRelayOn = true;
+      window.addEventListener('message', async e => {
+        const m = e.data; if(!m || m.kind !== 'kg-req' || (tgt !== '*' && e.origin !== tgt)) return;
+        const items = [], list = (m.pnus || []).filter(x => /^\d{19}$/.test(String(x))).slice(0, 50);
+        for(let i = 0; i < list.length; i++){ say(`조회 중 ${i + 1}/${list.length}`); try{ items.push(...await one(list[i])); }catch(err){ items.push({ q: list[i], err: String(err.message || err) }); } try{ e.source.postMessage({ kind: 'kg-prog', id: m.id, done: i + 1, n: list.length }, tgt); }catch(x){} }
+        try{ e.source.postMessage({ kind: 'kg-res', id: m.id, data: { kind: 'kgeop-parcels', v: 5, at: new Date().toISOString(), items } }, tgt); }catch(x){}
+        say(`대기 중 (방금 ${list.length}필지)`);
+      });
+    }
+    say('대기 중 — 이 탭은 열어 두세요'); try{ window.opener.postMessage({ kind: 'kg-ready', v: 5 }, tgt); }catch(e){ say('연결 실패: ' + e.message); }
+    return;
+  }
+  /* ---- 한 번에 모으기 ---- */
+  let qs = Array.isArray(PRE) && PRE.length ? PRE : null;
+  if(!qs){ const t = prompt('PNU(19자리) 또는 지번을 쉼표·줄바꿈으로 구분해 넣으세요', ''); if(!t) return; qs = t.split(/[\n,;\t]+/).map(s => s.trim()).filter(Boolean); }
+  const out = [];
   const pg = document.createElement('div'); pg.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:999999;background:#1971c2;color:#fff;padding:10px 14px;border-radius:8px;font:14px sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.3)'; document.body.appendChild(pg);
   const t0 = Date.now(); let i = 0;
   for(const q of qs){
     i++; const left = i > 1 ? Math.round((Date.now() - t0) / (i - 1) * (qs.length - i + 1) / 1000) : null;
     pg.textContent = `KGEOP 모으는 중 ${i}/${qs.length}` + (left != null ? ` · 약 ${left}초 남음` : ''); document.title = `KGEOP ${i}/${qs.length}`;
-    try{
-      let cands = [];
-      if(/^\d{19}$/.test(q)) cands = [{ pnu: q }];
-      else { const j = await get('/geopass/api/getJusoList.do?currentPage=1&countPerPage=5&type=0&keyword=' + encodeURIComponent(q)); cands = ((j.jusoResult || {}).jusoList || []).map(x => ({ pnu: x.addrPnu, addr: x.jibunAddr, geom: x.geom, x: num(x.parcelX), y: num(x.parcelY) })); await sleep(300); }
-      if(!cands.length){ out.push({ q, err: '검색 결과 없음' }); continue; }
-      for(const c of cands){
-        const diag = { st: {} };
-        let d = null, sm = null;
-        try{ d = await get('/geopass/api/selectOneParcelInfo.do?pnu=' + c.pnu); diag.st.parcel = 'ok'; diag.parcel = shape(d); }catch(e){ diag.st.parcel = String(e.message || e); }
-        await sleep(300);
-        try{ sm = await get('/geopass/api/estateSummary.do?pnu=' + c.pnu); diag.st.summary = 'ok'; diag.summary = shape(sm); }catch(e){ diag.st.summary = String(e.message || e); }
-        await sleep(300);
-        if(!d && !sm){ out.push({ q, pnu: c.pnu, err: '조회 실패: ' + diag.st.parcel, diag }); continue; }
-        d = d || {};
-        const L0 = first(d.landLedgRst), J = first(d.jigaRst), A = first((((d.addrResultFromPnuMap || {}).jusoResult) || {}).jusoList);
-        const pick = k => (L0 && L0[k] != null && L0[k] !== '') ? L0[k] : findKey(sm, k) !== undefined ? findKey(sm, k) : findKey(d, k);
-        const it = { q, pnu: c.pnu, addr: c.addr || A.jibunAddr || '', roadAddr: A.roadAddr || '', geom: c.geom || A.geom || findKey(d, 'geom') || '', x: c.x || num(A.parcelX), y: c.y || num(A.parcelY),
-          jimok: pick('lndcgrNm') || pick('lndcgrCodeNm') || '', area: num(pick('lndpclAr')), scale: pick('scNm') || '', ownType: pick('posesnTyNm') || pick('posesnSeCodeNm') || '', shareCnt: num(pick('pblonsipNmprCo')),
-          ownChg: pick('ownshipChgcsNm') || '', ownChgDe: pick('ownshipChangeDe') || '', lastMove: pick('ladMvmnResnNm') || '', lastMoveDe: pick('ladMvmnDe') || '',
-          jiga: J.indvdlzPblntfPclnd || findKey(sm, 'indvdlzPblntfPclnd') || '', jigaDe: J.stdrDe || '',
-          moves: (d.moveHistList || []).map(m => ({ de: m.ladMvmnDe, why: m.ladMvmnResnNm, jimok: m.lndcgrNm, area: num(m.lndpclAr) })), blds: [] };
-        const bacc = findBlds({ parcel: d, summary: sm || {} }, '', { keys: [], list: [], seen: [] });
-        diag.bldKeys = bacc.keys; diag.bldSeen = [...new Set(bacc.seen)]; it.bk = bacc.keys.length > 0 || bacc.seen.length > 0;
-        diag.ledger = L0 && Object.keys(L0).length ? 'ok' : '비어 있음';
-        const seen = new Set();
-        for(const b of bacc.list){
-          const id = b.buldIdno || b.bldgIdno; if(seen.has(id)) continue; seen.add(id); if(seen.size > 12) break;
-          const bi = { id, kind: b.buldKndNm || '', name: b.buldNm || '', barea: num(b.barea), garea: num(b.garea), use: b.mainUseNm || b.mainPurpsNm || '' };
-          try{ const r = await get(`/geopass/api/estateOne-bldg-info.do?buldKndCode=${encodeURIComponent(b.buldKndCode || '')}&pnu=${c.pnu}&buldIdno=${encodeURIComponent(id || '')}`); const v = r.resultVo || first(r) || {};
-            Object.assign(bi, { barea: num(v.barea) != null ? num(v.barea) : bi.barea, garea: num(v.garea) != null ? num(v.garea) : bi.garea, use: v.mainUseNm || bi.use, stru: v.struNm || '', uflr: v.uflr || '', bflr: v.bflr || '', useApr: v.useAprvYmd || '', rep: v.repJibun || '', rel: v.relJibun || '' }); }
-          catch(e){ bi.err = String(e.message || e); }
-          it.blds.push(bi); await sleep(300);
-        }
-        it.diag = diag;
-        if(!it.jimok && it.area == null && !it.blds.length && diag.st.parcel !== 'ok'){ out.push({ q, pnu: c.pnu, err: '토지 정보 못 받음: ' + diag.st.parcel, diag }); continue; }
-        out.push(it);
-      }
-    }catch(e){ out.push({ q, err: String(e.message || e) }); }
+    try{ out.push(...await one(q)); }catch(e){ out.push({ q, err: String(e.message || e) }); }
   }
   pg.remove(); document.title = 'KGEOP 모으기 끝';
   const ok = out.filter(x => !x.err), nb = ok.filter(x => x.blds.length).length, nl = ok.filter(x => x.diag && x.diag.ledger !== 'ok').length, be = ok.reduce((a, x) => a + x.blds.filter(b => b.err).length, 0);
-  const s = JSON.stringify({ kind: 'kgeop-parcels', v: 4, at: new Date().toISOString(), items: out });
+  const s = JSON.stringify({ kind: 'kgeop-parcels', v: 5, at: new Date().toISOString(), items: out });
   const box = document.createElement('div'); box.style.cssText = 'position:fixed;inset:40px;z-index:999999;background:#fff;border:2px solid #1971c2;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;font:14px sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4)';
   box.innerHTML = `<b style="font-size:16px">KGEOP ${out.length}필지 모음 — 건물 있는 필지 ${nb} · 토지대장 빈 필지 ${nl} · 건물 상세 실패 ${be} · 오류 ${out.filter(x => x.err).length}</b><div>아래 [📋 복사하고 닫기]를 누른 뒤, 노선 필지 조회기에 붙여넣고 [반영]을 누르세요. 소유자 이름·주소는 넣지 않았습니다.</div><textarea style="flex:1;font:12px monospace"></textarea><div><button style="font-size:15px;padding:6px 14px">📋 복사하고 닫기</button> <button>닫기</button></div>`;
   const ta = box.querySelector('textarea'); ta.value = s; document.body.appendChild(box); const [bc, bx] = box.querySelectorAll('button');
@@ -2940,6 +3191,16 @@ function openKgPanel(){
       <div class="kg-st">이 노선 필지 <b>${tg.length}</b>곳 중 KGEOP 자료 <b>${have}</b>곳 반영 <span class="small">(이 브라우저에 ${KG.size}필지 저장)</span></div>
       <div class="small" style="margin:4px 0 8px;color:#495057">KGEOP 정보(건축물 건축면적·축척·토지이동·경계)는 보안상 이 프로그램에서 바로 못 가져와서, KGEOP 화면에서 한 번 실행해 모아 옵니다. 소유자 이름·주소는 가져오지 않습니다.</div>
       <label class="small"><input type="checkbox" data-kg="all"${all ? ' checked' : ''}> 선 밖(양옆 폭 안) 국·공유지까지 전부</label> <label class="small"><input type="checkbox" data-kg="need"${only ? ' checked' : ''}> 아직 없는 필지만 (${need.length}곳)</label>
+      <div class="kg-link">
+        <b>${kgLink ? '🟢 연결됨' : '⚪ 자동 연결 (권장)'}</b> <span class="small">한 번 연결해 두면 필지를 조회하거나 누를 때 KGEOP 정보를 알아서 가져옵니다.</span>
+        <ol class="kg-steps small">
+          <li>처음 한 번: 이 단추를 <b>북마크바로 끌어다 놓기</b> → <a class="kg-bm" href="#">🔗 KGEOP 연결</a> <span style="color:#868e96">(끌기가 안 되면 <a href="javascript:void 0" data-kg="relaycopy">연결 스크립트 복사</a> → KGEOP Console에 붙여넣기)</span></li>
+          <li><button data-kg="connect" class="primary">KGEOP 열고 연결</button> → 열린 KGEOP 탭에서 북마크 <b>[🔗 KGEOP 연결]</b> 누르기</li>
+          <li>왼쪽 아래 초록 표시가 뜨면 끝 — KGEOP 탭은 닫지 말고 두세요</li>
+        </ol>
+      </div>
+      <label class="small"><input type="checkbox" data-kg="req"${kgRequired() ? ' checked' : ''}> KGEOP 정보가 없는 필지는 <b>판정 보류</b> (KGEOP 필수)</label>
+      <div class="small" style="margin:8px 0 2px;color:#495057"><b>직접 모으기</b> (연결이 안 될 때)</div>
       <ol class="kg-steps">
         <li><button data-kg="open">KGEOP 열기</button> <span class="small">로그인 없이 지도 화면이 뜨면 됩니다</span></li>
         <li><button data-kg="script" class="primary">📋 스크립트 복사 (${list.length}필지)</button> <span class="small">약 ${Math.max(1, Math.round(list.length * 0.8 / 60))}분</span></li>
@@ -2953,7 +3214,11 @@ function openKgPanel(){
       <div class="kg-row small" style="margin-top:6px"><button data-kg="pnu" title="PNU 목록만 복사 (직접 실행할 때)">PNU만 복사</button><button data-kg="clear" title="이 브라우저에 저장한 KGEOP 자료 모두 지우기">저장 자료 지우기</button><button data-kg="diag" title="마지막으로 반영한 결과의 진단(응답 키 이름·개수·오류만, 값 없음)을 복사 — 개발자에게 보내 주세요">🩺 진단 복사</button><button data-kg="redo" title="실패했거나 건물·토지 정보가 빈 필지만 다시 모으는 스크립트">↻ 빈 필지만 다시</button></div></div>`;
     const q = s => el.querySelector(`[data-kg="${s}"]`), msg = t => { el.querySelector('.kg-msg').textContent = t; };
     q('diag').onclick = async () => { if(!kgLastDiag){ msg('아직 반영한 결과가 없습니다.'); return; } const ok = await copyText(JSON.stringify(kgLastDiag)); msg(ok ? '진단을 복사했습니다 (값 없이 키 이름·개수·오류만). 채팅에 붙여 보내 주세요.' : '복사하지 못했습니다.'); };
-    q('redo').onclick = async () => { const L2 = tg.filter(r => { const e = KG.get(r.pnu); return !e || e.err || !(e.v >= 4) || (e.diag && e.diag.ledger !== 'ok') || (e.blds || []).some(b => b.err); }).map(r => r.pnu); if(!L2.length){ msg('다시 모을 필지가 없습니다.'); return; } const ok = await copyText(kgScript(L2)); msg(ok ? `✅ ${L2.length}필지 스크립트를 복사했습니다 (실패·예전 결과·빈 정보). KGEOP Console에 붙여넣고 Enter.` : '복사하지 못했습니다.'); };
+    q('redo').onclick = async () => { const L2 = tg.filter(r => { const e = KG.get(r.pnu); return !e || e.err || !(e.v >= 5) || (e.diag && e.diag.ledger !== 'ok') || (e.blds || []).some(b => b.err); }).map(r => r.pnu); if(!L2.length){ msg('다시 모을 필지가 없습니다.'); return; } const ok = await copyText(kgScript(L2)); msg(ok ? `✅ ${L2.length}필지 스크립트를 복사했습니다 (실패·예전 결과·빈 정보). KGEOP Console에 붙여넣고 Enter.` : '복사하지 못했습니다.'); };
+    { const bm = el.querySelector('.kg-bm'); if(bm){ bm.href = kgBookmarklet(); bm.onclick = e => { e.preventDefault(); toast('이 단추는 누르는 게 아니라 북마크바로 끌어다 놓는 것입니다 (Ctrl+Shift+B로 북마크바 보이기).', 8000); }; } }
+    q('connect').onclick = () => { kgConnect(); setTimeout(draw, 500); };
+    q('relaycopy').onclick = async () => { const ok = await copyText(kgRelayScript()); msg(ok ? '연결 스크립트를 복사했습니다 — [KGEOP 열고 연결]로 연 KGEOP 탭의 Console에 붙여넣고 Enter.' : '복사하지 못했습니다.'); };
+    q('req').onchange = e => { LS.set('kgReq', e.target.checked ? '1' : '0'); vdV++; renderTable(); };
     q('extra').onchange = e => { LS.set('kgExtra', e.target.value); draw(); };
     q('all').onchange = e => { LS.set('kgAll', e.target.checked ? '1' : '0'); draw(); };
     q('need').onchange = e => { LS.set('kgNeed', e.target.checked ? '1' : '0'); draw(); };
@@ -2961,8 +3226,8 @@ function openKgPanel(){
     q('script').onclick = async () => { if(!list.length){ msg('조회한 필지가 없습니다.'); return; } const ok = await copyText(kgScript(list)); msg(ok ? `✅ 스크립트를 복사했습니다 (${list.length}필지). KGEOP 탭의 Console에 붙여넣고 Enter.` : '복사하지 못했습니다 — 브라우저가 클립보드를 막았습니다.'); };
     q('pnu').onclick = async () => { const ok = await copyText(list.join('\n')); msg(ok ? `PNU ${list.length}개를 복사했습니다.` : '복사하지 못했습니다.'); };
     const apply = async t => { const res = await kgApply(t); if(res.err){ msg('⚠ ' + res.err); return; } msg(`✅ ${res.n}필지 반영 (이 노선 필지 ${res.hit}곳) · 건물 있는 필지 ${res.nb}` + (res.nl ? ` · 토지대장 빈 필지 ${res.nl}` : '') + (res.be ? ` · 건물 상세 실패 ${res.be}동` : '') + (res.fail ? ` · KGEOP 조회 실패 ${res.fail}필지(다시 가져오면 됨)` : '') + (res.bad ? ` · 검색 실패 ${res.bad}` : '') + (res.old ? ' — ⚠ 예전 스크립트 결과입니다. [스크립트 복사]로 새 스크립트를 받아 다시 돌리면 빠진 정보가 줄어듭니다.' : '')); q('txt').value = ''; setTimeout(draw, 1500); };
-    q('apply').onclick = () => apply(q('txt').value);
-    q('paste').onclick = async () => { try{ apply(await navigator.clipboard.readText()); }catch(e){ msg('클립보드를 읽지 못했습니다 — 칸에 직접 붙여넣고 [반영]을 누르세요.'); } };
+    q('apply').onclick = () => { const ce = kgClipErr(q('txt').value); if(ce){ msg('⚠ ' + ce); return; } apply(q('txt').value); };
+    q('paste').onclick = async () => { const W = el.ownerDocument.defaultView || window; try{ W.focus(); const t = await W.navigator.clipboard.readText(); const ce = kgClipErr(t); if(ce){ msg('⚠ ' + ce); return; } apply(t); }catch(e){ msg('클립보드를 읽지 못했습니다 — 위 칸을 누르고 Ctrl+V 한 뒤 [반영]을 누르세요.'); q('txt').focus(); } };
     q('ov').onchange = e => { LS.set('kgOv', e.target.checked ? '1' : '0'); drawKg(); };
     q('clear').onclick = async () => { if(!confirm('이 브라우저에 저장한 KGEOP 자료를 모두 지울까요?')) return; KG.clear(); try{ await KGDB.clear(); }catch(e){} KGV++; renderTable(); drawKg(); draw(); };
   };
@@ -4804,6 +5069,17 @@ async function runQuery(){
       }catch(e){ log('건축물대장 중단: ' + e.message); status('건축물대장: ' + e.message); toast('건축물대장 조회 중단: ' + e.message, 9000); }
     }
 
+    /* 3-2) v37 공식 자료 보강: 축척·토지이동(브이월드), 부속지번 건물(건축물대장) */
+    {
+      const tg = results.filter(r => !lineMode || r.tier === 'pass' || r.tier === 'near' || (r.tier === 'ref' && isPrivate(r)));
+      status('공식 자료 보강 중… (축척·토지이동·부속지번 건물)'); progress(90);
+      try{ if(tg.length) await fetchOfficial(tg[0]); /* 첫 필지로 기능 이름 확인 뒤 나머지 */ await pool(tg.slice(1), 6, fetchOfficial, (d, n) => { if(d % 10 === 0) status(`공식 자료 보강 중… ${d}/${n}`); }); }catch(e){ log('공식 자료(토지) 보강 실패: ' + e.message); }
+      let na = 0; try{ na = await fetchAtch(results); }catch(e){ log('부속지번 조회 실패: ' + e.message); }
+      vdV++;
+      log(`공식 자료 보강: 축척 ${tg.filter(r => r.scaleV).length} · 토지이동 이력 ${tg.filter(r => (r.movesV || []).length).length} · 부속지번 건물 ${results.filter(r => (r.bldAtch || []).length).length}필지 (${offSummary()})`);
+      if(Object.keys(OFF_OPS).some(k => offNone.has(k)) && !window.__offWarned){ window.__offWarned = true; setTimeout(() => toast(`브이월드 '${Object.keys(OFF_OPS).filter(k => offNone.has(k)).map(k => OFF_OPS[k].t).join(', ')}' 기능을 쓰지 못했습니다 — 키의 활용 서비스에 없거나 기능 이름이 다를 수 있습니다. [로그]에 응답이 남아 있습니다.`, 12000), 1500); }
+    }
+
     /* 4) 도시계획도로(결정) 폴리곤 — 노선이 계획도로 안을 지나는 길이 */
     status('도시계획도로 조회 중…'); progress(92);
     roadInLen = null;
@@ -4855,6 +5131,7 @@ async function runQuery(){
     $('#btnQuery').classList.remove('pulse');
     lastQueryMeta = { label: targetLabel(), kind: shapeKind, len: lineMode ? totalLength() : null, area: lineMode ? null : turf.area(shapeGeom), time: new Date() };
     if(!activeId) newRouteFromCurrent();
+    if(kgLink) kgEnqueue(kgTargets(false).map(r => r.pnu));
     if(FULL && lineMode && stations){ renderReview(); const td = reviewTodo(); if(td.length) setTimeout(() => toast(`🛣 도로 폭 점검: 사유지에 영향 있는 곳 ${td.length}곳 (사유지 ${[...new Set(td.flatMap(x => x.imp ? x.imp.jb : []))].length}필지) — 폭이 맞는지 위성사진으로 확인하세요.`, 12000, { label: '점검하기', fn: openReviewTab }), cfg.bldKey ? 9500 : 1200); }
     if(edOpen) renderEditor();
     { const it = activeRoute(); if(it) it.stale = false; } syncActive(true);
@@ -5296,7 +5573,12 @@ function bldClassify(r){
 }
 function bldJudge(r){
   const o = bldJudge0(r), kb = kgBlds(r);
-  if(!kb) return o;
+  if(!kb){
+    const ba = r.bldAtch || [];
+    if(ba.length && !(r.bld && r.bld.length)){ const b = (ba[0].blds || [])[0] || {}; return Object.assign({}, o, { k: 'ok', t: `건물 있음 · 부속지번 ${ba.reduce((a, x) => a + (x.blds || []).length, 0) || ba.length}동`, sub: [`대표 지번 ${ba.map(x => x.jibun).join(', ')}`, b.purps, b.grnd ? b.grnd + 'F' : ''].filter(Boolean).join(' · ') }); }
+    if(ba.length) return Object.assign({}, o, { sub: [o.sub, `+ 부속지번 건물 (대표 ${ba.map(x => x.jibun).join(', ')})`].filter(Boolean).join(' · ') });
+    return o;
+  }
   const own = r.bOwn || [];
   if(kb.length){
     const b = kb.find(x => !/부속/.test(x.kind)) || kb[0], ba = kb.reduce((a, x) => a + (x.barea || 0), 0);
@@ -5344,14 +5626,15 @@ async function fetchBld(r){
       main: x.mainAtchGbCdNm || '', purps: x.mainPurpsCdNm || x.etcPurps || '', strct: x.strctCdNm || x.etcStrct || '',
       grnd: Number(x.grndFlrCnt) || 0, ugrnd: Number(x.ugrndFlrCnt) || 0, totArea: Number(x.totArea) || 0, archArea: Number(x.archArea) || 0, platArea: Number(x.platArea) || 0,
       useApr: String(x.useAprDay || '').trim(), hhld: Number(x.hhldCnt) || 0, fmly: Number(x.fmlyCnt) || 0, ho: Number(x.hoCnt) || 0,
-      kind: x.regstrKindCdNm || '', quake: x.rserthqkDsgnApplyYn === '1' ? '적용' : x.rserthqkDsgnApplyYn === '0' ? '미적용' : ''
+      bcRat: Number(x.bcRat) || 0, vlRat: Number(x.vlRat) || 0, vlRatEstmTotArea: Number(x.vlRatEstmTotArea) || 0, pkng: ['indrMechUtcnt', 'indrAutoUtcnt', 'oudrMechUtcnt', 'oudrAutoUtcnt'].reduce((a, k) => a + (Number(x[k]) || 0), 0), heit: Number(x.heit) || 0,
+      kind: x.regstrKindCdNm || '', pk: x.mgmBldrgstPk || '', quake: x.rserthqkDsgnApplyYn === '1' ? '적용' : x.rserthqkDsgnApplyYn === '0' ? '미적용' : ''
     }));
     bldCachePut(r.pnu, r.bld);
   }catch(e){ r.bldFail = true; r.bldTimeout = e.kind === 'timeout'; r.bldErr = e.kind === 'timeout' ? '응답 시간 초과 — 건물이 있는지 없는지 확인하지 못함' : e.message; log(`건축물대장 실패 ${r.pnu}: ${e.message}`); if(e.kind === 'cors') throw e; }
 }
 const ROAD_JIMOK = /^(도|도로)$/;
 const NOBUILD_JIMOK = /^(도|도로|천|하천|구|구거|제|제방|유|유지|철|철도용지|수|수도용지|공|공원)$/;
-function hasBldg(r){ const kb = kgBlds(r); if(kb) return kb.length > 0; return !!((r.bld && r.bld.length) || ownBlds(r).length); }
+function hasBldg(r){ const kb = kgBlds(r); if(kb) return kb.length > 0; return !!((r.bld && r.bld.length) || (r.bldAtch || []).length || ownBlds(r).length); }
 function buildable(r){ const j = String(r.jimok || parseJimok(r.jibun) || '').trim(); return !!j && !NOBUILD_JIMOK.test(j); }
 /* 배관이 지나거나 양옆 폭 안에 든 필지 중 건물이 있거나, 지목상 건물이 설 수 있는 곳 */
 function bldRisk(r){ if(!isLine() || r.single || !(r.tier === 'pass' || r.tier === 'ref')) return ''; if(hasBldg(r)) return '건물 있음'; if(buildable(r)) return '건축 가능 지목'; return ''; }
@@ -5679,6 +5962,7 @@ async function showSingleParcel(ll){
   if(seq !== singleSeq) return;
   r.loading = !!cfg.bldKey; showDetail(r);
   if(cfg.bldKey){ try{ await fetchBld(r); }catch(e){} if(seq !== singleSeq) return; if(r.bld && !r.bld.length && (r.buildings || []).length){ await bldFollow(r); if(seq !== singleSeq) return; } r.loading = false; showDetail(r); }
+  try{ await fetchOfficial(r); await fetchAtch([r]); }catch(e){} if(seq !== singleSeq) return; showDetail(r);
   status(`선택한 필지: ${riJibun(r.addr, r.jibun)} ${r.jimok} · ${r.owner || '-'}`);
 }
 let edgeHintT = 0;
@@ -5760,7 +6044,7 @@ function showDetail(r){
   kgSync([r]);
   { const d0 = byId('detail'); if(d0 && LS.get('detailWin2', '1') === '1' && LS.get('winMode', 'new') === 'new') detailWin(d0, false); }
   /* v33-1: 새 창 상세가 뒤에 숨어 있어도 다른 필지를 누르면 앞으로 (같은 필지를 다시 그릴 때는 그대로) */
-  { const fresh = r.pnu !== detailShownPnu; detailShownPnu = r.pnu; if(fresh && winIn('detail') && LS.get('detailFront', '1') === '1') winPeek('detail'); }
+  { const fresh = r.pnu !== detailShownPnu; detailShownPnu = r.pnu; if(fresh && winIn('detail') && LS.get('detailFront', '1') === '1') winPeek('detail'); if(fresh && kgLink && !kgOf(r) && !r.dq) kgEnqueue([r.pnu], true); }
   if(LS.get('detailFloat', '0') === '1' && !winIn('detail') && !(popWin && !popWin.closed)) setDetailFloat(true, true);
   if(curTab !== 'parcel' && !document.body.classList.contains('popped') && !$('#detail').classList.contains('float') && !winIn('detail')) setTab('parcel');
   const d = $('#detail');
@@ -5776,12 +6060,7 @@ function showDetail(r){
   const notes = pipeNotes(r).filter(x => !/^↪/.test(x));
   const metric = r.single ? '' : (isLine() ? `${tierBadge(r)} 노선 통과 <b>${r.cross > 0.01 ? r.cross.toFixed(1) + 'm' : '-'}</b>${hasCorridor() && r.inArea ? ` · 도로 면 ${r.inArea.toFixed(1)}㎡` : ''}` : `도형 안 <b>${r.inArea ? fmtM2(r.inArea) + '㎡' : '-'}</b>`);
   const panes = {
-    land: srcTable(r) + KV([
-      ['지목', esc(r.jimok || '-') + (r._kgSet ? ' <span class="small kgsrc">KGEOP</span>' : '') + kgDiffTag(r, '지목'), true], ['면적', (r.area ? fmtM2(r.area) + '㎡' : '-') + (r._kgSet ? ' <span class="small kgsrc">KGEOP</span>' : '') + kgDiffTag(r, '면적'), true], ['소유구분', esc(ownerText(r) || '-') + (r._kgSet ? ' <span class="small kgsrc">KGEOP</span>' : '') + kgDiffTag(r, '소유'), true],
-      ['용도지역', r.useZone], ['이용상황', r.landUse], ['공시지가', r.jiga ? Number(r.jiga).toLocaleString() + '원/㎡' : ''],
-      ['도시계획도로', `<b class="${isRoadIn(r) ? 'road-in' : ''}">${esc(roadStatus(r))}</b>${roadPlans.length ? ' · ' + esc(roadPlans.map(x => x.name + (x.cnflc ? '(' + x.cnflc + ')' : '')).join(', ')) : ''}${r.roadSpatial ? ' <span class="small">(지도상 겹침)</span>' : ''}`, true],
-      ['소재지', r.addr || r.jibun]
-    ]),
+    land: landCompact(r, `<b class="${isRoadIn(r) ? 'road-in' : ''}">${esc(roadStatus(r))}</b>${roadPlans.length ? ' · ' + esc(roadPlans.map(x => x.name + (x.cnflc ? '(' + x.cnflc + ')' : '')).join(', ')) : ''}${r.roadSpatial ? ' <span class="small">(지도상 겹침)</span>' : ''}`),
     own: r.ownerFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['소유구분', '기관구분', '변동일자', '변동사유', '공유'].concat(owners.some(x => x.dong) ? ['동·층·호'] : []), owners.map(o => [o.se, o.nation || '-', fmtDate(o.date), o.cause, o.share].concat(owners.some(x => x.dong) ? [o.dong] : []))),
     bld: (() => {
       const j = bldJudge(r), own = r.bOwn || [], oth = r.bOther || [];
@@ -5789,12 +6068,12 @@ function showDetail(r){
       const pos = x => x.rel.inside ? '필지 위' : x.rel.ov >= 1 ? `걸침 ${fmtM2(x.rel.ov)}㎡` : `필지 밖${x.rel.dist != null ? ' ' + x.rel.dist.toFixed(1) + 'm' : ''}`;
       const road = x => [String(x.pr.rd_nm || '').trim(), String(x.pr.buld_no || '').trim()].filter(Boolean).join(' ');
       return `<div class="bj-card bj-${j.k}"><div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1"><b>${esc(j.t)}</b>${j.sub ? ` <span class="small">· ${esc(j.sub)}</span>` : ''}${j.oth ? `<div class="small bj-oth">${esc(j.oth)}</div>` : ''}${j.away ? `<div class="small bj-oth">지적 어긋남 — 이 지번 건물 ${j.away}동이 필지 밖에 그려져 있음</div>` : ''}<div class="small" style="color:#868e96;margin-top:2px">근거: ${esc(ev.join(' · '))}</div></div><button data-d="diag" title="자료별로 자세히 비교">🔬 자세히</button></div>${r.bldSkipped ? '<div class="small" style="margin-top:4px">지목이 도로·하천 등이라 대장 조회를 생략했습니다. <button data-d="bldnow">지금 조회</button></div>' : ''}</div>`
-        + `<div class="small" style="margin:6px 0 2px;color:#862e9c"><b>KGEOP 건물</b>${kgOf(r) ? '' : ' — 자료 없음 (토지 탭에서 가져오기)'}</div>` + (kgOf(r) && !(kgBlds(r) || []).length ? '<div class="small na" style="color:#adb5bd">KGEOP에 등록된 건물 없음</div>' : '')
-        + (kgBlds(r) && kgBlds(r).length ? T(['KGEOP 건물 · 구분', '주용도', '구조', '층', '건축면적㎡', '연면적㎡', '사용승인'], kgBlds(r).map(b => [[b.name, b.kind].filter(Boolean).join(' · ') || '-', b.use, b.stru, (b.uflr ? b.uflr + 'F' : '') + (Number(b.bflr) ? '/B' + b.bflr : ''), b.barea ? fmtM2(b.barea) : '', b.garea ? fmtM2(b.garea) : '', fmtDate(String(b.useApr || '').replace(/\D/g, ''))])) : '')
-        + '<div class="small" style="margin:8px 0 2px;color:#1864ab"><b>건축물대장 (국토부 API)</b> · <b>지도 건물 (브이월드 도로명주소)</b></div>'
+        + bldPrimaryHtml(r)
+        + `<details class="dcmp"><summary>다른 자료 — 건축물대장 ${r.bld ? r.bld.length + '동' : '-'}${(r.bldAtch || []).length ? ' · 부속지번 ' + r.bldAtch.length : ''} · 지도 ${own.length}동${oth.length ? ' · 걸친 이웃 건물 ' + oth.length : ''}</summary>`
+        + ((r.bldAtch || []).length ? T(['부속지번으로 걸친 건물 · 대표 지번', '건물명', '주용도', '구조', '층', '건축면적㎡'], r.bldAtch.flatMap(x => (x.blds && x.blds.length ? x.blds : [{}]).map(b => [x.jibun, b.name || '', b.purps || '', b.strct || '', b.grnd ? b.grnd + 'F' + (b.ugrnd ? '/B' + b.ugrnd : '') : '', b.archArea ? fmtM2(b.archArea) : '']))) : '')
         + (r.bld && r.bld.length ? (bldFlags(r).length ? `<div style="margin:4px 0">${bldFlags(r).map(([t, c]) => `<span class="flag ${c}">${esc(t)}</span>`).join(' ')}</div>` : '') + T(['건축물대장 · 건물명·동', '주용도', '구조', '층수', '연면적㎡', '사용승인'], bl.map(b => [b.name || (b.main || '-'), b.purps, b.strct, `${b.grnd}/${b.ugrnd ? 'B' + b.ugrnd : '-'}`, b.totArea ? fmtM2(b.totArea) : '', fmtDate(b.useApr)])) : '')
         + (own.length ? T(['이 지번 건물 (지도) · 도로명주소', '위치', '층', '면적㎡'], own.map(x => [road(x) || (x.bp ? '' : '주소 없음'), pos(x), String(x.pr.gro_flo_co || ''), fmtM2(x.area)])) : '')
-        + (oth.length ? T(['걸친 다른 지번 건물 · 소속', '도로명주소', '걸친 면적㎡', '층'], oth.map(x => [pnuJibun(x.bp), road(x), fmtM2(x.rel.ov), String(x.pr.gro_flo_co || '')])) : '');
+        + (oth.length ? T(['걸친 다른 지번 건물 · 소속', '도로명주소', '걸친 면적㎡', '층'], oth.map(x => [pnuJibun(x.bp), road(x), fmtM2(x.rel.ov), String(x.pr.gro_flo_co || '')])) : '') + '</details>';
     })(),
     memo: memoPaneHtml(r),
     plan: r.planFail ? '<div class="dempty">조회 실패 — [누락 재조회]</div>' : T(['지역·지구·시설', '저촉여부'], plans.map(x => { const row = [x.name, x.cnflc]; if(ROAD_RE.test(x.name)) row._cls = 'road-row'; return row; }))
@@ -6358,7 +6637,9 @@ async function exportExcel(){
       const item = (k, t) => { const row = sc.addRow([`${VD[k].i} ${VD_SHORT[k]}`, t]); sc.mergeCells(`B${row.number}:E${row.number}`); grid(row); row.getCell(1).fill = vFill(k); row.getCell(1).font = vFont(k); row.getCell(2).alignment = { vertical: 'top', wrapText: true }; row.height = Math.min(200, 18 + 15 * Math.ceil(t.length / 95)); };
       if(line) V.runs.no.forEach((u, i) => { const rs = [...new Set(u.segs.map(s => s.r).filter(Boolean))]; item('no', `${i + 1}) ${lnName(u)}${Math.round(u.a)}~${Math.round(u.b)}m (${m1(u.len)}m) — ${rs.map(r => `${jbOf(r)} ${jimokName(r)} ${ownerText(r)}`).join(', ')}` + (rs.some(r => r.avoid) ? ' · ↪ ' + rs.filter(r => r.avoid).map(r => jbOf(r) + ' ' + avoidText(r)).join(', ') : '') + ' → 노선 조정 또는 사용 승낙 등 판단'); });
       else results.filter(r => (V.by.get(r.pnu) || {}).k === 'no').forEach(r => item('no', `${jbOf(r)} ${jimokName(r)} ${ownerText(r)} — 도시계획도로 밖 사유지`));
-      results.filter(r => (V.by.get(r.pnu) || {}).k === 'hold').forEach(r => item('hold', `${jbOf(r)} — ${V.by.get(r.pnu).why.join(' · ')}`));
+      { const hl = results.filter(r => (V.by.get(r.pnu) || {}).k === 'hold'), km = hl.filter(r => /^KGEOP/.test(V.by.get(r.pnu).why[0] || ''));
+        if(km.length) item('hold', `KGEOP 미확인 ${km.length}필지 — KGEOP 정보로 확인 후 판정: ${km.map(jbOf).join(', ')}`);
+        hl.filter(r => !km.includes(r)).forEach(r => item('hold', `${jbOf(r)} — ${V.by.get(r.pnu).why.join(' · ')}`)); }
       if(line) V.segs.filter(s => !s.r).forEach(s => item('hold', `${lnName(s)}${Math.round(s.a)}~${Math.round(s.b)}m — 필지 정보 없음 (지적도 빈 곳) → 지도 확인`));
       (VT.nearRisk || []).forEach(r => item('hold', `${jbOf(r)} — 선 밖 사유지지만 지적 밀림 위험: ${shiftText(r, true)} → 실제로 배관이 지나는지 확인`));
       if(VT.n.permit){ const pr = results.filter(r => (V.by.get(r.pnu) || {}).len ? V.by.get(r.pnu).len.permit > 0.05 : (V.by.get(r.pnu) || {}).k === 'permit'); item('permit', `시 허가 신청: 사유지 ${pr.length}필지` + (line ? ` · 계획도로 안 통과 ${m1(pr.reduce((a, r) => a + V.by.get(r.pnu).len.permit, 0))}m` : '') + ' — 시 허가 대상 시트'); }
@@ -6440,13 +6721,25 @@ async function exportExcel(){
         ss.columns = [['순번', 6], ['지번', 20], ['배관', 10], ['판정', 16], ['밀림', 10], ['강한 신호', 44], ['약한 신호', 44], ['대장면적(㎡)', 11], ['도면면적(㎡)', 11], ['차이', 8], ['건축면적 합(㎡)', 12], ['축척', 9], ['KGEOP 경계 차이(m)', 11], ['PNU', 21]].map(([h, w]) => ({ header: h, width: w }));
         styleHead(ss.getRow(1)); ss.getRow(1).height = 30;
         sl.forEach(r => { const s = shiftRisk(r), v = V.by.get(r.pnu), k = kgOf(r), kd = kgDiff(r);
-          const row = ss.addRow([r.no, jbOf(r), isLine() ? TIER_LBL[r.tier] || '' : '', v ? `${VD[v.k].i} ${VD[v.k].t}` : '-', s.ok ? '확인함' : s.lvl === 'high' ? '위험' : '의심', s.sig.filter(x => x.strong).map(x => x.t).join('\n'), s.sig.filter(x => !x.strong).map(x => x.t).join('\n'), s.la || null, r.parcelArea ? m1(r.parcelArea) : null, s.la && r.parcelArea ? (r.parcelArea - s.la) / s.la : null, s.ba ? m1(s.ba) : null, k ? k.scale : '', kd && kd.off != null ? m1(kd.off) : null, r.pnu]);
+          const row = ss.addRow([r.no, jbOf(r), isLine() ? TIER_LBL[r.tier] || '' : '', v ? `${VD[v.k].i} ${VD[v.k].t}` : '-', s.ok ? '확인함' : s.lvl === 'high' ? '위험' : '의심', s.sig.filter(x => x.strong).map(x => x.t).join('\n'), s.sig.filter(x => !x.strong).map(x => x.t).join('\n'), s.la || null, r.parcelArea ? m1(r.parcelArea) : null, s.la && r.parcelArea ? (r.parcelArea - s.la) / s.la : null, s.ba ? m1(s.ba) : null, k ? k.scale : (r.scaleV || ''), kd && kd.off != null ? m1(kd.off) : null, r.pnu]);
           grid(row); [8, 9, 11, 13].forEach(c => row.getCell(c).numFmt = '#,##0.0'); row.getCell(10).numFmt = '0.0%';
           if(v) { row.getCell(4).fill = vFill(v.k); row.getCell(4).font = vFont(v.k); }
           if(s.lvl === 'high') row.getCell(5).font = { bold: true, color: { argb: 'FFC92A2A' } };
           row.height = Math.min(200, 18 + 15 * Math.max(String(row.getCell(6).value).split('\n').length, String(row.getCell(7).value).split('\n').length) - 15);
         });
         ss.autoFilter = { from: 'A1', to: 'N1' };
+      }
+    }
+    {
+      const kb = results.filter(r => (kgBlds(r) || []).length);
+      if(kb.length){
+        const sb2 = wb.addWorksheet('KGEOP 건물', { views: [{ state: 'frozen', ySplit: 1 }] });
+        sb2.columns = [['순번', 6], ['지번', 18], ['건물', 18], ['주용도', 18], ['구조', 14], ['층수', 10], ['대지면적', 10], ['건축면적', 10], ['연면적', 11], ['용적률산정', 11], ['건폐율(%)', 9], ['용적률(%)', 9], ['세대·호·가구', 14], ['주차', 7], ['사용승인', 11], ['층별현황', 70]].map(([h, w]) => ({ header: h, width: w }));
+        styleHead(sb2.getRow(1)); sb2.getRow(1).height = 28;
+        kb.forEach(r => kgBlds(r).forEach(b => { const nb = bldNorm(b, 'kg'), mt = Object.fromEntries(nb.metrics);
+          const row = sb2.addRow([r.no, jbOf(r), nb.title, nb.use, nb.stru, [nb.uf ? nb.uf + 'F' : '', Number(nb.bf) ? 'B' + nb.bf : ''].filter(Boolean).join('/'), nb.plat, nb.arch, nb.tot, mt['용적률 산정 연면적'] ? Number(String(mt['용적률 산정 연면적']).replace(/[^\d.]/g, '')) : null, nb.bc, nb.fr, mt['세대·호·가구'] || '', mt['주차'] || '', nb.apr, nb.floors.map(f => `${f.gb} ${f.no} ${f.use} ${f.ar ? fmtM2(f.ar) + '㎡' : ''}`.trim()).join('\n')]);
+          grid(row); [7, 8, 9, 10].forEach(c => row.getCell(c).numFmt = '#,##0.0'); row.height = Math.min(300, 18 + 14 * Math.max(0, nb.floors.length - 1));
+        }));
       }
     }
     {
@@ -6770,12 +7063,12 @@ async function exportExcel(){
       } }
     { const sc = wb.getWorksheet('검토 결론'); if(sc){
         const G = [['구간 판정표', '배관이 지나는 구간마다 판정 — 시작~끝(m)·지번·근거'], ['시 허가 대상', '도시계획도로 안 사유지 — 시 허가 신청용 목록'], ['통과 불가(판단 필요)', '도시계획도로 밖 사유지 구간 · 회피 방법 · 판단 메모'], ['지적 밀림 점검', '밀림 신호가 있는 필지와 근거'],
-          ['현장 메모', '필지별 현장 메모·사진'], ['상세 요약', '조회 범위·소유·허가 등 숫자 요약'], ['구간별 배관', '구간별 재질·관경·압력'], ['사유지(협의대상)', '사유지 전체 목록'], ['점용·횡단허가', '도로·하천·구거 등 점용 허가 대상'], ['건축물대장', '건축물대장 내용'], ['KGEOP 대조', 'KGEOP 자료와 브이월드 자료 비교'], ['지도', '일반·위성 지도'], ['세부내용', '전체 필지 상세 (필터로 골라 보기)'], ['도로면확인', '도로 폭 점검 기록']].filter(([n]) => wb.getWorksheet(n));
+          ['현장 메모', '필지별 현장 메모·사진'], ['상세 요약', '조회 범위·소유·허가 등 숫자 요약'], ['구간별 배관', '구간별 재질·관경·압력'], ['사유지(협의대상)', '사유지 전체 목록'], ['점용·횡단허가', '도로·하천·구거 등 점용 허가 대상'], ['KGEOP 건물', 'KGEOP 건물 기본정보·층별현황'], ['건축물대장', '건축물대장 내용'], ['KGEOP 대조', 'KGEOP 자료와 브이월드 자료 비교'], ['지도', '일반·위성 지도'], ['세부내용', '전체 필지 상세 (필터로 골라 보기)'], ['도로면확인', '도로 폭 점검 기록']].filter(([n]) => wb.getWorksheet(n));
         G.forEach(([n, d]) => { const row = sc.addRow([LNK(n), d]); sc.mergeCells(`B${row.number}:E${row.number}`); row.getCell(1).font = { color: { argb: 'FF0563C1' }, underline: true }; });
         if(sc._img){ sc.addRow([]); const t = sc.addRow(['판정 지도 — 배관 선 아래 색: 초록 가능 · 주황 시 허가 필요 · 빨강 통과 불가 · 보라 판정 보류']); sc.mergeCells(`A${t.number}:E${t.number}`); t.getCell(1).font = { bold: true, size: 12 };
           const id = wb.addImage({ base64: sc._img.dataUrl, extension: 'png' }), w = 900, h = Math.round(sc._img.h * w / sc._img.w); sc.addImage(id, { tl: { col: 0, row: t.number }, ext: { width: w, height: h } }); }
       } }
-    { const ORDER = ['검토 결론', '구간 판정표', '시 허가 대상', '통과 불가(판단 필요)', '지적 밀림 점검', '현장 메모', '상세 요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', '건축물대장', 'KGEOP 대조', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
+    { const ORDER = ['검토 결론', '구간 판정표', '시 허가 대상', '통과 불가(판단 필요)', '지적 밀림 점검', '현장 메모', '상세 요약', '구간별 배관', '사유지(협의대상)', '점용·횡단허가', 'KGEOP 건물', '건축물대장', 'KGEOP 대조', '지도', '세부내용', '도로면확인', '수정전후비교', '소유자정보(전체)', '토지이용계획(전체)'];
       wb.worksheets.forEach(ws => { const i = ORDER.indexOf(ws.name); ws.orderNo = i < 0 ? 50 + ws.id : i + 1; }); }
     const buf = await wb.xlsx.writeBuffer();
     const d = new Date(); const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
@@ -8651,7 +8944,7 @@ $('#dlgHelp').addEventListener('close', () => { LS.set('helpSeen', '1'); if(!cfg
 document.addEventListener('keydown', e => { if(e.key === 'F1'){ e.preventDefault(); openHelp(); } });
 if(LS.get('helpSeen', '') !== '1') setTimeout(openHelp, 300);
 else if(!cfg.key) setTimeout(openSettings, 300);
-window.__app = { get routeKinds(){ return routeKinds; }, sideStripsAll, get actOverlaps(){ return actOverlaps; }, drawGhosts, vdAll, shiftRisk, kgApply, KG, crossIv, kgScript, vdOvSet, shiftOkSet, get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
+window.__app = { bldNorm, kgRelayScript, get kgLink(){ return kgLink; }, get kgQ(){ return kgQ; }, kgEnqueue, get offOk(){ return offOk; }, offSummary, atchCache, get routeKinds(){ return routeKinds; }, sideStripsAll, get actOverlaps(){ return actOverlaps; }, drawGhosts, vdAll, shiftRisk, kgApply, KG, crossIv, kgScript, vdOvSet, shiftOkSet, get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
 })();
 </script>
 </body>
