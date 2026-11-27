@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>노선 필지 조회기 v38</title>
+<title>노선 필지 조회기 v39</title>
 <meta http-equiv="Cache-Control" content="no-cache">
 <style>/* required styles */
 
@@ -1215,7 +1215,7 @@ html.rv-only body{margin:0;overflow:hidden;background:#111}
 <div id="app">
 <header>
   <div class="hrow">
-    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v38</small></h1>
+    <h1>노선 필지 조회기 <small style="color:#868e96;font-weight:500;font-size:12px">v39</small></h1>
     <div class="grp">
       <span class="srch-wrap"><input id="search" type="text" placeholder="지번·주소·장소 검색 (예: 하계리 17-29, 17-29)" autocomplete="off"><div id="sugg"></div></span>
       <button id="btnSearch">검색</button><button id="btnJbList" title="지번 여러 개를 붙여 넣어 한꺼번에 조회 (엑셀에서 복사해 붙여넣기 가능)">📋 여러 지번</button>
@@ -2674,6 +2674,7 @@ function kgConnect(){
 window.addEventListener('message', e => {
   if(!KG_ORIG.test(e.origin)) return; const m = e.data || {};
   if(m.kind === 'kg-ready'){ kgWin = e.source; kgLink = true; toast('✅ KGEOP 연결됨 — 조회한 필지와 누르는 필지의 KGEOP 정보를 자동으로 가져옵니다. KGEOP 탭은 열어 두세요.', 8000); kgEnqueue(kgTargets(false).map(r => r.pnu)); { const r = selected && results.find(x => x.pnu === selected); if(r) kgEnqueue([r.pnu], true); } if(lastSingle && !lastSingle.dq) kgEnqueue([lastSingle.pnu], true); renderVdCard(); }
+  else if(m.kind === 'kg-batch' && m.data){ kgWin = e.source; kgApply(JSON.stringify(m.data)).then(res => { if(res.err){ toast('⚠ ' + res.err, 8000); return; } kgWaitClip = 0; kgClipLast = ''; kgDoneToast(res, 'KGEOP 탭에서 바로 받음'); }); }
   else if(m.kind === 'kg-prog'){ status(`KGEOP 자동 조회 ${m.done}/${m.n}… (남은 필지 ${kgQ.length})`); }
   else if(m.kind === 'kg-res' && kgBusy && m.id === kgBusy.id){ clearTimeout(kgBusy.t); kgBusy = null; kgApply(JSON.stringify(m.data)).then(res => { status(`KGEOP 자동 조회: ${res.n || 0}필지 반영` + (res.fail ? ` · 실패 ${res.fail}` : '') + (kgQ.length ? ` · 남은 ${kgQ.length}` : '')); { const r = lastSingle && !results.includes(lastSingle) ? lastSingle : null; if(r && (KG.has(r.pnu))){ kgSync([r]); if(singlePnu === r.pnu) showDetail(r); } } kgPump(); }); }
 });
@@ -2741,7 +2742,8 @@ function bindKgOne(d, r){
     if(b.dataset.kgone === 'script'){
       let ok = false; const txt = kgScript([r.pnu]);
       try{ await W.navigator.clipboard.writeText(txt); ok = true; }catch(e){ ok = await copyText(txt); }
-      say(ok ? `① 스크립트를 복사했습니다 (${jibunNo(r.jibun)}). ② KGEOP 탭에서 F12 → Console → 붙여넣기 → Enter. ③ 끝나고 뜨는 창에서 [📋 복사하고 닫기]. ④ 여기 [📋 복사한 결과 반영].` : '⚠ 복사하지 못했습니다 — 이 창을 한 번 누른 뒤 다시 눌러 주세요.', !ok);
+      say(ok ? `스크립트를 복사하고 KGEOP 탭을 열었습니다 (${jibunNo(r.jibun)}). KGEOP 탭에서 F12 → Console → Ctrl+V → Enter 하면 결과가 이 화면으로 자동으로 들어옵니다.` : '⚠ 복사하지 못했습니다 — 이 창을 한 번 누른 뒤 다시 눌러 주세요.', !ok);
+      if(ok) setTimeout(kgOpenSite, 150);
     } else if(b.dataset.kgone === 'paste'){
       let t = null; try{ W.focus(); t = await W.navigator.clipboard.readText(); }catch(e){ t = null; }
       if(t != null){ await apply(t); return; }
@@ -3055,10 +3057,11 @@ function bindVdBox(d, r){
 }
 
 /* ---- KGEOP 패널: PNU 목록을 넣은 콘솔 스크립트 복사 → KGEOP 탭 콘솔에서 실행 → 결과 붙여넣기 ---- */
-async function kgCollect(PRE, RELAY){
+async function kgCollect(PRE, RELAY, OPT){
   /* KGEOP(kgeop.go.kr) 페이지에서 실행. 소유자 성명·주소는 가져오지 않음.
      v5: 건물 기본정보 전체(대지·건축·연면적, 건폐율·용적률, 세대·주차 …)와 층별현황도 담음.
-     RELAY가 있으면 '연결 모드' — 노선 필지 조회기가 보내는 PNU를 그때그때 조회해 돌려줌 */
+     RELAY가 있으면 '연결 모드' — 노선 필지 조회기가 보내는 PNU를 그때그때 조회해 돌려줌
+     v6: 4필지씩 동시에 · 요약 정보는 필요할 때만 · 건물 상세도 동시에 · 끝나면 조회기로 바로 보냄(조회기에서 연 탭이면) */
   if(!/(^|\.)kgeop\.go\.kr$/.test(location.hostname)){ alert('KGEOP(kgeop.go.kr) 페이지에서 실행해 주세요.'); return; }
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const get = async u => {
@@ -3087,9 +3090,9 @@ async function kgCollect(PRE, RELAY){
     for(const c of cands){
       const diag = { st: {} }; let d = null, sm = null;
       try{ d = await get('/geopass/api/selectOneParcelInfo.do?pnu=' + c.pnu); diag.st.parcel = 'ok'; diag.parcel = shape(d); }catch(e){ diag.st.parcel = String(e.message || e); }
-      await sleep(250);
-      try{ sm = await get('/geopass/api/estateSummary.do?pnu=' + c.pnu); diag.st.summary = 'ok'; diag.summary = shape(sm); }catch(e){ diag.st.summary = String(e.message || e); }
-      await sleep(250);
+      { const L1 = d && first(d.landLedgRst), hasB = d && findBlds(d, '', { keys: [], list: [], seen: [] }).keys.length;
+        if(!d || !L1 || !Object.keys(L1).length || !hasB){ await sleep(80); try{ sm = await get('/geopass/api/estateSummary.do?pnu=' + c.pnu); diag.st.summary = 'ok'; diag.summary = shape(sm); }catch(e){ diag.st.summary = String(e.message || e); } }
+        else diag.st.summary = '생략'; }
       if(!d && !sm){ out.push({ q, pnu: c.pnu, err: '조회 실패: ' + diag.st.parcel, diag }); continue; }
       d = d || {};
       const L0 = first(d.landLedgRst), J = first(d.jigaRst), A = first((((d.addrResultFromPnuMap || {}).jusoResult) || {}).jusoList);
@@ -3102,9 +3105,10 @@ async function kgCollect(PRE, RELAY){
       const bacc = findBlds({ parcel: d, summary: sm || {} }, '', { keys: [], list: [], seen: [] });
       diag.bldKeys = bacc.keys; diag.bldSeen = [...new Set(bacc.seen)]; it.bk = bacc.keys.length > 0 || bacc.seen.length > 0;
       diag.ledger = L0 && Object.keys(L0).length ? 'ok' : '비어 있음';
-      const seen = new Set();
-      for(const b of bacc.list){
-        const id = b.buldIdno || b.bldgIdno; if(seen.has(id)) continue; seen.add(id); if(seen.size > 12) break;
+      const seen = new Set(), todo = [];
+      for(const b of bacc.list){ const id = b.buldIdno || b.bldgIdno; if(seen.has(id)) continue; seen.add(id); if(seen.size > 12) break; todo.push(b); }
+      const detail = async b => {
+        const id = b.buldIdno || b.bldgIdno;
         const bi = { id, kind: b.buldKndNm || '', name: b.buldNm || '', barea: num(b.barea), garea: num(b.garea), use: b.mainUseNm || b.mainPurpsNm || '', dong: b.dongNm || '' };
         try{ const r = await get(`/geopass/api/estateOne-bldg-info.do?buldKndCode=${encodeURIComponent(b.buldKndCode || '')}&pnu=${c.pnu}&buldIdno=${encodeURIComponent(id || '')}`); const v = r.resultVo || first(r) || {};
           Object.assign(bi, { barea: num(v.barea) != null ? num(v.barea) : bi.barea, garea: num(v.garea) != null ? num(v.garea) : bi.garea, use: v.mainUseNm || bi.use, stru: v.struNm || '', uflr: v.uflr || '', bflr: v.bflr || '', useApr: v.useAprvYmd || '', rep: v.repJibun || '', rel: v.relJibun || '' });
@@ -3113,8 +3117,9 @@ async function kgCollect(PRE, RELAY){
           if(Array.isArray(fl)) bi.flr = fl.slice(0, 60).map(prim);
           diag.bldResp = diag.bldResp || shape(r); }
         catch(e){ bi.err = String(e.message || e); }
-        it.blds.push(bi); await sleep(250);
-      }
+        return bi;
+      };
+      for(let k = 0; k < todo.length; k += 3) it.blds.push(...await Promise.all(todo.slice(k, k + 3).map(detail)));
       it.diag = diag;
       if(!it.jimok && it.area == null && !it.blds.length && diag.st.parcel !== 'ok'){ out.push({ q, pnu: c.pnu, err: '토지 정보 못 받음: ' + diag.st.parcel, diag }); continue; }
       out.push(it);
@@ -3132,9 +3137,10 @@ async function kgCollect(PRE, RELAY){
       window.__kgRelayOn = true;
       window.addEventListener('message', async e => {
         const m = e.data; if(!m || m.kind !== 'kg-req' || (tgt !== '*' && e.origin !== tgt)) return;
-        const items = [], list = (m.pnus || []).filter(x => /^\d{19}$/.test(String(x))).slice(0, 50);
-        for(let i = 0; i < list.length; i++){ say(`조회 중 ${i + 1}/${list.length}`); try{ items.push(...await one(list[i])); }catch(err){ items.push({ q: list[i], err: String(err.message || err) }); } try{ e.source.postMessage({ kind: 'kg-prog', id: m.id, done: i + 1, n: list.length }, tgt); }catch(x){} }
-        try{ e.source.postMessage({ kind: 'kg-res', id: m.id, data: { kind: 'kgeop-parcels', v: 5, at: new Date().toISOString(), items } }, tgt); }catch(x){}
+        const items = [], list = (m.pnus || []).filter(x => /^\d{19}$/.test(String(x))).slice(0, 50); let nx = 0, dn = 0;
+        const w = async () => { while(nx < list.length){ const q = list[nx++]; try{ items.push(...await one(q)); }catch(err){ items.push({ q, err: String(err.message || err) }); } dn++; say(`조회 중 ${dn}/${list.length}`); try{ e.source.postMessage({ kind: 'kg-prog', id: m.id, done: dn, n: list.length }, tgt); }catch(x){} } };
+        await Promise.all(Array.from({ length: Math.min(4, list.length) }, w));
+        try{ e.source.postMessage({ kind: 'kg-res', id: m.id, data: { kind: 'kgeop-parcels', v: 6, at: new Date().toISOString(), items } }, tgt); }catch(x){}
         say(`대기 중 (방금 ${list.length}필지)`);
       });
     }
@@ -3144,25 +3150,40 @@ async function kgCollect(PRE, RELAY){
   /* ---- 한 번에 모으기 ---- */
   let qs = Array.isArray(PRE) && PRE.length ? PRE : null;
   if(!qs){ const t = prompt('PNU(19자리) 또는 지번을 쉼표·줄바꿈으로 구분해 넣으세요', ''); if(!t) return; qs = t.split(/[\n,;\t]+/).map(s => s.trim()).filter(Boolean); }
-  const out = [];
+  const out = new Array(qs.length);
   const pg = document.createElement('div'); pg.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:999999;background:#1971c2;color:#fff;padding:10px 14px;border-radius:8px;font:14px sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.3)'; document.body.appendChild(pg);
-  const t0 = Date.now(); let i = 0;
-  for(const q of qs){
-    i++; const left = i > 1 ? Math.round((Date.now() - t0) / (i - 1) * (qs.length - i + 1) / 1000) : null;
-    pg.textContent = `KGEOP 모으는 중 ${i}/${qs.length}` + (left != null ? ` · 약 ${left}초 남음` : ''); document.title = `KGEOP ${i}/${qs.length}`;
-    try{ out.push(...await one(q)); }catch(e){ out.push({ q, err: String(e.message || e) }); }
-  }
+  const t0 = Date.now(); let next = 0, done = 0;
+  const show = () => { const sec = (Date.now() - t0) / 1000, left = done ? Math.round(sec / done * (qs.length - done)) : null; pg.textContent = `KGEOP 모으는 중 ${done}/${qs.length}` + (left != null ? ` · 약 ${left}초 남음` : ''); document.title = `KGEOP ${done}/${qs.length}`; };
+  const worker = async () => { while(next < qs.length){ const i = next++; try{ out[i] = await one(qs[i]); }catch(e){ out[i] = [{ q: qs[i], err: String(e.message || e) }]; } done++; show(); } };
+  show(); await Promise.all(Array.from({ length: Math.min(4, qs.length) }, worker));
+  out.splice(0, out.length, ...out.flat());
   pg.remove(); document.title = 'KGEOP 모으기 끝';
   const ok = out.filter(x => !x.err), nb = ok.filter(x => x.blds.length).length, nl = ok.filter(x => x.diag && x.diag.ledger !== 'ok').length, be = ok.reduce((a, x) => a + x.blds.filter(b => b.err).length, 0);
-  const s = JSON.stringify({ kind: 'kgeop-parcels', v: 5, at: new Date().toISOString(), items: out });
+  const data = { kind: 'kgeop-parcels', v: 6, at: new Date().toISOString(), items: out }, s = JSON.stringify(data), secs = Math.round((Date.now() - t0) / 1000);
+  /* 조회기에서 연 탭이면 붙여넣기 없이 바로 보냄 */
+  let sent = false; try{ if(window.opener && OPT && OPT.origin){ window.opener.postMessage({ kind: 'kg-batch', data }, OPT.origin === 'null' ? '*' : OPT.origin); sent = true; } }catch(e){}
+  let copied = false; try{ await navigator.clipboard.writeText(s); copied = true; }catch(e){}
   const box = document.createElement('div'); box.style.cssText = 'position:fixed;inset:40px;z-index:999999;background:#fff;border:2px solid #1971c2;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;font:14px sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4)';
-  box.innerHTML = `<b style="font-size:16px">KGEOP ${out.length}필지 모음 — 건물 있는 필지 ${nb} · 토지대장 빈 필지 ${nl} · 건물 상세 실패 ${be} · 오류 ${out.filter(x => x.err).length}</b><div>아래 [📋 복사하고 닫기]를 누른 뒤, 노선 필지 조회기에 붙여넣고 [반영]을 누르세요. 소유자 이름·주소는 넣지 않았습니다.</div><textarea style="flex:1;font:12px monospace"></textarea><div><button style="font-size:15px;padding:6px 14px">📋 복사하고 닫기</button> <button>닫기</button></div>`;
+  box.innerHTML = `<b style="font-size:16px">KGEOP ${out.length}필지 모음 (${secs}초) — 건물 있는 필지 ${nb} · 토지대장 빈 필지 ${nl} · 건물 상세 실패 ${be} · 오류 ${out.filter(x => x.err).length}</b><div style="font-size:15px">${sent ? '✅ <b>조회기로 바로 보냈습니다</b> — 조회기 화면으로 돌아가면 반영돼 있습니다.' : copied ? '✅ <b>클립보드에 복사했습니다</b> — 조회기 화면으로 돌아가면 자동으로 반영됩니다(처음 한 번 클립보드 허용).' : '아래 [📋 복사하고 닫기]를 누른 뒤 조회기 화면으로 돌아가세요.'} 소유자 이름·주소는 넣지 않았습니다.</div><textarea style="flex:1;font:12px monospace"></textarea><div><button style="font-size:15px;padding:6px 14px">📋 복사하고 닫기</button> <button>닫기</button></div>`;
   const ta = box.querySelector('textarea'); ta.value = s; document.body.appendChild(box); const [bc, bx] = box.querySelectorAll('button');
   bc.onclick = async () => { try{ await navigator.clipboard.writeText(s); }catch(e){ ta.select(); document.execCommand('copy'); } bc.textContent = '✅ 복사됨'; setTimeout(() => box.remove(), 700); };
   bx.onclick = () => box.remove();
 }
 function kgTargets(all){ return results.filter(r => all || !isLine() || !r.tier || r.tier === 'pass' || r.tier === 'near' || (r.tier === 'ref' && isPrivate(r))); }
-function kgScript(list){ return '(' + kgCollect.toString() + ')(' + JSON.stringify(list) + ');'; }
+function kgScript(list){ kgWaitClip = Date.now() + 20 * 60000; return '(' + kgCollect.toString() + ')(' + JSON.stringify(list) + ', null, ' + JSON.stringify({ origin: location.origin }) + ');'; }
+/* v39: 붙여넣기 줄이기 — ① 조회기에서 연 KGEOP 탭이면 결과를 바로 받음(kg-batch) ② 아니면 이 화면으로 돌아올 때 클립보드의 결과를 알아서 반영 */
+let kgWaitClip = 0, kgClipLast = '';
+function kgOpenSite(){ const w = window.open('https://kgeop.go.kr/info/infoMap.do?initMode=L', 'kgeopSite'); if(w) kgWin = w; return w; }
+async function kgClipCheck(W){
+  if(!kgWaitClip || Date.now() > kgWaitClip) return;
+  let t = ''; try{ t = await (W || window).navigator.clipboard.readText(); }catch(e){ return; }
+  if(!t || t.length < 30 || t === kgClipLast || !/"kind"\s*:\s*"kgeop-parcels"/.test(t.slice(0, 200))) return;
+  kgClipLast = t; const res = await kgApply(t); if(res.err) return;
+  kgWaitClip = 0; kgDoneToast(res, '클립보드에서 자동 반영');
+}
+function kgDoneToast(res, how){ toast(`✅ KGEOP ${res.n}필지 반영 (${how})` + (res.nb != null ? ` · 건물 있는 필지 ${res.nb}` : '') + (res.fail ? ` · 실패 ${res.fail} — [↻ 빈 필지만 다시]` : ''), 9000); { const r = lastSingle && singlePnu === lastSingle.pnu ? lastSingle : null; if(r && KG.has(r.pnu)){ kgSync([r]); showDetail(r); } } }
+window.addEventListener('focus', () => setTimeout(() => kgClipCheck(window), 250));
+document.addEventListener('visibilitychange', () => { if(!document.hidden) setTimeout(() => kgClipCheck(window), 350); });
 async function kgApply(txt){
   let o; try{ const s = String(txt || ''); o = JSON.parse(s.slice(s.indexOf('{'), s.lastIndexOf('}') + 1)); }catch(e){ return { err: 'JSON 형식이 아닙니다 — KGEOP 창의 [📋 복사하고 닫기]로 복사한 내용을 그대로 붙여넣으세요.' }; }
   if(!o || o.kind !== 'kgeop-parcels' || !Array.isArray(o.items)) return { err: 'KGEOP 자료(kgeop-parcels)가 아닙니다.' };
@@ -3203,9 +3224,9 @@ function openKgPanel(){
       <div class="small" style="margin:8px 0 2px;color:#495057"><b>직접 모으기</b> (연결이 안 될 때)</div>
       <ol class="kg-steps">
         <li><button data-kg="open">KGEOP 열기</button> <span class="small">로그인 없이 지도 화면이 뜨면 됩니다</span></li>
-        <li><button data-kg="script" class="primary">📋 스크립트 복사 (${list.length}필지)</button> <span class="small">약 ${Math.max(1, Math.round(list.length * 0.8 / 60))}분</span></li>
+        <li><button data-kg="script" class="primary">📋 스크립트 복사 + KGEOP 열기 (${list.length}필지)</button> <span class="small">약 ${Math.max(1, Math.round(list.length * 0.3 / 60))}분</span></li>
         <li class="small">KGEOP 탭에서 <b>F12</b> → <b>Console</b> 탭 → 붙여넣기(Ctrl+V) → <b>Enter</b><br><span style="color:#868e96">처음 붙여넣을 때 경고가 나오면 <code>allow pasting</code>을 입력하고 Enter 후 다시 붙여넣기</span></li>
-        <li class="small">끝나면 뜨는 창에서 <b>[📋 복사하고 닫기]</b> → 아래 칸에 붙여넣기 → <b>[반영]</b></li>
+        <li class="small">끝나면 <b>결과가 자동으로 이 화면에 들어옵니다</b> (조회기에서 연 KGEOP 탭이면 바로, 아니면 이 화면으로 돌아올 때 클립보드에서). 안 되면 아래 칸에 붙여넣고 [반영]</li>
       </ol>
       <div class="small" style="margin-top:4px">목록 밖 필지 더 넣기 <input data-kg="extra" placeholder="예: 동정리 47-7, 4376025030101900006" style="width:230px" value="${esc(LS.get('kgExtra', ''))}"></div>
       <textarea data-kg="txt" placeholder='여기에 붙여넣기 ({"kind":"kgeop-parcels", ...})'></textarea>
@@ -3222,8 +3243,8 @@ function openKgPanel(){
     q('extra').onchange = e => { LS.set('kgExtra', e.target.value); draw(); };
     q('all').onchange = e => { LS.set('kgAll', e.target.checked ? '1' : '0'); draw(); };
     q('need').onchange = e => { LS.set('kgNeed', e.target.checked ? '1' : '0'); draw(); };
-    q('open').onclick = () => window.open('https://kgeop.go.kr/info/infoMap.do?initMode=L', 'kgeopSite');
-    q('script').onclick = async () => { if(!list.length){ msg('조회한 필지가 없습니다.'); return; } const ok = await copyText(kgScript(list)); msg(ok ? `✅ 스크립트를 복사했습니다 (${list.length}필지). KGEOP 탭의 Console에 붙여넣고 Enter.` : '복사하지 못했습니다 — 브라우저가 클립보드를 막았습니다.'); };
+    q('open').onclick = () => kgOpenSite();
+    q('script').onclick = async () => { if(!list.length){ msg('조회한 필지가 없습니다.'); return; } const ok = await copyText(kgScript(list)); if(ok) setTimeout(kgOpenSite, 150); msg(ok ? `✅ 스크립트를 복사했습니다 (${list.length}필지). KGEOP 탭의 Console에 붙여넣고 Enter.` : '복사하지 못했습니다 — 브라우저가 클립보드를 막았습니다.'); };
     q('pnu').onclick = async () => { const ok = await copyText(list.join('\n')); msg(ok ? `PNU ${list.length}개를 복사했습니다.` : '복사하지 못했습니다.'); };
     const apply = async t => { const res = await kgApply(t); if(res.err){ msg('⚠ ' + res.err); return; } msg(`✅ ${res.n}필지 반영 (이 노선 필지 ${res.hit}곳) · 건물 있는 필지 ${res.nb}` + (res.nl ? ` · 토지대장 빈 필지 ${res.nl}` : '') + (res.be ? ` · 건물 상세 실패 ${res.be}동` : '') + (res.fail ? ` · KGEOP 조회 실패 ${res.fail}필지(다시 가져오면 됨)` : '') + (res.bad ? ` · 검색 실패 ${res.bad}` : '') + (res.old ? ' — ⚠ 예전 스크립트 결과입니다. [스크립트 복사]로 새 스크립트를 받아 다시 돌리면 빠진 정보가 줄어듭니다.' : '')); q('txt').value = ''; setTimeout(draw, 1500); };
     q('apply').onclick = () => { const ce = kgClipErr(q('txt').value); if(ce){ msg('⚠ ' + ce); return; } apply(q('txt').value); };
@@ -8487,7 +8508,7 @@ function winOpen(key, el, title, opt = {}){
   w.document.getElementById('winHost').appendChild(w.document.adoptNode(el));
   if(opt.show) opt.show(el);
   w.document.getElementById('winDock').onclick = () => { W.docking = true; LS.set('win.in.' + key, '1'); w.close(); };
-  w.document.getElementById('winX').onclick = () => w.close(); ptrWatch(w.document);
+  w.document.getElementById('winX').onclick = () => w.close(); winClipHook(w); ptrWatch(w.document);
   /* 내용만큼 높이 맞춤 — 사용자가 창 크기를 직접 바꾸면 그 뒤로는 그대로 둠 */
   w.addEventListener('resize', () => { if(Date.now() - (W.fitT || 0) > 900) W.userSized = true; });
   { let ft = null; const fit = () => { clearTimeout(ft); ft = setTimeout(() => winFit(key), 160); };
@@ -8515,6 +8536,7 @@ function winOpen(key, el, title, opt = {}){
 }
 /* 새 창 크기를 내용에 맞춤: 처음 열 때는 가로·세로 모두, 그 뒤로는 세로는 늘고 줄며 가로는 내용이 넘칠 때만 넓힘(창이 좌우로 출렁이지 않게) */
 const WIN_W = { detail: [380, 700], ed: [380, 640], rmemoPanel: [400, 680], calcPanel: [280, 360], cmpPanel: [420, 900], diagPanel: [420, 760], jbPanel: [360, 760], dqPanel: [420, 820], memoAllPanel: [380, 720] };
+function winClipHook(w){ try{ w.addEventListener('focus', () => setTimeout(() => kgClipCheck(w), 250)); }catch(e){} }
 function winFit(key, force){
   const W = WINS[key]; if(!winIn(key) || !W.el || (W.userSized && !force)) return;
   const w = W.w, d = w.document, el = W.el, bar = d.querySelector('.winbar'), host = d.getElementById('winHost');
@@ -8944,7 +8966,7 @@ $('#dlgHelp').addEventListener('close', () => { LS.set('helpSeen', '1'); if(!cfg
 document.addEventListener('keydown', e => { if(e.key === 'F1'){ e.preventDefault(); openHelp(); } });
 if(LS.get('helpSeen', '') !== '1') setTimeout(openHelp, 300);
 else if(!cfg.key) setTimeout(openSettings, 300);
-window.__app = { bldNorm, kgRelayScript, get kgLink(){ return kgLink; }, get kgQ(){ return kgQ; }, kgEnqueue, get offOk(){ return offOk; }, offSummary, atchCache, get routeKinds(){ return routeKinds; }, sideStripsAll, get actOverlaps(){ return actOverlaps; }, drawGhosts, vdAll, shiftRisk, kgApply, KG, crossIv, kgScript, vdOvSet, shiftOkSet, get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
+window.__app = { kgScript, get kgWaitClip(){ return kgWaitClip; }, bldNorm, kgRelayScript, get kgLink(){ return kgLink; }, get kgQ(){ return kgQ; }, kgEnqueue, get offOk(){ return offOk; }, offSummary, atchCache, get routeKinds(){ return routeKinds; }, sideStripsAll, get actOverlaps(){ return actOverlaps; }, drawGhosts, vdAll, shiftRisk, kgApply, KG, crossIv, kgScript, vdOvSet, shiftOkSet, get routes(){ return routes; }, renderRoutes, get stations(){ return stations; }, get manual(){ return manualEdits; }, setTileCors(v){ tileCors = v; }, cfg, get results(){ return results; }, map, runQuery, resetAll, get allResults(){ return allResults; }, winFit, get issues(){ return issues; }, get segPipe(){ return segPipe; }, get undoN(){ return undoStack.length; }, get freeMemos(){ return freeMemos; }, WINS, get pts(){ return pts.map(p => [p.lat, p.lng]); }, get state(){ return { drawing, drawMode, shapeKind, pts: pts.length, hasShape: !!shapeGeom }; } };
 })();
 </script>
 </body>
